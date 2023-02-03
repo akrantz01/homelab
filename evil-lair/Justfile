@@ -1,0 +1,48 @@
+# List all the tasks
+list:
+  @just --list --unsorted
+
+# Initialize terraform
+init:
+  terraform init
+
+# Plan the changes
+plan *FLAGS:
+  terraform plan {{FLAGS}}
+
+# Format the code
+fmt:
+  terraform fmt --recursive .
+
+# Validate the code
+validate:
+  terraform validate .
+
+# Run the linter
+lint:
+  tflint --module .
+
+alias f := fmt
+alias v := validate
+alias l := lint
+
+# Run tests in CI
+ci: check-fmt validate lint
+
+# Check that the formatting is correct
+check-fmt:
+  terraform fmt --recursive --check --diff .
+
+# Connect to the instance
+connect:
+  #!/usr/bin/env bash
+
+  enabled=$(jq -r '.resources[] | select(.type == "local_sensitive_file" and .name == "ssh") | .instances | length' terraform.tfstate)
+  if [ -z $enabled ]; then
+    echo "SSH is not enabled"
+    echo -e "\tSet 'enable_ssh' to true to connect"
+    exit 1
+  fi
+
+  ip=$(jq -r '.resources[] | select(.type == "aws_instance" and .name == "evil_lair") | .instances[].attributes.public_ip' terraform.tfstate)
+  exec ssh -i ./evil_lair.pem -o StrictHostKeyChecking=no admin@$ip
