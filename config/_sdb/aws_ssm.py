@@ -43,9 +43,9 @@ def get(key, profile=None):
   """
   Get a value from the AWS SSM Parameter Store
   """
-  log.info(key)
-  log.info(profile)
-  return True
+  print(key)
+  print(profile)
+  return key
 
 
 def delete(key, profile=None):
