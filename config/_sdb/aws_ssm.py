@@ -78,21 +78,27 @@ def set_(key, value, profile=None):
   ssm = _ssm(profile)
   
   key_id = profile.get("key", "alias/aws/ssm")
+  name = _name(key, profile)
 
   try:
     ssm.put_parameter(
-      Name=_name(key, profile),
+      Name=name,
       Value=value,
       Type="SecureString",
       KeyId=key_id,
       Overwrite=True,
       Tier=profile.get("tier", "Standard"),
+    )
+
+    ssm.add_tags_to_resource(
+      ResourceType="Parameter",
+      ResourceId=name,
       Tags=_tags(profile),
     )
 
     return True
   except botocore.exceptions.ClientError as e:
-    error_code = e.response.get("Error", {}).Get("Code", "")
+    error_code = e.response.get("Error", {}).get("Code", "")
 
     if error_code == "InvalidKeyId":
       raise SaltConfigurationError(
