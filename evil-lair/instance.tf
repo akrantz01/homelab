@@ -60,6 +60,9 @@ resource "aws_instance" "evil_lair" {
   }
 
   user_data = templatefile("${path.module}/templates/user-data.sh.tpl", {
+    engines_conf    = file("${path.module}/configs/engines.conf")
+    fileserver_conf = file("${path.module}/configs/fileserver.conf")
+    sdb_conf        = file("${path.module}/configs/sdb.conf")
   })
   user_data_replace_on_change = true
 
