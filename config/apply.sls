@@ -1,4 +1,5 @@
-{%- if salt.hashutil.github_signature(data['body'], salt.sdb.get('sdb://secrets/github-webhook'), data['headers']['X-Hub-Signature-256']) %}
+{%- set body = salt.json.loads(data.body) -%}
+{%- if salt.hashutil.github_signature(data.body, salt.sdb.get('sdb://secrets/github-webhook'), data.headers['X-Hub-Signature-256']) and body.ref == "refs/heads/main" %}
 update:
   caller.filesystem.update:
     - args: []
