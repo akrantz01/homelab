@@ -134,7 +134,21 @@ def delete(key, profile=None):
   """
   Delete a key from AWS SSM Parameter Store
   """
-  return True
+  ssm = _ssm(profile)
+
+  try:
+    ssm.delete_parameter(
+      Name=_name(key, profile),
+    )
+
+    return True
+  except botocore.exceptions.ClientError as e:
+    error_code = e.response.get("Error", {}).get("Code", "")
+
+    if error_code == "ParameterNotFound":
+      return True
+    
+    raise
 
 
 def _name(key, profile):
