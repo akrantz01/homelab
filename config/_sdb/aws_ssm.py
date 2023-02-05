@@ -112,9 +112,22 @@ def get(key, profile=None):
   """
   Get a value from the AWS SSM Parameter Store
   """
-  print(key)
-  print(profile)
-  return key
+  ssm = _ssm(profile)
+
+  try:
+    response = ssm.get_parameter(
+      Name=_name(key, profile),
+      WithDecryption=True,
+    )
+
+    return response["Parameter"]["Value"]
+  except botocore.exceptions.ClientError as e:
+    error_code = e.response.get("Error", {}).get("Code", "")
+
+    if error_code == "ParameterNotFound":
+      return None
+    
+    raise
 
 
 def delete(key, profile=None):
