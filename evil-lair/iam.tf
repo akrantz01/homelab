@@ -19,8 +19,11 @@ data "aws_iam_policy_document" "evil_lair" {
     effect = "Allow"
     actions = [
       "ssm:GetParameter",
+      "ssm:GetParameters",
       "ssm:PutParameter",
       "ssm:DeleteParameter",
+      "ssm:AddTagsToResource",
+      "ssm:RemoveTagsFromResource",
     ]
     resources = [
       "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/salt/*",
