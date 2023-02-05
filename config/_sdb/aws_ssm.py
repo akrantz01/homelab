@@ -11,6 +11,7 @@ This module allows access to AWS SSM Parameter Store using an ``sdb://`` URI.
 
 import logging
 
+import salt.utils.versions
 from salt.exceptions import SaltConfigurationError
 
 try:
