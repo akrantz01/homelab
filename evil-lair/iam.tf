@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect  = "Allow"
@@ -12,9 +14,17 @@ data "aws_iam_policy_document" "assume_role" {
 
 data "aws_iam_policy_document" "evil_lair" {
   statement {
-    effect    = "Deny"
-    actions   = ["*"]
-    resources = ["*"]
+    sid = "SSMParameterStoreSDBAccess"
+
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter",
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+    ]
+    resources = [
+      "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/salt/*",
+    ]
   }
 }
 
