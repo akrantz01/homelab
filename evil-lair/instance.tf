@@ -1,3 +1,10 @@
+locals {
+  domain = "${var.subdomain}.${var.domain}"
+
+  letsencrypt_subdomain = var.letsencrypt_staging ? "acme-staging-v02" : "acme-v02"
+  letsencrypt_server    = "https://${local.letsencrypt_subdomain}.api.letsencrypt.org/directory"
+}
+
 data "aws_ami" "debian" {
   most_recent = true
   owners      = ["amazon"]
@@ -63,6 +70,15 @@ resource "aws_instance" "evil_lair" {
     engines_conf    = file("${path.module}/configs/engines.conf")
     fileserver_conf = file("${path.module}/configs/fileserver.conf")
     sdb_conf        = file("${path.module}/configs/sdb.conf")
+
+    nginx_default_conf = file("${path.module}/configs/nginx.default.conf")
+    nginx_webhook_conf = templatefile("${path.module}/templates/nginx.webhook.conf.tpl", {
+      domain = local.domain
+    })
+
+    domain             = local.domain
+    letsencrypt_email  = var.letsencrypt_email
+    letsencrypt_server = local.letsencrypt_server
   })
   user_data_replace_on_change = true
 

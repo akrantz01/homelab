@@ -2,6 +2,7 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
+shopt -s expand_aliases
 set -eux -o pipefail
 
 sudo apt-get update
@@ -53,3 +54,41 @@ sleep 5
 # Pull the latest version of the salt states
 sudo salt-run fileserver.update
 sudo salt-run saltutil.sync_all
+
+# Install nginx and configure it to proxy to the salt-master
+sudo apt-get install -y nginx ssl-cert
+
+cat <<EOF > /etc/nginx/sites-available/default
+${nginx_default_conf}
+EOF
+
+cat <<EOF > /etc/nginx/sites-available/webhook
+${nginx_webhook_conf}
+EOF
+
+sudo ln -s /etc/nginx/sites-available/webhook /etc/nginx/sites-enabled/webhook
+
+# Copy snakeoil certs while we wait for acme.sh
+sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+sudo cp /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/certs/${domain}.crt
+sudo cp /etc/ssl/private/ssl-cert-snakeoil.key /etc/ssl/private/${domain}.key
+
+sudo mkdir -p /var/www/acme.sh
+sudo chown -R root:www-data /var/www/acme.sh
+
+sudo systemctl reload nginx
+
+# Setup TLS with Let's Encrypt (via acme.sh)
+curl https://get.acme.sh | sh -s email="${letsencrypt_email}"
+source /.acme.sh/acme.sh.env
+
+acme.sh --issue \
+    --webroot /var/www/acme.sh \
+    --server "${letsencrypt_server}" \
+    --domain "${domain}"
+
+acme.sh --install-cert \
+    --domain "${domain}" \
+    --reloadcmd "systemctl reload nginx" \
+    --key-file /etc/ssl/private/${domain}.key \
+    --fullchain-file /etc/ssl/certs/${domain}.crt

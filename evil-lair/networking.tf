@@ -75,6 +75,20 @@ resource "aws_security_group" "evil_lair" {
     }
   }
 
+  # Allow HTTP/S
+  dynamic "ingress" {
+    for_each = [80, 443]
+
+    content {
+      from_port = ingress.value
+      to_port   = ingress.value
+      protocol  = "tcp"
+
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
   # Optionally enable SSH
   dynamic "ingress" {
     for_each = var.enable_ssh ? [22] : []
