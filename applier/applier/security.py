@@ -4,8 +4,7 @@ from hashlib import sha256
 
 from flask import abort, request
 
-# TODO: load secret from SaltStack
-SECRET = ""
+from .commands import secret
 
 
 def webhook(f):
@@ -15,15 +14,18 @@ def webhook(f):
 
     @wraps(f)
     def wrapper(*args, **kwargs):
-        signature = request.headers.get("X-Hub-Signature-256", "").removeprefix("sha256=")
+        signature = request.headers.get("X-Hub-Signature-256", "").removeprefix(
+            "sha256="
+        )
         if not _validate(request.data, signature):
             abort(401)
-        
+
         return f(*args, **kwargs)
 
     return wrapper
 
 
 def _validate(body, signature):
-    computed = hmac.new(SECRET.encode(), body, sha256).hexdigest()
+    key = secret("github-webhook").encode()
+    computed = hmac.new(key, body, sha256).hexdigest()
     return hmac.compare_digest(signature, computed)
