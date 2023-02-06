@@ -1,6 +1,10 @@
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - applier/**
+      - .github/workflows/applier.yml
 
 jobs:
   build:

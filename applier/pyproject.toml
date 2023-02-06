@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "applier"
-version = "0.1.0"
+version = "0.1.1"
 description = "Automatically apply SaltStack highstate on webhooks"
 authors = ["Alex Krantz <alex@krantz.dev>"]
 readme = "README.md"
