@@ -3,8 +3,8 @@ from os import environ
 from flask import Flask, jsonify, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from .config import DEFAULT_BRANCH
 from .commands import apply, sync
+from .config import DEFAULT_BRANCH
 from .security import webhook
 
 app = Flask(__name__)

@@ -5,7 +5,7 @@ from hashlib import sha256
 from flask import abort, request
 
 from .commands import secret
-from .config import WEBHOOK_SECRET_SDB_KEY, WEBHOOK_SECRET_SDB_BACKEND
+from .config import WEBHOOK_SECRET_SDB_BACKEND, WEBHOOK_SECRET_SDB_KEY
 
 
 def webhook(f):
