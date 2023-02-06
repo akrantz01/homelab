@@ -13,6 +13,11 @@ install:
 dev:
   poetry run flask --app applier run
 
+# Build the project
+build:
+  rm -rf dist
+  poetry build
+
 # Lint the project
 lint:
   poetry check
