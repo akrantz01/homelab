@@ -1,0 +1,17 @@
+[Unit]
+Description=Automatically apply SaltStack highstate on webhooks
+Requires=applier.socket
+After=network.target
+
+[Service]
+Type=notify
+User=root
+Group=root
+ExecStart=/usr/bin/gunicorn -w 4 applier
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -5,6 +5,11 @@ description = "Automatically apply SaltStack highstate on webhooks"
 authors = ["Alex Krantz <alex@krantz.dev>"]
 readme = "README.md"
 
+include = [
+    "configs/applier.service",
+    "configs/applier.socket",
+]
+
 [tool.poetry.dependencies]
 python = "^3.9"
 flask = "^2.2.2"
