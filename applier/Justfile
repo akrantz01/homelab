@@ -9,6 +9,10 @@ list:
 install:
   poetry install
 
+# Launch the development server
+dev:
+  poetry run flask --app applier run
+
 # Lint the project
 lint:
   poetry check
