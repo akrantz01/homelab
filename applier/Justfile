@@ -1,0 +1,26 @@
+black := "poetry run black"
+isort := "poetry run isort --profile black --filter-files"
+
+# List all the tasks
+list:
+  @just --list --unsorted
+
+# Install dependencies
+install:
+  poetry install
+
+# Lint the project
+lint:
+  poetry check
+  poetry lock
+  {{black}} .
+  {{isort}} .
+
+alias l := lint
+
+# Run tests in CI
+ci:
+  poetry check
+  poetry lock --check
+  {{black}} --check --diff .
+  {{isort}} --check-only --diff .
