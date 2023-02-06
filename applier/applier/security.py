@@ -5,6 +5,7 @@ from hashlib import sha256
 from flask import abort, request
 
 from .commands import secret
+from .config import WEBHOOK_SECRET_SDB_KEY, WEBHOOK_SECRET_SDB_BACKEND
 
 
 def webhook(f):
@@ -26,6 +27,6 @@ def webhook(f):
 
 
 def _validate(body, signature):
-    key = secret("github-webhook").encode()
+    key = secret(WEBHOOK_SECRET_SDB_KEY, WEBHOOK_SECRET_SDB_BACKEND).encode()
     computed = hmac.new(key, body, sha256).hexdigest()
     return hmac.compare_digest(signature, computed)
