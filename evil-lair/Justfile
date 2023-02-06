@@ -5,6 +5,7 @@ list:
 # Initialize terraform
 init:
   terraform init
+  tflint --init .
 
 # Plan the changes
 plan *FLAGS:

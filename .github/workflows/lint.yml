@@ -1,0 +1,30 @@
+on: push
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: applier/.python-version
+          cache: poetry
+          cache-dependency-path: |
+            applier/poetry.lock
+
+      - uses: taiki-e/install-action@just
+      - uses: terraform-linters/setup-tflint@v2
+      - uses: hashicorp/setup-terraform@v2
+
+      - name: Applier
+        run: |
+          just install
+          just ci
+        working-directory: applier
+      
+      - name: Evil Lair
+        run: |
+          just init
+          just ci
+        working-directory: evil-lair
