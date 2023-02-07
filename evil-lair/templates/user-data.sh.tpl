@@ -15,12 +15,11 @@ systemctl start ntp
 # Install salt-master
 curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
 chmod +x bootstrap-salt.sh
-./bootstrap-salt.sh -P -M -N -X stable
+./bootstrap-salt.sh -P -M -N -X ${saltstack_version}
 rm bootstrap-salt.sh
 
 # Install dependencies for git fileserver backend and AWS SSM SDB module
-apt-get install -y python3-pygit2 python3-pip
-python3 -m pip install boto3
+salt-pip install boto3 pygit2
 
 # Configure master
 mkdir -p /var/lib/salt/master
@@ -30,9 +29,6 @@ echo '127.0.0.1 salt' >> /etc/hosts
 cat <<EOF > /etc/salt/master.d/default.conf
 failhard: True
 log_level: INFO
-EOF
-cat <<EOF > /etc/salt/master.d/engines.conf
-${engines_conf}
 EOF
 cat <<EOF > /etc/salt/master.d/fileserver.conf
 ${fileserver_conf}

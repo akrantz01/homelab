@@ -16,7 +16,7 @@ data "aws_ami" "debian" {
 
   filter {
     name   = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
 
   filter {
@@ -41,7 +41,7 @@ resource "aws_key_pair" "ssh" {
 
 resource "aws_instance" "evil_lair" {
   ami           = data.aws_ami.debian.id
-  instance_type = "t4g.small"
+  instance_type = "t3a.small"
 
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
@@ -67,7 +67,8 @@ resource "aws_instance" "evil_lair" {
   }
 
   user_data = templatefile("${path.module}/templates/user-data.sh.tpl", {
-    engines_conf    = file("${path.module}/configs/engines.conf")
+    saltstack_version = "onedir"
+
     fileserver_conf = file("${path.module}/configs/fileserver.conf")
     sdb_conf        = file("${path.module}/configs/sdb.conf")
 
