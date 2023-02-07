@@ -1,4 +1,4 @@
-resource "random_string" "github_secret" {
+resource "random_password" "github_secret" {
   length = 64
 
   lower   = true
@@ -15,7 +15,7 @@ resource "random_string" "github_secret" {
 resource "aws_ssm_parameter" "github_secret" {
   name  = "/salt/github-webhook"
   type  = "SecureString"
-  value = random_string.github_secret.result
+  value = random_password.github_secret.result
 
   overwrite = true
   tier      = "Standard"
