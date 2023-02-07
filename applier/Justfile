@@ -33,3 +33,16 @@ ci:
   poetry lock --check
   {{black}} --check --diff .
   {{isort}} --check-only --diff .
+
+# Publish a new version
+publish kind:
+  #!/usr/bin/env bash
+
+  version=$(poetry version {{kind}} -s)
+
+  git add pyproject.toml
+  git commit -m "chore(applier): bump version"
+  git push
+
+  git tag applier/v$version
+  git push --tags
