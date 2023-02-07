@@ -1,15 +1,14 @@
 on:
   push:
-    branches:
-      - main
-    paths:
-      - applier/**
-      - .github/workflows/applier.yml
+    tags:
+      - applier/v*.*.*
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -30,3 +29,9 @@ jobs:
 
       - run: poetry publish -u __token__ -p ${{ secrets.PYPI_TOKEN }}
         working-directory: applier
+      
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            applier/configs/*
+            applier/dist/*
