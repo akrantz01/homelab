@@ -80,6 +80,9 @@ resource "aws_instance" "evil_lair" {
     domain             = local.domain
     letsencrypt_email  = var.letsencrypt_email
     letsencrypt_server = local.letsencrypt_server
+
+    applier_version   = data.github_release.applier.name
+    applier_downloads = local.applier_downloads
   })
   user_data_replace_on_change = true
 

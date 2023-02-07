@@ -88,3 +88,19 @@ acme.sh --install-cert \
     --reloadcmd "systemctl reload nginx" \
     --key-file /etc/ssl/private/${domain}.key \
     --fullchain-file /etc/ssl/certs/${domain}.crt
+
+# Install akrantz01/applier and service
+apt-get install -y python3-pip
+python3 -m pip install --upgrade pip
+python3 -m pip install --no-warn-script-location applier==${trimprefix(applier_version, "v")}
+
+wget -O /usr/lib/systemd/system/applier.service ${applier_downloads.systemd_service}
+wget -O /usr/lib/systemd/system/applier.socket ${applier_downloads.systemd_socket}
+
+systemctl daemon-reload
+
+systemctl enable applier.socket
+systemctl start applier.socket
+
+systemctl enable applier.service
+systemctl start applier.service
