@@ -1,2 +1,5 @@
 base:
   '*': []
+
+  primary:
+    - docker
