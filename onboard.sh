@@ -39,3 +39,8 @@ esac
 curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
 chmod +x bootstrap-salt.sh
 ./bootstrap-salt.sh -P -A $SALT_MASTER -i $MINION_ID stable
+rm bootstrap-salt.sh
+
+# Install reconnect script
+curl -o /usr/local/bin/reconnect -L https://raw.githubusercontent.com/akrantz01/homelab/main/reconnect.sh
+chmod +x /usr/local/bin/reconnect
