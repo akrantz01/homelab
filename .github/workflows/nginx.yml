@@ -27,9 +27,8 @@ jobs:
         with:
           context: nginx
           file: nginx/Dockerfile
-          push: false
+          load: true
           tags: nginx-deb:latest
-          outputs: type=image,push=false,dest=nginx-deb:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
