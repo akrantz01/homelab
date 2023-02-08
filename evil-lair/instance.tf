@@ -67,7 +67,7 @@ resource "aws_instance" "evil_lair" {
   }
 
   user_data = templatefile("${path.module}/templates/user-data.sh.tpl", {
-    saltstack_version = "onedir"
+    saltstack_version = "stable"
 
     fileserver_conf = file("${path.module}/configs/fileserver.conf")
     sdb_conf        = file("${path.module}/configs/sdb.conf")

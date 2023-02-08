@@ -19,7 +19,9 @@ chmod +x bootstrap-salt.sh
 rm bootstrap-salt.sh
 
 # Install dependencies for git fileserver backend and AWS SSM SDB module
-salt-pip install boto3 pygit2
+apt-get install -y python3-pygit2 python3-pip
+python3 -m pip install --upgrade pip
+python3 -m pip install boto3
 
 # Configure master
 mkdir -p /var/lib/salt/master
@@ -90,8 +92,6 @@ acme.sh --install-cert \
     --fullchain-file /etc/ssl/certs/${domain}.crt
 
 # Install akrantz01/applier and service
-apt-get install -y python3-pip
-python3 -m pip install --upgrade pip
 python3 -m pip install --no-warn-script-location applier==${trimprefix(applier_version, "v")}
 
 wget -O /usr/lib/systemd/system/applier.service ${applier_downloads.systemd_service}
