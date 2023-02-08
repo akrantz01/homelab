@@ -1,0 +1,49 @@
+name: Nginx
+
+on:
+  push:
+    paths:
+      - nginx/**
+      - .github/workflows/nginx.yml
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('nginx/Dockerfile') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ hashFiles('nginx/Dockerfile') }}-
+            ${{ runner.os }}-buildx-
+
+      - uses: docker/setup-buildx-action@v2
+
+      - uses: docker/build-push-action@v2
+        with:
+          context: nginx
+          file: nginx/Dockerfile
+          push: false
+          tags: nginx-deb:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: Extract nginx deb
+        run: |
+          docker create --name nginx-deb nginx-deb:latest
+          docker cp nginx-deb:/nginx_amd64.deb .
+          docker container rm nginx-deb
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: nginx_amd64.deb
+          path: nginx_amd64.deb
+      
+      - name: Move build cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
