@@ -1,5 +1,6 @@
 base:
-  "*": []
+  "*":
+    - sudoers
 
   primary:
     - docker
