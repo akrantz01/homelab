@@ -7,5 +7,8 @@ sudoers:
     alex:
       - "ALL=(ALL:ALL) NOPASSWD: ALL"
   
+  groups:
+    sudo: []
+  
   purge_includedir: true
   includedir: /etc/sudoers.d
