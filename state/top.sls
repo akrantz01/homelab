@@ -1,5 +1,6 @@
 base:
   "*":
+    - users
     - sudoers
 
   primary:
