@@ -6,9 +6,6 @@ data "github_release" "applier" {
 }
 
 locals {
-  # Select the correct asset based on its extension
-  applier_downloads = {
-    systemd_service = [for asset in data.github_release.applier.assets : asset.browser_download_url if endswith(asset.name, ".service")][0]
-    systemd_socket  = [for asset in data.github_release.applier.assets : asset.browser_download_url if endswith(asset.name, ".socket")][0]
-  }
+  # Find the systemd units based on their extensions
+  applier_downloads = [for asset in data.github_release.applier.assets : asset if endswith(asset.name, ".service") || endswith(asset.name, ".socket")]
 }

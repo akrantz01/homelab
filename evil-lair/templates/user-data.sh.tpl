@@ -91,16 +91,19 @@ acme.sh --install-cert \
     --key-file /etc/ssl/private/${domain}.key \
     --fullchain-file /etc/ssl/certs/${domain}.crt
 
+# Install Redis for applier
+apt-get install -y redis
+
 # Install akrantz01/applier and service
 python3 -m pip install --no-warn-script-location applier==${trimprefix(applier_version, "v")}
 
-wget -O /usr/lib/systemd/system/applier.service ${applier_downloads.systemd_service}
-wget -O /usr/lib/systemd/system/applier.socket ${applier_downloads.systemd_socket}
+%{ for unit in applier_downloads ~}
+wget -O /usr/lib/systemd/system/${unit.name} ${unit.browser_download_url}
+%{ endfor ~}
 
 systemctl daemon-reload
 
-systemctl enable applier.socket
-systemctl start applier.socket
-
-systemctl enable applier.service
-systemctl start applier.service
+%{ for unit in applier_downloads ~}
+systemctl enable ${unit.name}
+systemctl start ${unit.name}
+%{ endfor ~}
