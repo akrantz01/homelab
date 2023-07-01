@@ -29,13 +29,8 @@ resource "aws_s3_bucket_public_access_block" "outline" {
 }
 
 resource "aws_s3_bucket_acl" "outline" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.outline,
-    aws_s3_bucket_public_access_block.outline,
-  ]
-
   bucket = aws_s3_bucket.outline.id
-  acl    = "public-read"
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_cors_configuration" "outline" {
