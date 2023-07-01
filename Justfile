@@ -21,6 +21,10 @@ lint:
 validate:
   terraform validate
 
+# Open a console
+console:
+  terraform console
+
 # Plan the changes
 plan:
   terraform plan
@@ -29,6 +33,7 @@ plan:
 ci: (format "--check") lint validate
 
 
+alias c := console
 alias f := format
 alias fmt := format
 alias l := lint
