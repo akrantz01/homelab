@@ -18,20 +18,7 @@ data "cloudflare_zone" "domain" {
   name = var.domain
 }
 
-resource "cloudflare_record" "click" {
-  zone_id = data.cloudflare_zone.domain.id
-
-  type  = "CNAME"
-  name  = "click"
-  value = "r.${data.aws_region.current.name}.awstrack.me"
-
-  proxied = false
-  comment = "AWS SES click tracking"
-}
-
 resource "aws_sesv2_configuration_set" "default" {
-  depends_on = [cloudflare_record.click]
-
   configuration_set_name = replace(var.domain, ".", "-")
 
   delivery_options {
@@ -44,10 +31,6 @@ resource "aws_sesv2_configuration_set" "default" {
 
   sending_options {
     sending_enabled = true
-  }
-
-  tracking_options {
-    custom_redirect_domain = "click.${var.domain}"
   }
 }
 
