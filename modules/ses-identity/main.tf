@@ -12,32 +12,18 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 data "aws_region" "current" {}
 
 data "cloudflare_zone" "domain" {
   name = var.domain
 }
 
-resource "aws_sesv2_configuration_set" "default" {
-  configuration_set_name = replace(var.domain, ".", "-")
-
-  delivery_options {
-    tls_policy = "OPTIONAL"
-  }
-
-  reputation_options {
-    reputation_metrics_enabled = true
-  }
-
-  sending_options {
-    sending_enabled = true
-  }
-}
-
 resource "aws_sesv2_email_identity" "domain" {
   email_identity = var.domain
 
-  configuration_set_name = aws_sesv2_configuration_set.default.configuration_set_name
+  configuration_set_name = var.configuration_set
 }
 
 resource "cloudflare_record" "dkim" {
@@ -51,4 +37,33 @@ resource "cloudflare_record" "dkim" {
 
   proxied = false
   comment = "AWS SES DKIM verification"
+}
+
+locals {
+  domain_pascal_case = join("", [for segment in split(".", var.domain) : title(segment)])
+}
+
+resource "aws_iam_group" "ses" {
+  name = "SendEmailFor${local.domain_pascal_case}"
+  path = "/ses/"
+}
+
+data "aws_iam_policy_document" "ses" {
+  statement {
+    sid = "AllowSesSending"
+
+    effect  = "Allow"
+    actions = ["ses:SendRawEmail"]
+    resources = [
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:configuration-set/${var.configuration_set}",
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${var.domain}"
+    ]
+  }
+}
+
+resource "aws_iam_group_policy" "ses" {
+  name  = "AllowSendingForDomain"
+  group = aws_iam_group.ses.name
+
+  policy = data.aws_iam_policy_document.ses.json
 }
