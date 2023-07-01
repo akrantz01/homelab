@@ -12,14 +12,6 @@ terraform {
   }
 }
 
-data "aws_caller_identity" "current" {}
-
-data "aws_region" "current" {}
-
-data "cloudflare_zone" "domain" {
-  name = var.domain
-}
-
 resource "aws_sesv2_email_identity" "domain" {
   email_identity = var.domain
 
