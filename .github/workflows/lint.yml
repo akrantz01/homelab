@@ -1,8 +1,10 @@
 on: push
 
+name: Lint
+
 jobs:
   lint:
-    name: Lint
+    name: Terraform
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
