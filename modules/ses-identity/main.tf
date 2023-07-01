@@ -39,3 +39,16 @@ resource "aws_sesv2_email_identity" "domain" {
 
   configuration_set_name = aws_sesv2_configuration_set.default.configuration_set_name
 }
+
+resource "cloudflare_record" "dkim" {
+  count = 3
+
+  zone_id = data.cloudflare_zone.domain.id
+
+  type  = "CNAME"
+  name  = "${element(aws_sesv2_email_identity.domain.dkim_signing_attributes[0].tokens, count.index)}._domainkey.${var.domain}"
+  value = "${element(aws_sesv2_email_identity.domain.dkim_signing_attributes[0].tokens, count.index)}.dkim.amazonses.com"
+
+  proxied = false
+  comment = "AWS SES DKIM verification"
+}
