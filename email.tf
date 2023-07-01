@@ -1,4 +1,4 @@
-module "krantz_dev_email" {
+module "krantz_social_email" {
   source = "./modules/ses-identity"
 
   domain = "krantz.social"
