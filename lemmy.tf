@@ -12,7 +12,7 @@ module "lemmy_pictrs_bucket" {
 
   prefix = "krantz-lemmy-pictrs"
 
-  acl = "private"
+  acl            = "private"
   public_objects = true
 }
 

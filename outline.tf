@@ -12,7 +12,7 @@ module "outline_bucket" {
 
   prefix = "krantz-wiki"
 
-  acl = "private"
+  acl            = "private"
   public_objects = true
 }
 
