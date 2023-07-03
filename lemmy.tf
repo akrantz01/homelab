@@ -29,7 +29,7 @@ resource "aws_s3_bucket_public_access_block" "lemmy_pictrs" {
 }
 
 resource "aws_s3_bucket_acl" "lemmy_pictrs" {
-  bucket = aws_s3_bucket.outline.id
+  bucket = aws_s3_bucket.lemmy_pictrs.id
   acl    = "private"
 }
 
