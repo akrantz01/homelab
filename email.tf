@@ -14,6 +14,14 @@ resource "aws_sesv2_configuration_set" "default" {
   }
 }
 
+module "krantz_cloud_email" {
+  source = "./modules/ses-identity"
+
+  domain = "krantz.cloud"
+
+  configuration_set = aws_sesv2_configuration_set.default.id
+}
+
 module "krantz_dev_email" {
   source = "./modules/ses-identity"
 
