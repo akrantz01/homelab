@@ -29,6 +29,15 @@ module "mealie_user" {
   groups = [module.krantz_dev_email.group]
 }
 
+module "ntfy_user" {
+  source = "./modules/user"
+
+  name = "ntfy"
+  path = "/services/"
+
+  groups = [module.krantz_dev_email.group]
+}
+
 module "vaultwarden_user" {
   source = "./modules/user"
 
