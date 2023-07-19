@@ -33,4 +33,4 @@ jobs:
         run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
       
       - name: Build
-        run: ./gradlew assemblePlayRelease
+        run: ./gradlew bundlePlayRelease
