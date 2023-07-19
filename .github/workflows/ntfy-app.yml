@@ -41,16 +41,16 @@ jobs:
       - name: Build
         run: ./gradlew assemblePlayRelease
 
-      - run: find . -type f -name '*.apk'
+      - name: Sign
+        run: |
+          zipalign -v -p 4 app/build/outputs/apk/play/release/app-play-release-unsigned.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
+          apksigner sign --ks release.jks --ks-pass "pass:$STORE_PASSWORD" --ks-key-alias ntfy --out app/build/outputs/apk/play/release/app-play-release.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
+          apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
+        env:
+          STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
 
-      # - name: Sign
-      #   run: |
-      #     jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.jks -storepass "$STORE_PASSWORD" app/build/outputs/bundle/playRelease/app-play-release.aab ntfy
-      #   env:
-      #     STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
-
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ntfy.aab
-      #     path: app/build/outputs/bundle/playRelease/app-play-release.aab
-      #     if-no-files-found: error
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ntfy.apk
+          path: app/build/outputs/apk/play/release/app-play-release.apk
+          if-no-files-found: error
