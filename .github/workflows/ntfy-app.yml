@@ -25,6 +25,12 @@ jobs:
           distribution: temurin
           cache: gradle
 
+      - name: Install build tools
+        run: |
+          wget -O android-build-tools.zip https://dl.google.com/android/repository/build-tools_r33.0.2-linux.zip
+          unzip -q android-build-tools.zip
+          echo "$(pwd)/android-13" >> $GITHUB_PATH
+
       - name: Import Google services file
         run: echo "$GOOGLE_SERVICES" > app/google-services.json
         env:
@@ -39,15 +45,22 @@ jobs:
         run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
 
       - name: Build
-        run: ./gradlew bundlePlayRelease
+        run: ./gradlew assemblePlayRelease
 
       - name: Sign
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.jks -storepass "$STORE_PASSWORD" app/build/outputs/bundle/playRelease/app-play-release.aab ntfy
+        run: |
+          zipalign -v -p 4 app/build/outputs/apk/play/release/app-play-release-unsigned.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
+          apksigner sign --ks release.jks --ks-pass "pass:$STORE_PASSWORD" --ks-key-alias ntfy --out app/build/outputs/apk/play/release/app-play-release.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
         env:
           STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
 
+      - name: Verify
+        run: |
+          zipalign -c -v 4 app/build/outputs/apk/play/release/app-play-release.apk
+          apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
+
       - uses: actions/upload-artifact@v3
         with:
-          name: ntfy.aab
-          path: app/build/outputs/bundle/playRelease/app-play-release.aab
+          name: ntfy.apk
+          path: app/build/outputs/apk/play/release/app-play-release.apk
           if-no-files-found: error
