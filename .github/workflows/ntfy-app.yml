@@ -40,4 +40,7 @@ jobs:
       - name: Build
         run: ./gradlew bundlePlayRelease
 
-      - run: find . -type f -name '*.aab'
+      - name: Sign
+        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.jks -storepass "$STORE_PASSWORD" app/build/outputs/bundle/playRelease/app-play-release.aab ntfy
+        env:
+          STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
