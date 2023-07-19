@@ -45,7 +45,8 @@ jobs:
         env:
           STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ntfy.aab
           path: app/build/outputs/bundle/playRelease/app-play-release.aab
+          if-no-files-found: error
