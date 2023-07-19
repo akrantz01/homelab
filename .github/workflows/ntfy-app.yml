@@ -24,11 +24,29 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Copy Google services
+      - name: Import Google services file
         run: echo "$GOOGLE_SERVICES" > app/google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+      
+      - name: Import signing keystore
+        run: echo "$APK_RELEASE_KEYSTORE" | base64 -d > release.jks
+        env:
+          APK_RELEASE_KEYSTORE: ${{ secrets.APK_RELEASE_KEYSTORE }}
       
       - name: Update server URL
         run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
       
       - name: Build
-        run: ./gradlew assemblePlayRelease
+        run: ./gradlew bundlePlayRelease
+
+      - name: Sign
+        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.jks -storepass "$STORE_PASSWORD" app/build/outputs/bundle/playRelease/app-play-release.aab ntfy
+        env:
+          STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ntfy.aab
+          path: app/build/outputs/bundle/playRelease/app-play-release.aab
+          if-no-files-found: error
