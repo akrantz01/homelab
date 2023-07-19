@@ -25,7 +25,9 @@ jobs:
           cache: gradle
 
       - name: Copy Google services
-        run: echo "$GOOGLE_SERVICES" > app/google-services.json
+        run: |
+          echo "$GOOGLE_SERVICES" > app/google-services.json
+          cat app/google-services.json
       
       - name: Update server URL
         run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
