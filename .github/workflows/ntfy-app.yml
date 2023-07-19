@@ -1,0 +1,34 @@
+on:
+  workflow-dispatch:
+    inputs:
+      tag:
+        type: string
+        required: true
+        description: 'Tag to build'
+
+name: ntfy
+
+jobs:
+  android:
+    name: Android App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: binwiederhier/ntfy-android
+          ref: ${{ github.event.inputs.tag }}
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: gradle
+
+      - name: Copy Google services
+        run: echo "$GOOGLE_SERVICES" > app/google-services.json
+      
+      - name: Update server URL
+        run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
+      
+      - name: Build
+        run: ./gradlew assemblePlayRelease
