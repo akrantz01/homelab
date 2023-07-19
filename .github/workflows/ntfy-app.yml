@@ -45,9 +45,13 @@ jobs:
         run: |
           zipalign -v -p 4 app/build/outputs/apk/play/release/app-play-release-unsigned.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
           apksigner sign --ks release.jks --ks-pass "pass:$STORE_PASSWORD" --ks-key-alias ntfy --out app/build/outputs/apk/play/release/app-play-release.apk app/build/outputs/apk/play/release/app-play-release-unsigned-aligned.apk
-          apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
         env:
           STORE_PASSWORD: ${{ secrets.APK_RELEASE_KEYSTORE_PASSWORD }}
+
+      - name: Verify
+        run: |
+          zipalign -c -v 4 app/build/outputs/apk/play/release/app-play-release.apk
+          apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
 
       - uses: actions/upload-artifact@v3
         with:
