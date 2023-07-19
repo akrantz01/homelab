@@ -25,6 +25,12 @@ jobs:
           distribution: temurin
           cache: gradle
 
+      - name: Install build tools
+        run: |
+          wget -O android-build-tools.zip https://dl.google.com/android/repository/build-tools_r33.0.2-linux.zip
+          unzip -q android-build-tools.zip
+          echo "$(pwd)/android-13" >> $GITHUB_PATH
+
       - name: Import Google services file
         run: echo "$GOOGLE_SERVICES" > app/google-services.json
         env:
