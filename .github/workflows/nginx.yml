@@ -1,6 +1,7 @@
+---
 name: Nginx
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     paths:
       - nginx/**
@@ -37,12 +38,12 @@ jobs:
           docker create --name nginx-deb nginx-deb:latest
           docker cp nginx-deb:/nginx_amd64.deb .
           docker container rm nginx-deb
-      
+
       - uses: actions/upload-artifact@v2
         with:
           name: nginx_amd64.deb
           path: nginx_amd64.deb
-      
+
       - name: Move build cache
         run: |
           rm -rf /tmp/.buildx-cache

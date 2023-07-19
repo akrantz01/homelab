@@ -1,9 +1,11 @@
+---
+# yamllint disable-line rule:truthy
 on: push
 
 name: Lint
 
 jobs:
-  lint:
+  terraform:
     name: Terraform
     runs-on: ubuntu-latest
     steps:
@@ -12,9 +14,18 @@ jobs:
       - uses: taiki-e/install-action@just
       - uses: terraform-linters/setup-tflint@v3
       - uses: hashicorp/setup-terraform@v2
-      
+
       - run: just init
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
 
       - run: just ci
+
+  yaml:
+    name: YAML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: pip install yamllint
+      - run: yamllint -s -f github .

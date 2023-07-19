@@ -1,6 +1,7 @@
+---
 name: Coder
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - main
@@ -16,14 +17,14 @@ jobs:
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Install Coder CLI
         run: curl -L https://coder.com/install.sh | sh
 
       - name: Get short commit SHA
         run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
         id: sha
-      
+
       - name: Push templates
         run: coder templates push $CODER_TEMPLATE_NAME --directory $CODER_TEMPLATE_DIRECTORY --yes --name $CODER_TEMPLATE_VERSION
         env:
