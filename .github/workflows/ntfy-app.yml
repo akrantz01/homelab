@@ -39,3 +39,5 @@ jobs:
       
       - name: Build
         run: ./gradlew bundlePlayRelease
+
+      - run: ls -la app/play/release
