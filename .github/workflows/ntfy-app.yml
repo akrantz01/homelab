@@ -24,10 +24,15 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Copy Google services
+      - name: Import Google services file
         run: echo "$GOOGLE_SERVICES" > app/google-services.json
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+      
+      - name: Import signing keystore
+        run: echo "$APK_RELEASE_KEYSTORE" | base64 -d > release.jks
+        env:
+          APK_RELEASE_KEYSTORE: ${{ secrets.APK_RELEASE_KEYSTORE }}
       
       - name: Update server URL
         run: sed -i "s|https://ntfy.sh|https://notify.krantz.cloud|g" app/src/main/res/values/values.xml
