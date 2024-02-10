@@ -26,9 +26,8 @@ resource "coder_agent" "main" {
   arch = data.coder_provisioner.me.arch
   os   = "linux"
 
-  login_before_ready     = false
-  startup_script_timeout = 180
-  startup_script         = <<-EOT
+  startup_script_behavior = "blocking"
+  startup_script          = <<-EOT
     set -e
 
     # install and start code-server
@@ -98,7 +97,7 @@ resource "docker_volume" "home_volume" {
 resource "docker_image" "main" {
   name = "coder-${data.coder_workspace.me.id}"
   build {
-    path = "./build"
+    context = "./build"
     build_args = {
       USER = local.username
     }

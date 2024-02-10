@@ -3,21 +3,53 @@ name: Coder
 
 on:  # yamllint disable-line rule:truthy
   push:
-    branches:
-      - main
     paths:
       - .github/workflows/templates.yml
       - templates/**
 
 jobs:
+  generate-matrix:
+    name: Generate Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      templates: ${{ steps.generator.outputs.templates }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          templates=$(/bin/ls templates | jq -Rcs 'split("\n")[:-1]')
+          echo "templates=$templates" >> "$GITHUB_OUTPUT"
+        id: generator
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: [generate-matrix]
+    strategy:
+      matrix:
+        template: ${{ fromJSON(needs.generate-matrix.outputs.templates) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v2
+
+      - run: terraform init
+        working-directory: ./templates/${{ matrix.template }}
+
+      - run: terraform fmt --check
+        working-directory: ./templates/${{ matrix.template }}
+
+      - run: terraform validate
+        working-directory: ./templates/${{ matrix.template }}
+
   publish:
     name: Publish Template
     runs-on: ubuntu-latest
+    needs: [generate-matrix]
     strategy:
       matrix:
-        template:
-          - general
+        template: ${{ fromJSON(needs.generate-matrix.outputs.templates) }}
       fail-fast: true
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     steps:
       - uses: actions/checkout@v3
 
@@ -25,7 +57,7 @@ jobs:
         run: curl -L https://coder.com/install.sh | sh
 
       - name: Get short commit SHA
-        run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
         id: sha
 
       - name: Push templates
