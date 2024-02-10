@@ -1,4 +1,4 @@
-FROM debian:11 as build
+FROM debian:12 as build
 
 ENV RUST_VERSION 1.66.0
 ENV RUSTUP_VERSION 1.25.1
