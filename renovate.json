@@ -3,7 +3,8 @@
   "extends": [
     "config:recommended",
     ":prNotPending",
-    ":prHourlyLimitNone"
+    ":prHourlyLimitNone",
+    ":semanticCommitsDisabled"
   ],
   "rebaseWhen": "auto"
 }
