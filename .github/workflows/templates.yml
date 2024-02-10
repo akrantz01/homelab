@@ -49,6 +49,7 @@ jobs:
       matrix:
         template: ${{ fromJSON(needs.generate-matrix.outputs.templates) }}
       fail-fast: true
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     steps:
       - uses: actions/checkout@v3
 
@@ -60,7 +61,6 @@ jobs:
         id: sha
 
       - name: Push templates
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         run: coder templates push $CODER_TEMPLATE_NAME --directory $CODER_TEMPLATE_DIRECTORY --yes --name $CODER_TEMPLATE_VERSION
         env:
           CODER_URL: https://code.krantz.dev
