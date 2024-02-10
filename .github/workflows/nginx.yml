@@ -39,7 +39,7 @@ jobs:
           docker cp nginx-deb:/nginx_amd64.deb .
           docker container rm nginx-deb
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: nginx_amd64.deb
           path: nginx_amd64.deb
