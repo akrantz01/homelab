@@ -25,7 +25,11 @@ on:  # yamllint disable-line rule:truthy
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   combine-prs:
+    name: Combine PRs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/github-script@v6
         id: create-combined-pr
