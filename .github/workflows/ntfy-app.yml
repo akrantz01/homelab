@@ -59,7 +59,7 @@ jobs:
           zipalign -c -v 4 app/build/outputs/apk/play/release/app-play-release.apk
           apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ntfy.apk
           path: app/build/outputs/apk/play/release/app-play-release.apk
