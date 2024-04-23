@@ -13,7 +13,7 @@ lint:
 
 # Ensure the project is valid
 validate:
-  terragrunt validate
+  terragrunt run-all validate
 
 # Open a console
 console:

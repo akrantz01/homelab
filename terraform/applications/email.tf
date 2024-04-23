@@ -15,7 +15,7 @@ resource "aws_sesv2_configuration_set" "default" {
 }
 
 module "krantz_cloud_email" {
-  source = "./modules/ses-identity"
+  source = "../modules/ses-identity"
 
   domain = "krantz.cloud"
 
@@ -23,7 +23,7 @@ module "krantz_cloud_email" {
 }
 
 module "krantz_dev_email" {
-  source = "./modules/ses-identity"
+  source = "../modules/ses-identity"
 
   domain = "krantz.dev"
 
@@ -31,7 +31,7 @@ module "krantz_dev_email" {
 }
 
 module "krantz_social_email" {
-  source = "./modules/ses-identity"
+  source = "../modules/ses-identity"
 
   domain = "krantz.social"
 

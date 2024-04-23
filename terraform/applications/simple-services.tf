@@ -3,7 +3,7 @@
 ###
 
 module "authelia_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "authelia"
   path = "/services/"
@@ -12,7 +12,7 @@ module "authelia_user" {
 }
 
 module "firefly_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "firefly"
   path = "/services/"
@@ -21,7 +21,7 @@ module "firefly_user" {
 }
 
 module "mealie_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "mealie"
   path = "/services/"
@@ -30,7 +30,7 @@ module "mealie_user" {
 }
 
 module "ntfy_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "ntfy"
   path = "/services/"
@@ -39,7 +39,7 @@ module "ntfy_user" {
 }
 
 module "vaultwarden_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "vaultwarden"
   path = "/services/"

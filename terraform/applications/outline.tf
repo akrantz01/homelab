@@ -1,5 +1,5 @@
 module "outline_user" {
-  source = "./modules/user"
+  source = "../modules/user"
 
   name = "outline"
   path = "/services/"
@@ -8,7 +8,7 @@ module "outline_user" {
 }
 
 module "outline_bucket" {
-  source = "./modules/bucket"
+  source = "../modules/bucket"
 
   prefix = "krantz-wiki"
 

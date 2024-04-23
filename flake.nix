@@ -13,6 +13,7 @@
       perSystem = { config, self', inputs', pkgs, system, ... }: {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            bashInteractive
             just
             opentofu
             terragrunt
