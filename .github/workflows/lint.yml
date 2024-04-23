@@ -15,11 +15,11 @@ jobs:
       - uses: terraform-linters/setup-tflint@v4
       - uses: hashicorp/setup-terraform@v3
 
-      - run: just init
+      - run: just tf init
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
 
-      - run: just ci
+      - run: just tf ci
 
   yaml:
     name: YAML
