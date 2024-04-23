@@ -1,5 +1,6 @@
 locals {
-  aws_region = get_env("AWS_REGION", "ca-central-1")
+  secrets_path = "${get_repo_root()}/secrets/terraform.yaml"
+  secrets      = yamldecode(sops_decrypt_file(local.secrets_path))
 }
 
 remote_state {
@@ -9,19 +10,19 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    region  = local.aws_region
+    region  = local.secrets.regions.aws
     encrypt = true
 
-    bucket = get_env("TF_STATE_BUCKET")
+    bucket = local.secrets.state.bucket
     key    = "${path_relative_to_include()}/terraform.tfstate"
 
-    dynamodb_table = get_env("TF_STATE_LOCK_TABLE")
+    dynamodb_table = local.secrets.state.lock_table
   }
 }
 
 terraform {
   extra_arguments "disable_input" {
-    commands = get_terraform_commands_that_need_input()
+    commands  = get_terraform_commands_that_need_input()
     arguments = ["-input=false"]
   }
 }

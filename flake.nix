@@ -16,6 +16,7 @@
             bashInteractive
             just
             opentofu
+            sops
             terragrunt
             tflint
             yamllint
