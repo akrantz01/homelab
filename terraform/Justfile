@@ -4,12 +4,12 @@ list:
 
 # Initialize the project
 init:
-  terraform init
+  tofu init
   tflint --init
 
 # Ensure the formatting is correct
 format *FLAGS:
-  terraform fmt -recursive {{FLAGS}}
+  tofu fmt -recursive {{FLAGS}}
 
 # Run linters
 lint:
@@ -17,15 +17,15 @@ lint:
 
 # Ensure the project is valid
 validate:
-  terraform validate
+  tofu validate
 
 # Open a console
 console:
-  terraform console
+  tofu console
 
 # Plan the changes
 plan:
-  terraform plan
+  tofu plan
 
 # Checks to run in CI
 ci: (format "--check") lint validate

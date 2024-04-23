@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.8.1"
+  required_version = "~> 1.6.0"
 
   required_providers {
     aws = {
@@ -13,6 +13,7 @@ terraform {
   }
 
   cloud {
+    hostname     = "app.terraform.io"
     organization = "krantz"
     workspaces {
       name = "homelab"
