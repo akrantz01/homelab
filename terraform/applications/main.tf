@@ -10,11 +10,3 @@ terraform {
     }
   }
 }
-
-provider "aws" {
-  region = var.regions.aws
-}
-
-provider "cloudflare" {
-  api_token = var.cloudflare_token
-}

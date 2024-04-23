@@ -45,3 +45,4 @@ terragrunt-debug.tfvars.json
 
 ### Project Files ###
 **/backend.tf
+**/provider_*.tf

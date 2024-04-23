@@ -1,13 +1,11 @@
 include "root" {
-  path   = find_in_parent_folders()
-  expose = true
+  path = find_in_parent_folders()
 }
 
-locals {
-  secrets = include.root.locals.secrets
+include "aws" {
+  path = find_in_parent_folders("aws.hcl")
 }
 
-inputs = {
-  cloudflare_token = local.secrets.cloudflare.token
-  regions          = local.secrets.regions
+include "cloudflare" {
+  path = find_in_parent_folders("cloudflare.hcl")
 }
