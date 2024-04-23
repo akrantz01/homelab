@@ -1,3 +1,7 @@
+config {
+  call_module_type = "all"
+}
+
 plugin "terraform" {
   enabled = true
   version = "0.6.0"
@@ -11,7 +15,7 @@ plugin "aws" {
 }
 
 plugin "google" {
-    enabled = true
-    version = "0.27.1"
-    source  = "github.com/terraform-linters/tflint-ruleset-google"
+  enabled = true
+  version = "0.27.1"
+  source  = "github.com/terraform-linters/tflint-ruleset-google"
 }

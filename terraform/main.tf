@@ -11,14 +11,6 @@ terraform {
       version = "~> 4.30.0"
     }
   }
-
-  cloud {
-    hostname     = "app.terraform.io"
-    organization = "krantz"
-    workspaces {
-      name = "homelab"
-    }
-  }
 }
 
 provider "aws" {

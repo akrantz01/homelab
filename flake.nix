@@ -15,6 +15,7 @@
           packages = with pkgs; [
             just
             opentofu
+            terragrunt
             tflint
             yamllint
           ];

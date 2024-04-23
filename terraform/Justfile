@@ -2,33 +2,29 @@
 list:
   @just -lu
 
-# Initialize the project
-init:
-  tofu init
-  tflint --init
-
 # Ensure the formatting is correct
 format *FLAGS:
-  tofu fmt -recursive {{FLAGS}}
+  terragrunt hclfmt {{FLAGS}}
 
 # Run linters
 lint:
-  tflint --module --recursive
+  tflint --init
+  tflint --recursive
 
 # Ensure the project is valid
 validate:
-  tofu validate
+  terragrunt validate
 
 # Open a console
 console:
-  tofu console
+  terragrunt console
 
 # Plan the changes
 plan:
-  tofu plan
+  terragrunt plan
 
 # Checks to run in CI
-ci: (format "--check") lint validate
+ci: (format "--terragrunt-check") lint validate
 
 alias c := console
 alias f := format
