@@ -23,6 +23,10 @@ console:
 plan:
   terragrunt plan
 
+# Apply the changes
+apply:
+  terragrunt apply
+
 # Checks to run in CI
 ci: (format "--terragrunt-check") lint validate
 

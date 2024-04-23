@@ -35,7 +35,7 @@ module "ntfy_user" {
   name = "ntfy"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [module.krantz_dev_email.group, module.krantz_cloud_email.group]
 }
 
 module "vaultwarden_user" {
