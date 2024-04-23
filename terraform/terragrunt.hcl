@@ -19,4 +19,5 @@ remote_state {
   }
 }
 
-terraform_binary = "tofu"
+terraform_binary             = "tofu"
+terraform_version_constraint = "~> 1.6.0"

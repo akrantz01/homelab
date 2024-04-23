@@ -19,3 +19,8 @@ plugin "google" {
   version = "0.27.1"
   source  = "github.com/terraform-linters/tflint-ruleset-google"
 }
+
+# Handled by terragrunt
+rule "terraform_required_version" {
+  enabled = false
+}

@@ -9,7 +9,7 @@ format *FLAGS:
 # Run linters
 lint:
   tflint --init
-  tflint --recursive
+  tflint -c $(pwd)/.tflint.hcl --recursive
 
 # Ensure the project is valid
 validate:
