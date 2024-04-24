@@ -18,7 +18,7 @@ jobs:
           tofu_wrapper: false
       - name: Install Terragrunt
         run: |
-          url=$(gh release view --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endsWith("linux_amd64")) | .url')
+          url=$(gh release view --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endswith("linux_amd64")) | .url')
           wget -qO terragrunt $url
           chmod +x terragrunt
         env:
