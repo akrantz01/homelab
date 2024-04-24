@@ -18,8 +18,6 @@ remote_state {
 
     dynamodb_table = local.secrets.state.lock_table
   }
-
-  disable_init = tobool(get_env("CI", "false"))
 }
 
 terraform {
