@@ -2,14 +2,21 @@
 list:
   @just -lu
 
-# Ensure the formatting is correct
-format *FLAGS:
-  terragrunt hclfmt {{FLAGS}}
+# Reformat all files
+format:
+  tofu fmt --recursive
+  terragrunt hclfmt
+
+# Check the format of all files
+check-format:
+  tofu fmt --recursive --check
+  terragrunt hclfmt --terragrunt-check
 
 # Run linters
 lint:
   tflint --init
-  tflint -c $(pwd)/.tflint.hcl --recursive
+  find . -type d -not \( -path "**/.terraform*" -o -name "providers" \) | \
+    xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
 # Ensure the project is valid
 validate:
@@ -28,7 +35,7 @@ apply:
   terragrunt apply
 
 # Checks to run in CI
-ci: (format "--terragrunt-check") lint validate
+ci: check-format lint validate
 
 alias c := console
 alias f := format
