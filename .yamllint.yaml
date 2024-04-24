@@ -9,3 +9,7 @@ rules:
   octal-values:
     level: error
     forbid-implicit-octal: true
+
+  document-start:
+    ignore: |
+      secrets/*
