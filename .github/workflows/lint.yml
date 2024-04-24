@@ -9,19 +9,26 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: taiki-e/install-action@just
       - uses: terraform-linters/setup-tflint@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_wrapper: false
+      - name: Install Terragrunt
+        run: |
+          url=$(gh release view --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endsWith("linux_amd64")) | .url')
+          wget -qO terragrunt $url
+          chmod +x terragrunt
 
-      - run: just tf ci
+      - run: just terraform/ init ci
 
   yaml:
     name: YAML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: pip install yamllint
       - run: yamllint -s -f github .

@@ -2,6 +2,11 @@
 list:
   @just -lu
 
+# Initialize project dependencies
+init:
+  terragrunt run-all init
+  tflint --init
+
 # Reformat all files
 format:
   tofu fmt --recursive
@@ -14,7 +19,6 @@ check-format:
 
 # Run linters
 lint:
-  tflint --init
   find . -type d -not \( -path "**/.terraform*" -o -name "providers" \) | \
     xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
