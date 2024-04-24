@@ -4,7 +4,7 @@ module "outline_user" {
   name = "outline"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [var.email_groups.krantz_dev]
 }
 
 module "outline_bucket" {

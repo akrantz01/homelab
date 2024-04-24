@@ -6,6 +6,14 @@ include "aws" {
   path = find_in_parent_folders("aws.hcl")
 }
 
-include "cloudflare" {
-  path = find_in_parent_folders("cloudflare.hcl")
+dependency "email" {
+  config_path = "../email"
+}
+
+inputs = {
+  email_groups = {
+    krantz_cloud  = dependency.email.outputs.krantz_cloud
+    krantz_dev    = dependency.email.outputs.krantz_dev
+    krantz_social = dependency.email.outputs.krantz_social
+  }
 }

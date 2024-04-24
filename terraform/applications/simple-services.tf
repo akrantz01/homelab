@@ -8,7 +8,7 @@ module "authelia_user" {
   name = "authelia"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [var.email_groups.krantz_dev]
 }
 
 module "firefly_user" {
@@ -17,7 +17,7 @@ module "firefly_user" {
   name = "firefly"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [var.email_groups.krantz_dev]
 }
 
 module "mealie_user" {
@@ -26,7 +26,7 @@ module "mealie_user" {
   name = "mealie"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [var.email_groups.krantz_dev]
 }
 
 module "ntfy_user" {
@@ -35,7 +35,7 @@ module "ntfy_user" {
   name = "ntfy"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group, module.krantz_cloud_email.group]
+  groups = [var.email_groups.krantz_dev, var.email_groups.krantz_cloud]
 }
 
 module "vaultwarden_user" {
@@ -44,6 +44,6 @@ module "vaultwarden_user" {
   name = "vaultwarden"
   path = "/services/"
 
-  groups = [module.krantz_dev_email.group]
+  groups = [var.email_groups.krantz_dev]
 }
 

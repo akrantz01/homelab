@@ -1,24 +1,6 @@
 # This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
-provider "registry.opentofu.org/cloudflare/cloudflare" {
-  version     = "4.29.0"
-  constraints = "~> 4.29.0"
-  hashes = [
-    "h1:PwTYuKiXrQjjiFkmlPtXVbNT/d4gfS8hXJE2EndWuvA=",
-    "zh:01f3af4c121bec29a057ec8dc5dd6609fcd0bf651c7cdb8aa03de407516fffd2",
-    "zh:14d8aa9b3482dda6fb189bc202c225259d074ce595466f80a23cffc5e0aa7eb5",
-    "zh:3e7d5466e8992ea2c8256c983e8e34bb586192df2010f2222e88f359a468115d",
-    "zh:4355f1e4cd9418106bf79cd00170fee5e503355048a9485c6a5cd22dc7949828",
-    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
-    "zh:923ec04258fde407f0fce80488268f4277ffac68fb7240eee4f4373a344c5469",
-    "zh:97473bdb848a7f77832fde6d0e68877bdcc17bf47ae3639fb09e1aeff4a92a01",
-    "zh:9b8754d8f7c15878ecb8897a6ffc4e9ec95f4e5f0560f4129af82a8200e602ea",
-    "zh:b890723ed524d34e7fbee6c119714be23e1783b82441ce4c18871c9d54f10cbd",
-    "zh:c75e0e5f406653c9b4928d97a38410ad7bb20d48e260c17ae3125a77b0457bf5",
-  ]
-}
-
 provider "registry.opentofu.org/hashicorp/aws" {
   version     = "5.44.0"
   constraints = "~> 5.44.0"
