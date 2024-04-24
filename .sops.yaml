@@ -1,9 +1,17 @@
 ---
 keys:
   - &personal age18f7dxgrjc2zza2gxc3aek4x4c7u5n8wmh5473m23fza0x56ruyhqeus0d9
+  - &github arn:aws:kms:ca-central-1:416515258441:alias/sops
 
 creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|yml|.env)$
+  - path_regex: secrets/[^/]+\.(yaml|yml|env)$
     key_groups:
       - age:
           - *personal
+
+  - path_regex: secrets/github/[^/]+\.(yaml|yml|env)$
+    key_groups:
+      - age:
+          - *personal
+        kms:
+          - arn: *github

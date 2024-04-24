@@ -1,5 +1,5 @@
 locals {
-  secrets_path = "${get_repo_root()}/secrets/terraform.yaml"
+  secrets_path = "${get_repo_root()}/secrets/github/terraform.yaml"
   secrets      = yamldecode(sops_decrypt_file(local.secrets_path))
 }
 
