@@ -33,6 +33,8 @@ jobs:
 
   apply:
     name: Apply
+    needs:
+      - plan
     runs-on: ubuntu-latest
     permissions:
       id-token: write
