@@ -10,6 +10,7 @@ resource "aws_iam_role" "homelab" {
   managed_policy_arns = [
     data.aws_iam_policy.dynamodb_full_access.arn,
     data.aws_iam_policy.iam_full_access.arn,
+    data.aws_iam_policy.kms_full_access.arn,
     data.aws_iam_policy.s3_full_access.arn,
     data.aws_iam_policy.ses_full_access.arn
   ]
@@ -46,6 +47,10 @@ data "aws_iam_policy" "dynamodb_full_access" {
 
 data "aws_iam_policy" "iam_full_access" {
   name = "IAMFullAccess"
+}
+
+data "aws_iam_policy" "kms_full_access" {
+  name = "AWSKeyManagementServicePowerUser"
 }
 
 data "aws_iam_policy" "s3_full_access" {
