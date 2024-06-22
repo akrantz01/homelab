@@ -1,7 +1,7 @@
 ---
 name: Nginx
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   push:
     paths:
       - nginx/**
@@ -22,7 +22,7 @@ jobs:
             ${{ runner.os }}-buildx-${{ hashFiles('nginx/Dockerfile') }}-
             ${{ runner.os }}-buildx-
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
 
       - uses: docker/build-push-action@v4
         with:
