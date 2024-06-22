@@ -5,5 +5,11 @@
     ":prHourlyLimitNone",
     ":semanticCommitsDisabled"
   ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "nix": {
+    "enabled": true
+  },
   "rebaseWhen": "auto"
 }
