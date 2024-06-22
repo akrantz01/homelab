@@ -1,11 +1,11 @@
 ---
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   workflow_dispatch:
     inputs:
       tag:
         type: string
         required: true
-        description: 'Tag to build'
+        description: "Tag to build"
 
 name: ntfy
 
@@ -14,14 +14,14 @@ jobs:
     name: Android App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: binwiederhier/ntfy-android
           ref: ${{ github.event.inputs.tag }}
 
       - uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: "17"
           distribution: temurin
           cache: gradle
 
@@ -59,7 +59,7 @@ jobs:
           zipalign -c -v 4 app/build/outputs/apk/play/release/app-play-release.apk
           apksigner verify app/build/outputs/apk/play/release/app-play-release.apk
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ntfy.apk
           path: app/build/outputs/apk/play/release/app-play-release.apk

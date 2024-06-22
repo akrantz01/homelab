@@ -12,9 +12,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles('nginx/Dockerfile') }}-${{ github.run_id }}
@@ -24,7 +24,7 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
-      - uses: docker/build-push-action@v4
+      - uses: docker/build-push-action@v6
         with:
           context: nginx
           file: nginx/Dockerfile
@@ -39,7 +39,7 @@ jobs:
           docker cp nginx-deb:/nginx_amd64.deb .
           docker container rm nginx-deb
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: nginx_amd64.deb
           path: nginx_amd64.deb
