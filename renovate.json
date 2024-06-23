@@ -5,6 +5,24 @@
     ":prHourlyLimitNone",
     ":semanticCommitsDisabled"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update GitHub Actions external dependencies",
+      "fileMatch": [
+        "^.github/workflows/[a-z-]+\\.yml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:.+VERSION):\\s?(?<currentValue>.+?)\\s"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["terraform-provider"],
+      "registryUrls": ["https://registry.opentofu.org"]
+    }
+  ],
   "lockFileMaintenance": {
     "enabled": true
   },

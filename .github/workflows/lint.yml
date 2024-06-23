@@ -4,6 +4,12 @@ on: push
 
 name: Lint
 
+env:
+  # renovate: datasource=github-releases packageName=opentofu/opentofu
+  OPENTOFU_VERSION: 1.6.2
+  # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
+  TERRAGRUNT_VERSION: v0.56.5
+
 jobs:
   terraform:
     name: Terraform
@@ -17,10 +23,11 @@ jobs:
       - uses: terraform-linters/setup-tflint@v4
       - uses: opentofu/setup-opentofu@v1
         with:
+          tofu_version: ${{ env.OPENTOFU_VERSION}}
           tofu_wrapper: false
       - name: Install Terragrunt
         run: |
-          url=$(gh release view --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endswith("linux_amd64")) | .url')
+          url=$(gh release view ${{ env.TERRAGRUNT_VERSION }} --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endswith("linux_amd64")) | .url')
           wget -qO terragrunt $url
           chmod +x terragrunt
           sudo mv terragrunt /usr/local/bin/

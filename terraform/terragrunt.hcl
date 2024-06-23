@@ -27,5 +27,4 @@ terraform {
   }
 }
 
-terraform_binary             = "tofu"
-terraform_version_constraint = "~> 1.6.0"
+terraform_binary = "tofu"
