@@ -1,0 +1,19 @@
+---
+_templates_suffix: .j2
+_tasks:
+  - tofu init
+  - tofu fmt --recursive
+  - terragrunt hclfmt
+
+requires_email:
+  type: bool
+  help: Does the application need to send emails?
+
+email_domain:
+  type: str
+  help: What email domain should be used for the sender email address?
+  when: "{{ requires_email }}"
+  choices:
+    - krantz.dev
+    - krantz.cloud
+    - krantz.social

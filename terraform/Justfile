@@ -30,6 +30,10 @@ validate:
 console:
   terragrunt console
 
+# Create a new application
+new-application name:
+  copier copy --trust applications/template applications/{{name}}
+
 # Plan the changes
 plan:
   terragrunt plan
