@@ -1,7 +1,7 @@
 ---
 name: Nginx
 
-on: # yamllint disable-line rule:truthy
+"on":
   push:
     paths:
       - nginx/**

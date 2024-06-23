@@ -1,7 +1,7 @@
 ---
 name: Coder
 
-on: # yamllint disable-line rule:truthy
+"on":
   push:
     paths:
       - .github/workflows/templates.yml
