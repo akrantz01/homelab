@@ -19,7 +19,9 @@ check-format:
 
 # Run linters
 lint:
-  find . -type d -not \( -path "**/.terraform*" -o -name "providers" \) | \
+  find . -mindepth 2 -type f -name "*.tf" -exec dirname {} \; | \
+    uniq | \
+    grep -vE "(providers|applications/template)" | \
     xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
 # Ensure the project is valid
