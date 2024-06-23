@@ -29,5 +29,9 @@
   "nix": {
     "enabled": true
   },
+  "terraform": {
+    "enabled": true,
+    "fileMatch": ["\\.tf\\.j2$"]
+  },
   "rebaseWhen": "auto"
 }

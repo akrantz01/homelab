@@ -7,13 +7,13 @@ include "aws" {
 }
 
 dependency "github-actions" {
-  config_path = "../github-actions"
+  config_path = "../../github-actions"
 
   skip_outputs = true
 }
 
 dependency "email" {
-  config_path = "../email"
+  config_path = "../../email"
 }
 
 inputs = {

@@ -1,0 +1,27 @@
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "aws" {
+  path = find_in_parent_folders("aws.hcl")
+}
+
+dependency "github-actions" {
+  config_path = "../../github-actions"
+
+  skip_outputs = true
+}
+
+{% if requires_email -%}
+dependency "email" {
+  config_path = "../../email"
+}
+{%- endif %}
+
+inputs = {
+  {% if requires_email -%}
+  email_groups = {
+    {{ email_domain | replace(".", "_") }}  = dependency.email.outputs.{{ email_domain | replace(".", "_") }}
+  }
+  {%- endif %}
+}

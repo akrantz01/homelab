@@ -14,6 +14,7 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             bashInteractive
+            copier
             just
             opentofu
             sops
