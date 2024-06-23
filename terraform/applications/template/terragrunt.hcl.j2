@@ -21,7 +21,7 @@ dependency "email" {
 inputs = {
   {% if requires_email -%}
   email_groups = {
-    {{ email_domain }}  = dependency.email.outputs.{{ email_domain }}
+    {{ email_domain | replace(".", "_") }}  = dependency.email.outputs.{{ email_domain | replace(".", "_") }}
   }
   {%- endif %}
 }
