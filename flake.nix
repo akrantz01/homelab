@@ -10,12 +10,21 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
-      flake.nixosConfigurations.krantz = nixpkgs.lib.nixosSystem {
-        modules = [
-          "${self}/hosts/krantz/configuration.nix"
-          "${self}/common"
-        ];
-      };
+      flake.nixosConfigurations =
+        let
+          specialArgs = { inherit self; };
+        in
+        {
+          krantz = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
+
+            modules = [
+              "${self}/hosts/krantz/configuration.nix"
+              "${self}/common"
+              "${self}/components"
+            ];
+          };
+        };
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
         devShells.default = pkgs.mkShell {
