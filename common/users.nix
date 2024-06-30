@@ -1,5 +1,16 @@
-{ ... }:
+{ lib, pkgs, ... }:
 
+let
+  githubSshKeys = username: hash:
+    let
+      keysSource = pkgs.fetchurl {
+        inherit hash;
+        url = "https://github.com/${username}.keys";
+      };
+      allKeys = lib.splitString "\n" (builtins.readFile keysSource);
+    in
+    builtins.filter (key: (builtins.stringLength key) > 0) allKeys;
+in
 {
   # Users must be managed through NixOS
   users.mutableUsers = false;
@@ -9,7 +20,7 @@
     isNormalUser = true;
     description = "Alex Krantz";
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+OPkkj+awp5kNpBYMuAfUtDOp4Fn3NbDg6wDD4yb/q alex@thinkpad-z13" ];
+    openssh.authorizedKeys.keys = githubSshKeys "akrantz01" "sha256-Ziu5Kn8Vg5u1bWcCtySa6eXCFgMzlupQskzzjxn2PQc=";
   };
 
   # Allow passwordless sudo

@@ -12,7 +12,9 @@
 
       flake.nixosConfigurations =
         let
-          specialArgs = { inherit self; };
+          system = "x86_64-linux";
+
+          specialArgs = { inherit self system; };
         in
         {
           krantz = nixpkgs.lib.nixosSystem {
