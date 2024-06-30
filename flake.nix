@@ -13,6 +13,7 @@
       flake.nixosConfigurations.krantz = nixpkgs.lib.nixosSystem {
         modules = [
           "${self}/hosts/krantz/configuration.nix"
+          "${self}/common"
         ];
       };
 
