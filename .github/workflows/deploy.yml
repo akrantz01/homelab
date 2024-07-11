@@ -3,6 +3,10 @@
 
 name: Deploy
 
+concurrency:
+  group: terraform-deploy
+  cancel-in-progress: false
+
 env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
   OPENTOFU_VERSION: 1.7.3
