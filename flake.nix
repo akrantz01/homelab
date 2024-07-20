@@ -16,7 +16,7 @@
 
         modules = [
           "${self}/hosts/krantz/configuration.nix"
-          # "${self}/common"
+          "${self}/common"
           # "${self}/components"
           {
             _module.args = { inherit inputs; };
