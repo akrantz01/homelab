@@ -9,5 +9,8 @@
 
   # Prefer systemd-networkd for networking for better reliability
   systemd.network.enable = true;
-  networking.useDHCP = false;
+  networking = {
+    useDHCP = false;
+    networkmanager.enable = false;
+  };
 }
