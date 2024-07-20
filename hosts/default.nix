@@ -7,7 +7,7 @@ let
     inherit system;
 
     modules = [
-      "${self}/hosts/${hostname}/configuration.nix"
+      "${self}/hosts/${hostname}"
       "${self}/common"
       "${self}/components"
       {

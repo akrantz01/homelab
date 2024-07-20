@@ -7,13 +7,6 @@ let
   address = addr: { addressConfig.Address = addr; };
 in
 {
-  # Uncomment to enable debug logging
-  #systemd.services."systemd-networkd".environment.SYSTEMD_LOG_LEVEL = "debug";
-
-  # Prefer systemd-networkd for networking for better reliability
-  systemd.network.enable = true;
-  networking.useDHCP = false;
-
   # Set WAN routing configuration
   systemd.network.networks."10-wan" = {
     name = "enp35s0";

@@ -1,8 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ hostname, ... }:
+{ ... }:
 
 {
   imports =
@@ -12,18 +8,7 @@
       ./network-configuration.nix
     ];
 
-  # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/nvme0n1";
-  boot.loader.grub.useOSProber = true;
-
-  networking.hostName = hostname; # Define your hostname.
-
-  # Set your time zone.
   time.timeZone = "America/New_York";
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   components = {
     continuousDeployment.enable = true;
