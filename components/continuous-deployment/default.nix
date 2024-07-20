@@ -9,7 +9,7 @@ in
   config = lib.mkIf cfg.enable {
     system.autoUpgrade = {
       enable = true;
-      flake = "github.com:akrantz01/homelab#${config.networking.hostName}";
+      flake = "github:akrantz01/homelab#${config.networking.hostName}";
 
       dates = "minutely";
       flags = [
