@@ -1,6 +1,8 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  nix.package = pkgs.nixVersions.latest;
+
   nix.settings = {
     trusted-users = [ "@wheel" ];
     auto-optimise-store = true;
