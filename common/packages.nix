@@ -6,4 +6,6 @@
 
     git # for nix flakes
   ];
+
+  environment.variables.EDITOR = "vim";
 }
