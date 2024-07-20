@@ -25,9 +25,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # components = {
-  #   continuousDeployment.enable = true;
-  # };
+  components = {
+    continuousDeployment.enable = true;
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
