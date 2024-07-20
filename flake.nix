@@ -11,18 +11,7 @@
       pkgs = import nixpkgs { inherit system; };
     in
     {
-      nixosConfigurations.krantz = nixpkgs.lib.nixosSystem {
-        inherit system;
-
-        modules = [
-          "${self}/hosts/krantz/configuration.nix"
-          "${self}/common"
-          "${self}/components"
-          {
-            _module.args = { inherit inputs; };
-          }
-        ];
-      };
+      nixosConfigurations = import ./hosts inputs;
 
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [

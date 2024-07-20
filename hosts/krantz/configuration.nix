@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ ... }:
+{ hostname, ... }:
 
 {
   imports =
@@ -17,7 +17,7 @@
   boot.loader.grub.device = "/dev/nvme0n1";
   boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "krantz"; # Define your hostname.
+  networking.hostName = hostname; # Define your hostname.
 
   # Set your time zone.
   time.timeZone = "America/New_York";
