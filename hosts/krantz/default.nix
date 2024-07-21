@@ -8,6 +8,7 @@
 
   components = {
     continuousDeployment.enable = true;
+    reverseProxy.enable = true;
 
     database.enable = true;
 
