@@ -6,7 +6,15 @@
 }: let
   cfg = config.components.database;
 in {
-  options.components.database.enable = lib.mkEnableOption "Enable the database component";
+  options.components.database = {
+    enable = lib.mkEnableOption "Enable the database component";
+
+    databases = lib.mkOption {
+      default = [];
+      type = lib.types.listOf lib.types.str;
+      description = "List of databases and their corresponding users to create";
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     services.postgresql = {
@@ -15,6 +23,14 @@ in {
 
       enableJIT = true;
       enableTCPIP = false;
+
+      ensureDatabases = cfg.databases;
+      ensureUsers =
+        builtins.map (db: {
+          name = db;
+          ensureDbOwnership = true;
+        })
+        cfg.databases;
     };
   };
 }
