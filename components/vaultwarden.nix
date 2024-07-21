@@ -96,10 +96,14 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    components.database = {
-      enable = true;
-      databases = ["vaultwarden"];
-    };
+    assertions = [
+      {
+        assertion = config.components.database.enable;
+        message = "The database component must be enabled to use Vaultwarden";
+      }
+    ];
+
+    components.database.databases = ["vaultwarden"];
 
     services.vaultwarden = {
       enable = true;
