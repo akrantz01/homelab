@@ -1,6 +1,7 @@
 inputs @ {
   self,
   nixpkgs,
+  sops-nix,
   ...
 }: let
   system = "x86_64-linux";
@@ -13,9 +14,12 @@ inputs @ {
           inherit system;
 
           modules = [
+            sops-nix.nixosModules.sops
+
             "${self}/hosts/${host.hostname}"
             "${self}/common"
             "${self}/components"
+            "${self}/secrets"
             {
               _module.args = {inherit inputs host;};
             }

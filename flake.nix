@@ -3,6 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs";
+      };
+    };
   };
 
   outputs = inputs @ {
