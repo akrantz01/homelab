@@ -69,7 +69,7 @@ in {
 
       config = {
         ROCKET_ADDRESS = "unix:/run/vaultwarden.sock";
-        DOMAIN = cfg.domain;
+        DOMAIN = "https://" + cfg.domain;
 
         WEB_VAULT_ENABLED = true;
 
@@ -96,8 +96,13 @@ in {
     sops.secrets.vaultwardenPushInstallationId = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationId);
     sops.secrets.vaultwardenPushInstallationKey = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationKey);
 
-    sops.templates."vaultwarden.env".content = ''
-      ${pushNotificationEnv}
-    '';
+    sops.templates."vaultwarden.env" = {
+      content = ''
+        ${pushNotificationEnv}
+      '';
+
+      owner = config.users.users.vaultwarden.name;
+      group = config.users.users.vaultwarden.group;
+    };
   };
 }
