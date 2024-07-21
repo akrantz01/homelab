@@ -15,6 +15,7 @@
       enable = true;
       domain = "vault.krantz.dev";
       pushNotifications.enable = true;
+      smtp.enable = true;
     };
   };
 

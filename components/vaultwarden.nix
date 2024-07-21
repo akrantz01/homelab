@@ -5,7 +5,7 @@
 }: let
   cfg = config.components.vaultwarden;
 
-  secretSpec = name: secret: {
+  mkSecretOption = name: secret: {
     name = lib.mkOption {
       type = lib.types.str;
       default = "vaultwarden/${secret}";
@@ -40,6 +40,16 @@
       PUSH_INSTALLATION_KEY=${config.sops.placeholder.vaultwardenPushInstallationKey}
     ''
     else "";
+
+  smtpEnv =
+    if cfg.smtp.enable
+    then ''
+      SMTP_HOST=${config.sops.placeholder.vaultwardenSmtpHost}
+      SMTP_PORT=${config.sops.placeholder.vaultwardenSmtpPort}
+      SMTP_USERNAME=${config.sops.placeholder.vaultwardenSmtpUsername}
+      SMTP_PASSWORD=${config.sops.placeholder.vaultwardenSmtpPassword}
+    ''
+    else "";
 in {
   options.components.vaultwarden = {
     enable = lib.mkEnableOption "Enable the Vaultwarden component";
@@ -52,8 +62,36 @@ in {
 
     pushNotifications = {
       enable = lib.mkEnableOption "Enable push notifications";
-      installationId = secretSpec "installation ID" "push/installation_id";
-      installationKey = secretSpec "installation key" "push/installation_key";
+      installationId = mkSecretOption "installation ID" "push/installation_id";
+      installationKey = mkSecretOption "installation key" "push/installation_key";
+    };
+
+    smtp = {
+      enable = lib.mkEnableOption "Enable SMTP for sending emails";
+
+      host = mkSecretOption "SMTP host" "smtp/host";
+      port = mkSecretOption "SMTP port" "smtp/port";
+      username = mkSecretOption "SMTP username" "smtp/username";
+      password = mkSecretOption "SMTP password" "smtp/password";
+
+      security = lib.mkOption {
+        type = lib.types.str;
+        default = "starttls";
+        description = "The security method to use for the SMTP connection (starttls, force_tls, off)";
+      };
+
+      from = {
+        name = lib.mkOption {
+          type = lib.types.str;
+          default = "Vaultwarden";
+          description = "The name to use for the from field in emails";
+        };
+        address = lib.mkOption {
+          type = lib.types.str;
+          default = "no-reply@${cfg.domain}";
+          description = "The email to use for the from field in emails";
+        };
+      };
     };
   };
 
@@ -92,16 +130,26 @@ in {
 
         INVITATIONS_ALLOWED = true;
 
+        SMTP_FROM = cfg.smtp.from.address;
+        SMTP_FROM_NAME = cfg.smtp.from.name;
+        SMTP_SECURITY = cfg.smtp.security;
+        SMTP_TIMEOUT = 15;
+
         IP_HEADER = "CF-Connecting-IP";
       };
     };
 
     sops.secrets.vaultwardenPushInstallationId = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationId);
     sops.secrets.vaultwardenPushInstallationKey = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationKey);
+    sops.secrets.vaultwardenSmtpHost = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.host);
+    sops.secrets.vaultwardenSmtpPort = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.port);
+    sops.secrets.vaultwardenSmtpUsername = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.username);
+    sops.secrets.vaultwardenSmtpPassword = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.password);
 
     sops.templates."vaultwarden.env" = {
       content = ''
         ${pushNotificationEnv}
+        ${smtpEnv}
       '';
 
       owner = config.users.users.vaultwarden.name;
