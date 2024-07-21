@@ -10,6 +10,12 @@
     continuousDeployment.enable = true;
 
     database.enable = true;
+
+    vaultwarden = {
+      enable = true;
+      domain = "vault.krantz.dev";
+      pushNotifications.enable = true;
+    };
   };
 
   # This value determines the NixOS release from which the default
