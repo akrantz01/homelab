@@ -1,5 +1,5 @@
 {...}: {
   imports = [
-    ./continuous-deployment
+    ./continuous-deployment.nix
   ];
 }
