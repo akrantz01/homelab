@@ -69,7 +69,9 @@ in {
 
       environmentFile = config.sops.templates."vaultwarden.env".path;
       config = {
-        ROCKET_ADDRESS = "unix:/run/vaultwarden.sock";
+        ROCKET_ADDRESS = "::1";
+        ROCKET_PORT = "8936";
+
         DOMAIN = "https://" + cfg.domain;
 
         WEB_VAULT_ENABLED = true;
