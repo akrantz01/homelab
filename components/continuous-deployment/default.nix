@@ -1,9 +1,11 @@
-{ config, lib, host, ... }:
-
-let
-  cfg = config.components.continuousDeployment;
-in
 {
+  config,
+  lib,
+  host,
+  ...
+}: let
+  cfg = config.components.continuousDeployment;
+in {
   options.components.continuousDeployment.enable = lib.mkEnableOption "Enable continuous deployment through Garnix";
 
   config = lib.mkIf cfg.enable {
