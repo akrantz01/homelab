@@ -28,7 +28,7 @@ in {
       ensureUsers =
         builtins.map (db: {
           name = db;
-          ensureDbOwnership = true;
+          ensureDBOwnership = true;
         })
         cfg.databases;
     };
