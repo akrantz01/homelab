@@ -8,6 +8,8 @@
 
   components = {
     continuousDeployment.enable = true;
+
+    database.enable = true;
   };
 
   sops.secrets.testing = {};
