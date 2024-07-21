@@ -5,7 +5,6 @@
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./network-configuration.nix
     ];
 
   time.timeZone = "America/New_York";
