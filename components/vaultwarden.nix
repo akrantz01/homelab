@@ -67,6 +67,7 @@ in {
       enable = true;
       dbBackend = "postgresql";
 
+      environmentFile = config.sops.templates."vaultwarden.env".path;
       config = {
         ROCKET_ADDRESS = "unix:/run/vaultwarden.sock";
         DOMAIN = "https://" + cfg.domain;
