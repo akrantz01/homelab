@@ -153,6 +153,7 @@ in {
     services.nginx.virtualHosts.${cfg.domain} = {
       forceSSL = true;
       enableACME = true;
+      acmeRoot = null;
 
       locations."/" = {
         proxyPass = "http://[${listenAddress}]:${listenPort}";
