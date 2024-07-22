@@ -5,6 +5,7 @@ inputs @ {
   ...
 }: let
   system = "x86_64-linux";
+  settings = import "${self}/settings";
 
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
@@ -21,7 +22,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit inputs host;};
+              _module.args = {inherit inputs host settings;};
             }
           ];
         };

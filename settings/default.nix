@@ -1,0 +1,3 @@
+{
+  acme = import ./acme.nix;
+}
