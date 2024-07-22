@@ -5,6 +5,9 @@
 }: let
   cfg = config.components.vaultwarden;
 
+  listenAddress = "::1";
+  listenPort = "8936";
+
   mkSecretOption = name: secret: {
     name = lib.mkOption {
       type = lib.types.str;
@@ -101,6 +104,10 @@ in {
         assertion = config.components.database.enable;
         message = "The database component must be enabled to use Vaultwarden";
       }
+      {
+        assertion = config.components.reverseProxy.enable;
+        message = "The reverse proxy component must be enabled to use Vaultwarden";
+      }
     ];
 
     components.database.databases = ["vaultwarden"];
@@ -111,8 +118,8 @@ in {
 
       environmentFile = config.sops.templates."vaultwarden.env".path;
       config = {
-        ROCKET_ADDRESS = "::1";
-        ROCKET_PORT = "8936";
+        ROCKET_ADDRESS = listenAddress;
+        ROCKET_PORT = listenPort;
 
         DOMAIN = "https://" + cfg.domain;
 
@@ -140,6 +147,16 @@ in {
         SMTP_TIMEOUT = 15;
 
         IP_HEADER = "CF-Connecting-IP";
+      };
+    };
+
+    services.nginx.virtualHosts.${cfg.domain} = {
+      forceSSL = true;
+      enableACME = true;
+
+      locations."/" = {
+        proxyPass = "http://[${listenAddress}]:${listenPort}";
+        proxyWebsockets = true;
       };
     };
 
