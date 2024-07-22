@@ -16,6 +16,10 @@
     networkmanager.enable = false;
   };
 
+  # System resolver security
+  services.resolved.llmnr = "false";
+  services.resolved.dnssec = "true";
+
   # Configure the WAN interface
   systemd.network.networks."10-wan" = let
     dhcp =
