@@ -43,6 +43,24 @@ in {
       recommendedBrotliSettings = true;
       recommendedGzipSettings = true;
       recommendedZstdSettings = true;
+
+      commonHttpConfig = let
+        realIpsFromList = lib.strings.concatMapStringsSep "\n" (src: "set_real_ip_from ${src};");
+        fileToList = path: lib.strings.splitString "\n" (builtins.readFile path);
+
+        cloudflareIpV4 = fileToList (pkgs.fetchurl {
+          url = "https://www.cloudflare.com/ips-v4";
+          sha256 = "sha256-8Cxtg7wBqwroV3Fg4DbXAMdFU1m84FTfiE5dfZ5Onns=";
+        });
+        cloudflareIpV6 = fileToList (pkgs.fetchurl {
+          url = "https://www.cloudflare.com/ips-v6";
+          sha256 = "sha256-np054+g7rQDE3sr9U8Y/piAp89ldto3pN9K+KCNMoKk=";
+        });
+      in ''
+        ${realIpsFromList cloudflareIpV4}
+        ${realIpsFromList cloudflareIpV6}
+        real_ip_header CF-Connecting-IP;
+      '';
     };
   };
 }
