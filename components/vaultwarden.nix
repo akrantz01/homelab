@@ -36,6 +36,13 @@
     restartUnits = [config.systemd.services.vaultwarden.name];
   };
 
+  adminEnv =
+    if cfg.admin.enable
+    then ''
+      ADMIN_TOKEN=${config.sops.placeholder.vaultwardenAdminToken}
+    ''
+    else "";
+
   pushNotificationEnv =
     if cfg.pushNotifications.enable
     then ''
@@ -61,6 +68,12 @@ in {
       type = lib.types.str;
       example = "vault.example.com";
       description = "The domain to use for the Vaultwarden instance";
+    };
+
+    admin = {
+      enable = lib.mkEnableOption "Enable the admin interface";
+      token = mkSecretOption "admin token" "admin_token";
+      public = lib.mkEnableOption "Disable authentication for the admin page. Only meant to be used with a separate auth layer";
     };
 
     pushNotifications = {
@@ -141,6 +154,8 @@ in {
 
         INVITATIONS_ALLOWED = true;
 
+        DISABLE_ADMIN_TOKEN = cfg.admin.enable && cfg.admin.public;
+
         SMTP_FROM = cfg.smtp.from.address;
         SMTP_FROM_NAME = cfg.smtp.from.name;
         SMTP_SECURITY = cfg.smtp.security;
@@ -167,9 +182,11 @@ in {
     sops.secrets.vaultwardenSmtpPort = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.port);
     sops.secrets.vaultwardenSmtpUsername = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.username);
     sops.secrets.vaultwardenSmtpPassword = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.password);
+    sops.secrets.vaultwardenAdminToken = lib.mkIf cfg.admin.enable (secretInstance cfg.admin.token);
 
     sops.templates."vaultwarden.env" = {
       content = ''
+        ${adminEnv}
         ${pushNotificationEnv}
         ${smtpEnv}
       '';

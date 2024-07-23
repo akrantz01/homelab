@@ -19,6 +19,7 @@
     vaultwarden = {
       enable = true;
       domain = "vault.krantz.dev";
+      admin.enable = true;
       pushNotifications.enable = true;
       smtp.enable = true;
     };
