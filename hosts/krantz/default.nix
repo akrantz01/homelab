@@ -12,6 +12,10 @@
 
     database.enable = true;
 
+    atuin = {
+      enable = true;
+      domain = "shell.krantz.dev";
+    };
     vaultwarden = {
       enable = true;
       domain = "vault.krantz.dev";
