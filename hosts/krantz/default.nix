@@ -17,7 +17,7 @@
       domain = "shell.krantz.dev";
     };
     mealie = {
-      enable = true;
+      enable = false;
       domain = "recipes.krantz.dev";
     };
     vaultwarden = {
