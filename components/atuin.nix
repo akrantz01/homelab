@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.atuin;
@@ -18,6 +19,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.atuin = {
       enable = true;
+      package = pkgs-unstable.atuin;
 
       host = "::1";
       port = 2886;
