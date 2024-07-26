@@ -1,7 +1,8 @@
 {
   config,
   lib,
-  pkgs,
+  pkgs-stable,
+  pkgs-unstable,
   settings,
   ...
 }: let
@@ -34,8 +35,8 @@ in {
       enable = true;
       enableReload = true;
 
-      package = pkgs.nginxQuic;
-      additionalModules = with pkgs.nginxModules; [moreheaders];
+      package = pkgs-unstable.nginxQuic;
+      additionalModules = with pkgs-unstable.nginxModules; [moreheaders];
 
       recommendedTlsSettings = true;
       recommendedProxySettings = true;
@@ -48,11 +49,11 @@ in {
         realIpsFromList = lib.strings.concatMapStringsSep "\n" (src: "set_real_ip_from ${src};");
         fileToList = path: lib.strings.splitString "\n" (builtins.readFile path);
 
-        cloudflareIpV4 = fileToList (pkgs.fetchurl {
+        cloudflareIpV4 = fileToList (pkgs-stable.fetchurl {
           url = "https://www.cloudflare.com/ips-v4";
           sha256 = "sha256-8Cxtg7wBqwroV3Fg4DbXAMdFU1m84FTfiE5dfZ5Onns=";
         });
-        cloudflareIpV6 = fileToList (pkgs.fetchurl {
+        cloudflareIpV6 = fileToList (pkgs-stable.fetchurl {
           url = "https://www.cloudflare.com/ips-v6";
           sha256 = "sha256-np054+g7rQDE3sr9U8Y/piAp89ldto3pN9K+KCNMoKk=";
         });

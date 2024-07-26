@@ -1,10 +1,10 @@
 {
   lib,
-  pkgs,
+  pkgs-stable,
   ...
 }: let
   githubSshKeys = username: hash: let
-    keysSource = pkgs.fetchurl {
+    keysSource = pkgs-stable.fetchurl {
       inherit hash;
       url = "https://github.com/${username}.keys";
     };

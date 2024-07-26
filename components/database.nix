@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  pkgs,
+  pkgs-stable,
   ...
 }: let
   cfg = config.components.database;
@@ -19,7 +19,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.postgresql = {
       enable = true;
-      package = pkgs.postgresql_16;
+      package = pkgs-stable.postgresql_16;
 
       enableJIT = true;
       enableTCPIP = false;

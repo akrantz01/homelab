@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  nix.package = pkgs.nixVersions.latest;
+{pkgs-stable, ...}: {
+  nix.package = pkgs-stable.nixVersions.latest;
 
   nix.settings = {
     trusted-users = ["@wheel"];
