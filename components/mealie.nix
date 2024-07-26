@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.mealie;
@@ -29,6 +30,7 @@ in {
 
     services.mealie = {
       enable = true;
+      package = pkgs-unstable.mealie;
 
       listenAddress = "::1";
       port = 6325;

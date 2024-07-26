@@ -1,17 +1,23 @@
 inputs @ {
   self,
   nixpkgs,
+  nixpkgs-unstable,
   sops-nix,
   ...
 }: let
+  inherit (nixpkgs) lib;
+
   system = "x86_64-linux";
   settings = import "${self}/settings";
+
+  pkgs-stable = import nixpkgs {inherit system;};
+  pkgs-unstable = import nixpkgs-unstable {inherit system;};
 
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
       (host: {
         name = host.hostname;
-        value = nixpkgs.lib.nixosSystem {
+        value = lib.nixosSystem {
           inherit system;
 
           modules = [
@@ -22,7 +28,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit inputs host settings;};
+              _module.args = {inherit inputs host lib pkgs-stable pkgs-unstable settings;};
             }
           ];
         };
