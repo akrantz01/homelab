@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.vaultwarden;
@@ -127,6 +128,8 @@ in {
 
     services.vaultwarden = {
       enable = true;
+      package = pkgs-unstable.vaultwarden;
+
       dbBackend = "postgresql";
 
       environmentFile = config.sops.templates."vaultwarden.env".path;
