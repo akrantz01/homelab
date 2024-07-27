@@ -20,6 +20,10 @@
       enable = false;
       domain = "recipes.krantz.dev";
     };
+    miniflux = {
+      enable = true;
+      domain = "rss.krantz.dev";
+    };
     vaultwarden = {
       enable = true;
       domain = "vault.krantz.dev";
