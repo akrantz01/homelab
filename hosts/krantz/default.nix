@@ -23,6 +23,11 @@
     miniflux = {
       enable = true;
       domain = "rss.krantz.dev";
+
+      oidc = {
+        provider = "oidc";
+        discoveryEndpoint = "https://oauth.id.jumpcloud.com/";
+      };
     };
     vaultwarden = {
       enable = true;
