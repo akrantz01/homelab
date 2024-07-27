@@ -7,7 +7,7 @@
 }: let
   cfg = config.components.miniflux;
 
-  oidcEnabled = cfg.oidc.provider != null;
+  oauth2Enabled = cfg.oauth2.provider != null;
 in {
   options.components.miniflux = {
     enable = lib.mkEnableOption "Enable the Miniflux component";
@@ -17,12 +17,12 @@ in {
       description = "The domain to use for the Miniflux instance";
     };
 
-    oidc = {
+    oauth2 = {
       provider = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         example = "google";
         default = null;
-        description = "The OIDC provider to use for authentication. Can be 'google' or 'oidc'.";
+        description = "The OAuth2 provider to use for authentication. Can be 'google' or 'oidc'.";
       };
 
       discoveryEndpoint = lib.mkOption {
@@ -36,7 +36,7 @@ in {
         key = lib.mkOption {
           type = lib.types.str;
           default = "miniflux/client_id";
-          description = "The key used to lookup the OIDC client ID in the SOPS file";
+          description = "The key used to lookup the OAuth2 client ID in the SOPS file";
         };
         file = lib.mkOption {
           type = lib.types.path;
@@ -49,7 +49,7 @@ in {
         key = lib.mkOption {
           type = lib.types.str;
           default = "miniflux/client_secret";
-          description = "The key used to lookup the OIDC client secret in the SOPS file";
+          description = "The key used to lookup the OAuth2 client secret in the SOPS file";
         };
         file = lib.mkOption {
           type = lib.types.path;
@@ -71,11 +71,11 @@ in {
         message = "The reverse proxy component must be enabled to use Vaultwarden";
       }
       {
-        assertion = cfg.oidc.provider == null || cfg.oidc.provider == "google" || cfg.oidc.provider == "oidc";
+        assertion = cfg.oauth2.provider == null || cfg.oauth2.provider == "google" || cfg.oauth2.provider == "oidc";
         message = "The OIDC provider must be either 'google' or 'oidc'";
       }
       {
-        assertion = !oidcEnabled || cfg.oidc.discoveryEndpoint != null;
+        assertion = !oauth2Enabled || cfg.oauth2.discoveryEndpoint != null;
         message = "The OIDC discovery endpoint must be set when using an OIDC provider";
       }
     ];
@@ -93,10 +93,10 @@ in {
 
         WEBAUTHN = 1;
 
-        OAUTH2_PROVIDER = lib.mkIf oidcEnabled cfg.oidc.provider;
-        OAUTH2_OIDC_DISCOVERY_ENDPOINT = lib.mkIf oidcEnabled cfg.oidc.discoveryEndpoint;
-        OAUTH2_CLIENT_ID_FILE = lib.mkIf oidcEnabled config.sops.secrets."miniflux/client-id".path;
-        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oidcEnabled config.sops.secrets."miniflux/client-secret".path;
+        OAUTH2_PROVIDER = lib.mkIf oauth2Enabled cfg.oauth2.provider;
+        OAUTH2_OIDC_DISCOVERY_ENDPOINT = lib.mkIf oauth2Enabled cfg.oauth2.discoveryEndpoint;
+        OAUTH2_CLIENT_ID_FILE = lib.mkIf oauth2Enabled config.sops.secrets."miniflux/client-id".path;
+        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oauth2Enabled config.sops.secrets."miniflux/client-secret".path;
         OAUTH2_REDIRECT_URL = "https://${cfg.domain}/oauth2/oidc/callback";
         OAUTH2_USER_CREATION = 1;
 
@@ -113,14 +113,14 @@ in {
       locations."/".proxyPass = "http://${config.services.miniflux.config.LISTEN_ADDR}";
     };
 
-    sops.secrets = lib.mkIf oidcEnabled {
+    sops.secrets = lib.mkIf oauth2Enabled {
       "miniflux/client-id" = {
-        key = cfg.oidc.clientId.key;
-        sopsFile = cfg.oidc.clientId.file;
+        key = cfg.oauth2.clientId.key;
+        sopsFile = cfg.oauth2.clientId.file;
       };
       "miniflux/client-secret" = {
-        key = cfg.oidc.clientSecret.key;
-        sopsFile = cfg.oidc.clientSecret.file;
+        key = cfg.oauth2.clientSecret.key;
+        sopsFile = cfg.oauth2.clientSecret.file;
       };
     };
   };

@@ -24,7 +24,7 @@
       enable = true;
       domain = "rss.krantz.dev";
 
-      oidc = {
+      oauth2 = {
         provider = "oidc";
         discoveryEndpoint = "https://oauth.id.jumpcloud.com/";
       };
