@@ -95,8 +95,8 @@ in {
 
         OAUTH2_PROVIDER = lib.mkIf oauth2Enabled cfg.oauth2.provider;
         OAUTH2_OIDC_DISCOVERY_ENDPOINT = lib.mkIf oauth2Enabled cfg.oauth2.discoveryEndpoint;
-        OAUTH2_CLIENT_ID_FILE = lib.mkIf oauth2Enabled config.sops.secrets."miniflux/client-id".path;
-        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oauth2Enabled config.sops.secrets."miniflux/client-secret".path;
+        OAUTH2_CLIENT_ID_FILE = lib.mkIf oauth2Enabled "%d/oauth2-client-id";
+        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oauth2Enabled "%d/oauth2-client-secret";
         OAUTH2_REDIRECT_URL = "https://${cfg.domain}/oauth2/oidc/callback";
         OAUTH2_USER_CREATION = 1;
 
@@ -104,6 +104,11 @@ in {
         CREATE_ADMIN = lib.mkForce 0;
       };
     };
+
+    systemd.services.miniflux.serviceConfig.LoadCredential = lib.mkIf oauth2Enabled [
+      "oauth2-client-id:${config.sops.secrets."miniflux/client-id".path}"
+      "oauth2-client-secret:${config.sops.secrets."miniflux/client-secret".path}"
+    ];
 
     services.nginx.virtualHosts.${cfg.domain} = {
       forceSSL = true;
