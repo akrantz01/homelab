@@ -40,25 +40,25 @@
   adminEnv =
     if cfg.admin.enable
     then ''
-      ADMIN_TOKEN=${config.sops.placeholder.vaultwardenAdminToken}
+      ADMIN_TOKEN=${config.sops.placeholder."vaultwarden/admin_token"}
     ''
     else "";
 
   pushNotificationEnv =
     if cfg.pushNotifications.enable
     then ''
-      PUSH_INSTALLATION_ID=${config.sops.placeholder.vaultwardenPushInstallationId}
-      PUSH_INSTALLATION_KEY=${config.sops.placeholder.vaultwardenPushInstallationKey}
+      PUSH_INSTALLATION_ID=${config.sops.placeholder."vaultwarden/push/installation_id"}
+      PUSH_INSTALLATION_KEY=${config.sops.placeholder."vaultwarden/push/installation_key"}
     ''
     else "";
 
   smtpEnv =
     if cfg.smtp.enable
     then ''
-      SMTP_HOST=${config.sops.placeholder.vaultwardenSmtpHost}
-      SMTP_PORT=${config.sops.placeholder.vaultwardenSmtpPort}
-      SMTP_USERNAME=${config.sops.placeholder.vaultwardenSmtpUsername}
-      SMTP_PASSWORD=${config.sops.placeholder.vaultwardenSmtpPassword}
+      SMTP_HOST=${config.sops.placeholder."vaultwarden/smtp/host"}
+      SMTP_PORT=${config.sops.placeholder."vaultwarden/smtp/port"}
+      SMTP_USERNAME=${config.sops.placeholder."vaultwarden/smtp/username"}
+      SMTP_PASSWORD=${config.sops.placeholder."vaultwarden/smtp/password"}
     ''
     else "";
 in {
@@ -179,13 +179,15 @@ in {
       };
     };
 
-    sops.secrets.vaultwardenPushInstallationId = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationId);
-    sops.secrets.vaultwardenPushInstallationKey = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationKey);
-    sops.secrets.vaultwardenSmtpHost = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.host);
-    sops.secrets.vaultwardenSmtpPort = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.port);
-    sops.secrets.vaultwardenSmtpUsername = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.username);
-    sops.secrets.vaultwardenSmtpPassword = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.password);
-    sops.secrets.vaultwardenAdminToken = lib.mkIf cfg.admin.enable (secretInstance cfg.admin.token);
+    sops.secrets = {
+      "vaultwarden/push/installation_id" = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationId);
+      "vaultwarden/push/installation_key" = lib.mkIf cfg.pushNotifications.enable (secretInstance cfg.pushNotifications.installationKey);
+      "vaultwarden/smtp/host" = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.host);
+      "vaultwarden/smtp/port" = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.port);
+      "vaultwarden/smtp/username" = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.username);
+      "vaultwarden/smtp/password" = lib.mkIf cfg.smtp.enable (secretInstance cfg.smtp.password);
+      "vaultwarden/admin_token" = lib.mkIf cfg.admin.enable (secretInstance cfg.admin.token);
+    };
 
     sops.templates."vaultwarden.env" = {
       content = ''

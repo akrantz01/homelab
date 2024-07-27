@@ -95,8 +95,8 @@ in {
 
         OAUTH2_PROVIDER = lib.mkIf oidcEnabled cfg.oidc.provider;
         OAUTH2_OIDC_DISCOVERY_ENDPOINT = lib.mkIf oidcEnabled cfg.oidc.discoveryEndpoint;
-        OAUTH2_CLIENT_ID_FILE = lib.mkIf oidcEnabled config.sops.secrets.minifluxOIDCClientId.path;
-        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oidcEnabled config.sops.secrets.minifluxOIDCClientSecret.path;
+        OAUTH2_CLIENT_ID_FILE = lib.mkIf oidcEnabled config.sops.secrets."miniflux/client-id".path;
+        OAUTH2_CLIENT_SECRET_FILE = lib.mkIf oidcEnabled config.sops.secrets."miniflux/client-secret".path;
         OAUTH2_REDIRECT_URL = "https://${cfg.domain}/oauth2/oidc/callback";
         OAUTH2_USER_CREATION = 1;
 
@@ -114,11 +114,11 @@ in {
     };
 
     sops.secrets = lib.mkIf oidcEnabled {
-      minifluxOIDCClientId = {
+      "miniflux/client-id" = {
         key = cfg.oidc.clientId.key;
         sopsFile = cfg.oidc.clientId.file;
       };
-      minifluxOIDCClientSecret = {
+      "miniflux/client-secret" = {
         key = cfg.oidc.clientSecret.key;
         sopsFile = cfg.oidc.clientSecret.file;
       };
