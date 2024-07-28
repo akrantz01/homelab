@@ -1,10 +1,14 @@
 {
   config,
   lib,
+  pkgs-stable,
   pkgs-unstable,
+  settings,
   ...
 }: let
   cfg = config.components.sshTunnel;
+
+  trustedUserCAKeys = pkgs-stable.writeText "trusted-user-ca-keys" (builtins.concatStringsSep "\n" settings.sshTrustedCA);
 in {
   options.components.sshTunnel = {
     enable = lib.mkEnableOption "Enable the SSH component";
@@ -24,6 +28,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    services.openssh.extraConfig = ''
+      TrustedUserCAKeys ${trustedUserCAKeys}
+    '';
+
     systemd.services.cloudflared-tunnel-ssh = {
       after = ["network.target" "network-online.target"];
       wants = ["network.target" "network-online.target"];
