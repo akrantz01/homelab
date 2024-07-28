@@ -6,6 +6,7 @@
     ./mealie.nix
     ./miniflux.nix
     ./reverse-proxy.nix
+    ./ssh-tunnel.nix
     ./vaultwarden.nix
   ];
 }

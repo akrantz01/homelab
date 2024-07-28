@@ -8,8 +8,9 @@
 
   components = {
     continuousDeployment.enable = true;
-    reverseProxy.enable = true;
+    sshTunnel.enable = true;
 
+    reverseProxy.enable = true;
     database.enable = true;
 
     atuin = {
