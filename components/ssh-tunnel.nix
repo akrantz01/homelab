@@ -28,22 +28,29 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    services.openssh.listenAddresses = [
-      {
-        addr = "127.0.0.1";
-        port = 22;
-      }
-    ];
-    services.openssh.settings.Macs = [
-      "hmac-sha2-512-etm@openssh.com"
-      "hmac-sha2-256-etm@openssh.com"
-      "umac-128-etm@openssh.com"
-      "hmac-sha2-256"
-      "hmac-sha2-512"
-    ];
-    services.openssh.extraConfig = ''
-      TrustedUserCAKeys ${trustedUserCAKeys}
-    '';
+    services.openssh = {
+      openFirewall = false;
+      ports = [];
+
+      listenAddresses = [
+        {
+          addr = "127.0.0.1";
+          port = 22;
+        }
+      ];
+
+      settings.Macs = [
+        "hmac-sha2-512-etm@openssh.com"
+        "hmac-sha2-256-etm@openssh.com"
+        "umac-128-etm@openssh.com"
+        "hmac-sha2-256"
+        "hmac-sha2-512"
+      ];
+
+      extraConfig = ''
+        TrustedUserCAKeys ${trustedUserCAKeys}
+      '';
+    };
 
     systemd.services.cloudflared-tunnel-ssh = {
       after = ["network.target" "network-online.target"];
