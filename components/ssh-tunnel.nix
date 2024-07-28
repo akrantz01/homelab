@@ -1,5 +1,6 @@
 {
   config,
+  extra,
   lib,
   pkgs-stable,
   pkgs-unstable,
@@ -12,19 +13,9 @@
 in {
   options.components.sshTunnel = {
     enable = lib.mkEnableOption "Enable the SSH component";
+    sopsFile = extra.mkSecretSourceOption config;
 
-    credentials = {
-      key = lib.mkOption {
-        type = lib.types.str;
-        default = "ssh-tunnel/credentials";
-        description = "The key pointing to the cloudflared tunnel credentials.";
-      };
-      file = lib.mkOption {
-        type = lib.types.path;
-        default = config.sops.defaultSopsFile;
-        description = "The path to the SOPS file containing the key.";
-      };
-    };
+    credentials = extra.mkSecretOption "cloudflared tunnel credentials" "ssh-tunnel/credentials";
   };
 
   config = lib.mkIf cfg.enable {
@@ -73,8 +64,8 @@ in {
     users.groups.cloudflared = {};
 
     sops.secrets."ssh-tunnel/credentials" = {
-      key = cfg.credentials.key;
-      sopsFile = cfg.credentials.file;
+      inherit (cfg) sopsFile;
+      key = cfg.credentials;
 
       owner = config.users.users.cloudflared.name;
       group = config.users.users.cloudflared.group;

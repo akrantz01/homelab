@@ -1,5 +1,6 @@
 {
   config,
+  extra,
   lib,
   pkgs-unstable,
   ...
@@ -9,27 +10,9 @@
   listenAddress = "::1";
   listenPort = "8936";
 
-  mkSecretOption = name: secret: {
-    name = lib.mkOption {
-      type = lib.types.str;
-      default = "vaultwarden/${secret}";
-      description = "The name of the ${name} secret";
-    };
-    key = lib.mkOption {
-      type = lib.types.str;
-      default = "vaultwarden/${secret}";
-      description = "The key used to lookup the ${name} secret in the SOPS file";
-    };
-    file = lib.mkOption {
-      type = lib.types.path;
-      default = config.sops.defaultSopsFile;
-      description = "The path to the SOPS file containing the key";
-    };
-  };
-  secretInstance = options: {
-    name = options.name;
-    key = options.key;
-    sopsFile = options.file;
+  secretInstance = key: {
+    inherit key;
+    inherit (cfg) sopsFile;
 
     owner = config.users.users.vaultwarden.name;
     group = config.users.users.vaultwarden.group;
@@ -64,6 +47,7 @@
 in {
   options.components.vaultwarden = {
     enable = lib.mkEnableOption "Enable the Vaultwarden component";
+    sopsFile = extra.mkSecretSourceOption config;
 
     domain = lib.mkOption {
       type = lib.types.str;
@@ -73,23 +57,23 @@ in {
 
     admin = {
       enable = lib.mkEnableOption "Enable the admin interface";
-      token = mkSecretOption "admin token" "admin_token";
+      token = extra.mkSecretOption "admin token" "vaultwarden/admin_token";
       public = lib.mkEnableOption "Disable authentication for the admin page. Only meant to be used with a separate auth layer";
     };
 
     pushNotifications = {
       enable = lib.mkEnableOption "Enable push notifications";
-      installationId = mkSecretOption "installation ID" "push/installation_id";
-      installationKey = mkSecretOption "installation key" "push/installation_key";
+      installationId = extra.mkSecretOption "installation ID" "vaultwarden/push/installation_id";
+      installationKey = extra.mkSecretOption "installation key" "vaultwarden/push/installation_key";
     };
 
     smtp = {
       enable = lib.mkEnableOption "Enable SMTP for sending emails";
 
-      host = mkSecretOption "SMTP host" "smtp/host";
-      port = mkSecretOption "SMTP port" "smtp/port";
-      username = mkSecretOption "SMTP username" "smtp/username";
-      password = mkSecretOption "SMTP password" "smtp/password";
+      host = extra.mkSecretOption "SMTP host" "vaultwarden/smtp/host";
+      port = extra.mkSecretOption "SMTP port" "vaultwarden/smtp/port";
+      username = extra.mkSecretOption "SMTP username" "vaultwarden/smtp/username";
+      password = extra.mkSecretOption "SMTP password" "vaultwarden/smtp/password";
 
       security = lib.mkOption {
         type = lib.types.str;

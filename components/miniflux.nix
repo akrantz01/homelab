@@ -1,5 +1,6 @@
 {
   config,
+  extra,
   lib,
   pkgs-stable,
   pkgs-unstable,
@@ -11,6 +12,8 @@
 in {
   options.components.miniflux = {
     enable = lib.mkEnableOption "Enable the Miniflux component";
+    sopsFile = extra.mkSecretSourceOption config;
+
     domain = lib.mkOption {
       type = lib.types.str;
       example = "reader.example.com";
@@ -32,31 +35,8 @@ in {
         description = "The OIDC discovery endpoint to use for authentication.";
       };
 
-      clientId = {
-        key = lib.mkOption {
-          type = lib.types.str;
-          default = "miniflux/client_id";
-          description = "The key used to lookup the OAuth2 client ID in the SOPS file";
-        };
-        file = lib.mkOption {
-          type = lib.types.path;
-          default = config.sops.defaultSopsFile;
-          description = "The path to the SOPS file containing the key";
-        };
-      };
-
-      clientSecret = {
-        key = lib.mkOption {
-          type = lib.types.str;
-          default = "miniflux/client_secret";
-          description = "The key used to lookup the OAuth2 client secret in the SOPS file";
-        };
-        file = lib.mkOption {
-          type = lib.types.path;
-          default = config.sops.defaultSopsFile;
-          description = "The path to the SOPS file containing the key";
-        };
-      };
+      clientId = extra.mkSecretOption "OAuth2 client ID" "miniflux/client_id";
+      clientSecret = extra.mkSecretOption "OAuth2 client secret" "miniflux/client_secret";
     };
   };
 
@@ -120,12 +100,12 @@ in {
 
     sops.secrets = lib.mkIf oauth2Enabled {
       "miniflux/client-id" = {
-        key = cfg.oauth2.clientId.key;
-        sopsFile = cfg.oauth2.clientId.file;
+        inherit (cfg) sopsFile;
+        key = cfg.oauth2.clientId;
       };
       "miniflux/client-secret" = {
-        key = cfg.oauth2.clientSecret.key;
-        sopsFile = cfg.oauth2.clientSecret.file;
+        inherit (cfg) sopsFile;
+        key = cfg.oauth2.clientSecret;
       };
     };
   };

@@ -1,5 +1,6 @@
 {
   config,
+  extra,
   lib,
   pkgs-stable,
   pkgs-unstable,
@@ -11,6 +12,7 @@
 in {
   options.components.reverseProxy = {
     enable = lib.mkEnableOption "Enable the reverse proxy component";
+    sopsFile = extra.mkSecretSourceOption config;
   };
 
   config = lib.mkIf cfg.enable {
@@ -29,7 +31,7 @@ in {
       };
     };
 
-    sops.secrets = lib.attrsets.genAttrs (lib.attrsets.attrValues acme.provider.credentials) (key: {});
+    sops.secrets = lib.attrsets.genAttrs (lib.attrsets.attrValues acme.provider.credentials) (key: {inherit (cfg) sopsFile;});
 
     services.nginx = {
       enable = true;

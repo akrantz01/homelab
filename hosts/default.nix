@@ -9,6 +9,7 @@ inputs @ {
 
   system = "x86_64-linux";
   settings = import "${self}/settings";
+  extra = import "${self}/extra" {inherit lib;};
 
   pkgs-stable = import nixpkgs {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
@@ -28,7 +29,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit inputs host lib pkgs-stable pkgs-unstable settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable settings;};
             }
           ];
         };
