@@ -28,6 +28,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    services.openssh.settings.LogLevel = "DEBUG";
     services.openssh.extraConfig = ''
       TrustedUserCAKeys ${trustedUserCAKeys}
     '';
