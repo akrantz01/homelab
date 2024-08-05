@@ -9,7 +9,7 @@ totp:
 
   ## The issuer name displayed in the Authenticator application of your choice.
   # Set via environment variable AUTHELIA_TOTP_ISSUER
-  #issuer: 'authelia.com'
+  # issuer: 'authelia.com'
 
   ## The TOTP algorithm to use.
   ## It is CRITICAL you read the documentation before changing this option:

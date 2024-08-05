@@ -1,3 +1,4 @@
+---
 ##
 ## Authentication Backend Provider Configuration
 ##
@@ -13,7 +14,7 @@ authentication_backend:
     ## External reset password url that redirects the user to an external reset portal. This disables the internal reset
     ## functionality.
     # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_PASSWORD_RESET_CUSTOM_URL
-    #custom_url: ''
+    # custom_url: ''
 
   ## The amount of time to wait before we refresh data from the authentication backend in the duration common syntax.
   ## To disable this feature set it to 'disable', this will slightly reduce security because for Authelia, users will
@@ -36,7 +37,7 @@ authentication_backend:
     ## The default scheme is 'ldapi' if the address is an absolute path otherwise it's 'ldaps'.
     ## The default port is '636', unless the scheme is 'ldap' in which case it's '389'.
     # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDRESS
-    #address: 'ldaps://127.0.0.1:636'
+    # address: 'ldaps://127.0.0.1:636'
 
     ## The LDAP implementation, this affects elements like the attribute utilised for resetting a password.
     ## Acceptable options are as follows:
@@ -50,7 +51,7 @@ authentication_backend:
     ## attribute mappings have a default value that this config overrides, you can read more about these default values
     ## at https://www.authelia.com/c/ldap#defaults
     # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION
-    #implementation: 'custom'
+    # implementation: 'custom'
 
     ## The dial timeout for LDAP in the duration common syntax.
     timeout: 5 seconds
@@ -62,7 +63,7 @@ authentication_backend:
       ## The server subject name to check the servers certificate against during the validation process.
       ## This option is not required if the certificate has a SAN which matches the address options hostname.
       # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_TLS_SERVER_NAME
-      #server_name: 'ldap.example.com'
+      # server_name: 'ldap.example.com'
 
       ## Skip verifying the server certificate entirely. In preference to setting this we strongly recommend you add the
       ## certificate or the certificate of the authority signing the certificate to the certificates directory which is
@@ -81,7 +82,7 @@ authentication_backend:
     ## The distinguished name of the container searched for objects in the directory information tree.
     ## See also: additional_users_dn, additional_groups_dn.
     # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_BASE_DN
-    #base_dn: 'dc=example,dc=com'
+    # base_dn: 'dc=example,dc=com'
 
     ## The additional_users_dn is prefixed to base_dn and delimited by a comma when searching for users.
     ## i.e. with this set to OU=Users and base_dn set to DC=a,DC=com; OU=Users,DC=a,DC=com is searched for users.
@@ -128,14 +129,13 @@ authentication_backend:
 
     ## The username and password of the admin user.
     # Set via environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USER
-    #user: 'cn=admin,dc=example,dc=com'
+    # user: 'cn=admin,dc=example,dc=com'
     ## Password can also be set using a secret: https://www.authelia.com/c/secrets
     # Set via secret environment variable AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE
-    #password: 'password'
+    # password: 'password'
 
     ## The attributes for users and objects from the directory server.
     attributes:
-
       ## The distinguished name attribute if your directory server supports it. Users should read the docs before
       ## configuring. Only used for the 'memberof' group search mode.
       # distinguished_name: ''

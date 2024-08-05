@@ -21,29 +21,29 @@ notifier:
   smtp:
     ## The address of the SMTP server to connect to in the address common syntax.
     # Set via environment variable AUTHELIA_NOTIFIER_SMTP_ADDRESS
-    #address: 'smtp://127.0.0.1:25'
+    # address: 'smtp://127.0.0.1:25'
 
     ## The connection timeout in the duration common syntax.
     timeout: '5 seconds'
 
     ## The username used for SMTP authentication.
     # Set via environment variable AUTHELIA_NOTIFIER_SMTP_USERNAME
-    #username: 'test'
+    # username: 'test'
 
     ## The password used for SMTP authentication.
     ## Can also be set using a secret: https://www.authelia.com/c/secrets
     # Set via secret environment variable AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
-    #password: 'password'
+    # password: 'password'
 
     ## The sender is used to is used for the MAIL FROM command and the FROM header.
     ## If this is not defined and the username is an email, we use the username as this value. This can either be just
     ## an email address or the RFC5322 'Name <email address>' format.
     # Set via environment variable AUTHELIA_NOTIFIER_SMTP_SENDER
-    #sender: 'Authelia <admin@example.com>'
+    # sender: 'Authelia <admin@example.com>'
 
     ## HELO/EHLO Identifier. Some SMTP Servers may reject the default of localhost.
     # Set via environment variable AUTHELIA_NOTIFIER_SMTP_IDENTIFIER
-    #identifier: 'localhost'
+    # identifier: 'localhost'
 
     ## Subject configuration of the emails sent. {title} is replaced by the text from the notifier.
     subject: '[Authelia] {title}'
@@ -62,7 +62,7 @@ notifier:
       ## The server subject name to check the servers certificate against during the validation process.
       ## This option is not required if the certificate has a SAN which matches the address options hostname.
       # Set via environment variable AUTHELIA_NOTIFIER_SMTP_TLS_SERVER_NAME
-      #server_name: 'smtp.example.com'
+      # server_name: 'smtp.example.com'
 
       ## Skip verifying the server certificate entirely. In preference to setting this we strongly recommend you add the
       ## certificate or the certificate of the authority signing the certificate to the certificates directory which is

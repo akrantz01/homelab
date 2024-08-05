@@ -14,7 +14,7 @@ identity_validation:
 
     ## The secret key used to sign and verify the JWT.
     # Set via secret environment variable AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE
-    #jwt_secret: "a_very_important_secret"
+    # jwt_secret: "a_very_important_secret"
 
   ## Elevated Session flows. Adjusts the flow which require elevated sessions for example managing credentials, adding,
   ## removing, etc.
