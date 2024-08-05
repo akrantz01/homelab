@@ -20,8 +20,8 @@
     inherit key;
     inherit (cfg) sopsFile;
 
-    owner = config.users.users.authelia-default.name;
-    group = config.users.users.authelia-default.group;
+    owner = config.users.users.authelia.name;
+    group = config.users.users.authelia.group;
 
     restartUnits = [config.systemd.services.authelia-default.name];
   };
@@ -169,6 +169,9 @@ in {
       enable = true;
       package = pkgs-unstable.authelia;
 
+      user = "authelia";
+      group = "authelia";
+
       settings.server = {
         host = "::1";
         port = 2884;
@@ -240,7 +243,13 @@ in {
       enable = true;
       databases = 1;
     };
-    users.users.authelia-default.extraGroups = [config.services.redis.servers.authelia.user];
+
+    users.users.authelia = {
+      isSystemUser = true;
+      group = config.users.groups.authelia.name;
+      extraGroups = [config.services.redis.servers.authelia.user];
+    };
+    users.groups.authelia = {};
 
     sops.secrets = {
       "authentication/secrets/jwt" = secretInstance cfg.secrets.jwt;
@@ -269,8 +278,8 @@ in {
             username: ${config.sops.placeholder."authentication/smtp/username"}
       '';
 
-      owner = config.users.users.authelia-default.name;
-      group = config.users.users.authelia-default.group;
+      owner = config.users.users.authelia.name;
+      group = config.users.users.authelia.group;
     };
   };
 }
