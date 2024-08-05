@@ -238,6 +238,11 @@ in {
           recommendedProxySettings = false;
         };
 
+        "/api/authz/" = {
+          proxyPass = upstream;
+          recommendedProxySettings = false;
+        };
+
         "/".proxyPass = upstream;
       };
     };
