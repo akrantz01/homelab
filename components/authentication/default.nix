@@ -257,7 +257,6 @@ in {
           smtp:
             address: ${config.sops.placeholder."authentication/smtp/address"}
             username: ${config.sops.placeholder."authentication/smtp/username"}
-            password: ${config.sops.placeholder."authentication/smtp/password"}
       '';
 
       owner = config.users.users.authelia-default.name;
