@@ -34,7 +34,7 @@ session:
     # host: '127.0.0.1'
     # port: 6379
     ## Use a unix socket instead
-    host: /var/run/redis/redis.sock
+    # host: /var/run/redis/redis.sock
 
     ## Username used for redis authentication. This is optional and a new feature in redis 6.0.
     # username: 'authelia'

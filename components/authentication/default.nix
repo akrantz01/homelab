@@ -188,6 +188,7 @@ in {
 
         AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = config.sops.secrets."authentication/secrets/jwt".path;
 
+        AUTHELIA_SESSION_REDIS_HOST = config.services.redis.servers.authelia.unixSocket;
         AUTHELIA_SESSION_SECRET_FILE = config.sops.secrets."authentication/secrets/session".path;
 
         AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE = config.sops.secrets."authentication/secrets/storage".path;
@@ -233,6 +234,10 @@ in {
         "/".proxyPass = upstream;
       };
     };
+
+    services.redis.package = pkgs-unstable.redis;
+    services.redis.servers.authelia.enable = true;
+    users.users.authelia-default.extraGroups = [config.services.redis.servers.authelia.user];
 
     sops.secrets = {
       "authentication/secrets/jwt" = secretInstance cfg.secrets.jwt;
