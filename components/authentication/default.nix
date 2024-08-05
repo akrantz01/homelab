@@ -8,6 +8,8 @@
 }: let
   cfg = config.components.authentication;
 
+  format = pkgs-stable.formats.yaml {};
+
   isYaml = file: (lib.strings.hasSuffix ".yml" file) || (lib.strings.hasSuffix ".yaml" file);
   isYamlFile = name: type: type == "regular" && (isYaml name);
   configFiles = builtins.map (file: ./. + "/${file}") (
@@ -35,14 +37,16 @@
       )
     )
   );
-  cookieDomains = pkgs-stable.writeText "cookies.yml" ''
-    session:
-      cookies:
-        - domain: ${rootDomain}
-          authelia_url: https://${cfg.domain}
-          default_redirection_url: https://${rootDomain}
-          same_site: lax
-  '';
+  cookieDomains = format.generate "cookies.yml" {
+    session.cookies = [
+      {
+        domain = rootDomain;
+        authelia_url = "https://${cfg.domain}";
+        default_redirection_url = "https://${rootDomain}";
+        same_site = "lax";
+      }
+    ];
+  };
 in {
   options.components.authentication = {
     enable = lib.mkEnableOption "Enable the Authelia component";
@@ -265,18 +269,17 @@ in {
     };
 
     sops.templates."authentication.yml" = {
-      content = ''
-        authentication_backend:
-          ldap:
-            address: ${config.sops.placeholder."authentication/ldap/address"}
-            base_dn: ${config.sops.placeholder."authentication/ldap/base_dn"}
-            user: ${config.sops.placeholder."authentication/ldap/bind/user"}
-
-        notifier:
-          smtp:
-            address: ${config.sops.placeholder."authentication/smtp/address"}
-            username: ${config.sops.placeholder."authentication/smtp/username"}
-      '';
+      content = builtins.toJSON {
+        authentication_backend.ldap = {
+          address = config.sops.placeholder."authentication/ldap/address";
+          base_dn = config.sops.placeholder."authentication/ldap/base_dn";
+          user = config.sops.placeholder."authentication/ldap/bind/user";
+        };
+        notifier.smtp = {
+          address = config.sops.placeholder."authentication/smtp/address";
+          username = config.sops.placeholder."authentication/smtp/username";
+        };
+      };
 
       owner = config.users.users.authelia.name;
       group = config.users.users.authelia.group;
