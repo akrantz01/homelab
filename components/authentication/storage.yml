@@ -27,11 +27,11 @@ storage:
     schema: "public"
 
     ## The username used for SQL authentication.
-    # username: 'authelia'
+    username: "authelia" # Dummy username, we're using trust authentication
 
     ## The password used for SQL authentication.
     ## Can also be set using a secret: https://www.authelia.com/c/secrets
-    # password: 'mypassword'
+    password: "mypassword" # Dummy password, we're using trust authentication
 
     ## The connection timeout in the duration common syntax.
     timeout: "5 seconds"
