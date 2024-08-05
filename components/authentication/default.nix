@@ -184,6 +184,8 @@ in {
 
       settingsFiles = configFiles ++ [config.sops.templates."authentication.yml".path cookieDomains];
       environmentVariables = {
+        AUTHELIA_ACCESS_CONTROL_DEFAULT_POLICY = "one_factor"; # TODO: change based on number of access rules
+
         AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = config.sops.secrets."authentication/secrets/jwt".path;
 
         AUTHELIA_SESSION_SECRET_FILE = config.sops.secrets."authentication/secrets/session".path;
