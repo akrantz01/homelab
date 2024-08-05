@@ -1,4 +1,6 @@
 {lib, ...}: {
+  currentHostSecrets = host: file: ../secrets/nix/${host.hostname}/${file};
+
   mkSecretOption = description: key:
     lib.mkOption {
       type = lib.types.str;

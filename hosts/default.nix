@@ -29,7 +29,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
             }
           ];
         };

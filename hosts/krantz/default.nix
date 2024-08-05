@@ -1,4 +1,8 @@
-{...}: {
+{
+  extra,
+  host,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -12,6 +16,33 @@
 
     reverseProxy.enable = true;
     database.enable = true;
+    authentication = {
+      enable = true;
+      domain = "login.krantz.dev";
+
+      passwordResetUrl = "https://console.jumpcloud.com/login?template=resetUserPassword";
+
+      sopsFile = extra.currentHostSecrets host "authentication.yaml";
+      secrets = {
+        jwt = "secrets/jwt";
+        session = "secrets/session";
+        storage = "secrets/storage";
+      };
+
+      ldap = {
+        implementation = "custom";
+        address = "ldap/address";
+        baseDN = "ldap/base_dn";
+        user = "ldap/bind/user";
+        password = "ldap/bind/password";
+      };
+
+      smtp = {
+        address = "notifier/address";
+        username = "notifier/username";
+        password = "notifier/password";
+      };
+    };
 
     atuin = {
       enable = true;

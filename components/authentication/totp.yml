@@ -1,0 +1,33 @@
+---
+##
+## TOTP Configuration
+##
+## Parameters used for TOTP generation.
+totp:
+  ## Disable TOTP.
+  disable: false
+
+  ## The issuer name displayed in the Authenticator application of your choice.
+  # Set via environment variable AUTHELIA_TOTP_ISSUER
+  #issuer: 'authelia.com'
+
+  ## The TOTP algorithm to use.
+  ## It is CRITICAL you read the documentation before changing this option:
+  ## https://www.authelia.com/c/totp#algorithm
+  algorithm: "SHA1"
+
+  ## The number of digits a user has to input. Must either be 6 or 8.
+  ## Changing this option only affects newly generated TOTP configurations.
+  ## It is CRITICAL you read the documentation before changing this option:
+  ## https://www.authelia.com/c/totp#digits
+  digits: 6
+
+  ## The period in seconds a Time-based One-Time Password is valid for.
+  ## Changing this option only affects newly generated TOTP configurations.
+  period: 30
+
+  ## The skew controls number of Time-based One-Time Passwords either side of the current one that are valid.
+  ## Warning: before changing skew read the docs link below.
+  skew: 1
+  ## See: https://www.authelia.com/c/totp#input-validation to read
+  ## the documentation.

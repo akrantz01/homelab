@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./atuin.nix
+    ./authentication
     ./continuous-deployment.nix
     ./database.nix
     ./mealie.nix

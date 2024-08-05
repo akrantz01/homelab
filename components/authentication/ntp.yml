@@ -1,0 +1,17 @@
+---
+##
+## NTP Configuration
+##
+## This is used to validate the servers time is accurate enough to validate TOTP.
+ntp:
+  ## The address of the NTP server to connect to in the address common syntax.
+  ## Format: [<scheme>://]<hostname>[:<port>].
+  ## Square brackets indicate optional portions of the format. Scheme must be 'udp', 'udp4', or 'udp6'.
+  ## The default scheme is 'udp'. The default port is '123'.
+  address: udp://time.cloudflare.com:123
+
+  ## NTP version.
+  version: 4
+
+  ## Maximum allowed time offset between the host and the NTP server in the duration common syntax.
+  max_desync: 3 seconds
