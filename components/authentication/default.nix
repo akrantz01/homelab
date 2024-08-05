@@ -2,6 +2,7 @@
   config,
   extra,
   lib,
+  pkgs-stable,
   pkgs-unstable,
   ...
 }: let
@@ -24,6 +25,24 @@
 
     restartUnits = [config.systemd.services.authelia-default.name];
   };
+
+  rootDomain = lib.strings.concatStringsSep "." (
+    lib.lists.reverseList (
+      lib.lists.take 2 (
+        lib.lists.reverseList (
+          lib.strings.splitString "." cfg.domain
+        )
+      )
+    )
+  );
+  cookieDomains = pkgs-stable.writeText "cookies.yml" ''
+    session:
+      cookies:
+        - domain: ${rootDomain}
+          authelia_url: https://${cfg.domain}
+          default_redirection_url: https://${rootDomain}
+          same_site: lax
+  '';
 in {
   options.components.authentication = {
     enable = lib.mkEnableOption "Enable the Authelia component";
@@ -163,7 +182,7 @@ in {
       settings.theme = "grey";
       settings.default_2fa_method = "webauthn";
 
-      settingsFiles = configFiles ++ [config.sops.templates."authentication.yml".path];
+      settingsFiles = configFiles ++ [config.sops.templates."authentication.yml".path cookieDomains];
       environmentVariables = {
         AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = config.sops.secrets."authentication/secrets/jwt".path;
 
