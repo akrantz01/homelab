@@ -236,7 +236,10 @@ in {
     };
 
     services.redis.package = pkgs-unstable.redis;
-    services.redis.servers.authelia.enable = true;
+    services.redis.servers.authelia = {
+      enable = true;
+      databases = 1;
+    };
     users.users.authelia-default.extraGroups = [config.services.redis.servers.authelia.user];
 
     sops.secrets = {
