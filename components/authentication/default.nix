@@ -165,11 +165,20 @@ in {
 
       settingsFiles = configFiles ++ [config.sops.templates."authentication.yml".path];
       environmentVariables = {
+        AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = config.sops.secrets."authentication/secrets/jwt".path;
+
+        AUTHELIA_SESSION_SECRET_FILE = config.sops.secrets."authentication/secrets/session".path;
+
+        AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE = config.sops.secrets."authentication/secrets/storage".path;
+
         AUTHELIA_TOTP_ISSUER = cfg.domain;
-        AUTHELIA_AUTHENTICATION_BACKEND_PASSWORD_RESET_CUSTOM_URL = cfg.passwordResetUrl;
-        AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION = cfg.ldap.implementation;
+
         AUTHELIA_NOTIFIER_SMTP_SENDER = "${cfg.smtp.from.name} <${cfg.smtp.from.address}>";
         AUTHELIA_NOTIFIER_SMTP_IDENTIFIER = cfg.domain;
+
+        AUTHELIA_AUTHENTICATION_BACKEND_PASSWORD_RESET_CUSTOM_URL = cfg.passwordResetUrl;
+        AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = config.sops.secrets."authentication/ldap/bind/password".path;
+        AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION = cfg.ldap.implementation;
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERS_FILTER = cfg.ldap.filters.users;
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_USERS_DN = cfg.ldap.filters.additionalUsersDn;
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUPS_FILTER = cfg.ldap.filters.groups;
@@ -180,15 +189,10 @@ in {
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ATTRIBUTES_MEMBER_OF = cfg.ldap.attributes.memberOf;
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ATTRIBUTES_GROUP_NAME = cfg.ldap.attributes.groupName;
 
-        AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = config.sops.secrets."authentication/ldap/bind/password".path;
         AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.sops.secrets."authentication/smtp/password".path;
       };
 
-      secrets = {
-        jwtSecretFile = config.sops.secrets."authentication/secrets/jwt".path;
-        sessionSecretFile = config.sops.secrets."authentication/secrets/session".path;
-        storageEncryptionKeyFile = config.sops.secrets."authentication/secrets/storage".path;
-      };
+      secrets.manual = true;
     };
 
     services.nginx.virtualHosts.${cfg.domain} = {
