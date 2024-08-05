@@ -9,6 +9,10 @@ rules:
   octal-values:
     level: error
     forbid-implicit-octal: true
+  comments:
+    level: error
+    require-starting-space: true
+    min-spaces-from-content: 1
 
   document-start:
     ignore: |
