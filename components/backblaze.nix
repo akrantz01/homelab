@@ -104,6 +104,8 @@ in {
           "buffer_size=128Mi"
           "vfs_read_ahead=512Mi"
         ];
+        after = ["network-online.target" "systemd-tmpfiles-setup.service"];
+        requires = ["systemd-tmpfiles-setup.service"];
       })
       flattenedMounts;
 
