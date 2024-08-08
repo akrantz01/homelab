@@ -93,6 +93,13 @@ in {
           "allow_other"
           "args2env"
           "config=${config.sops.templates."backblaze/rclone.conf".path}"
+          "cache_dir=/var/cache/rclone"
+          "vfs_cache_mode=full"
+          "vfs_cache_max_age=24h"
+          "no_modtime"
+          "transfers=8"
+          "buffer_size=128Mi"
+          "vfs_read_ahead=512Mi"
         ];
       })
       flattenedMounts;
