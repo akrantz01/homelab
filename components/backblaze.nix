@@ -101,6 +101,7 @@ in {
           "vfs_cache_max_age=24h"
           "no_modtime"
           "transfers=8"
+          "use_mmap"
           "buffer_size=128Mi"
           "vfs_read_ahead=512Mi"
         ];
