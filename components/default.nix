@@ -2,6 +2,7 @@
   imports = [
     ./atuin.nix
     ./authentication
+    ./backblaze.nix
     ./continuous-deployment.nix
     ./database.nix
     ./mealie.nix

@@ -43,6 +43,16 @@
         password = "notifier/password";
       };
     };
+    backblaze = {
+      enable = true;
+      buckets.watch-krantz-dev = {
+        chunked = true;
+        paths = {
+          "/mnt/movies" = "movies";
+          "/mnt/tv" = "tv";
+        };
+      };
+    };
 
     atuin = {
       enable = true;
