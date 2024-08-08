@@ -54,7 +54,8 @@
   in
     builtins.concatStringsSep "-" segments;
 
-  restartUnits = lib.lists.map (mount: "${pathToIdent mount.destination}.mount") flattenedMounts;
+  identifiers = lib.lists.map (mount: pathToIdent mount.destination) flattenedMounts;
+  restartUnits = lib.lists.map (identifier: "${identifier}.mount") identifiers;
 in {
   options.components.backblaze = {
     enable = lib.mkEnableOption "Enable the Backblaze B2 mount component";
@@ -81,8 +82,10 @@ in {
     environment.systemPackages = with pkgs-unstable; [rclone];
 
     systemd.mounts =
-      lib.lists.map (mount: {
-        name = "${pathToIdent mount.destination}.mount";
+      lib.lists.map (mount: let
+        identifier = pathToIdent mount.destination;
+      in {
+        name = "${identifier}.mount";
         type = "rclone";
         description = "the ${mount.source} path in the ${mount.bucket} bucket at ${mount.destination}";
         what = "${mount.bucket}:${mount.source}";
@@ -93,7 +96,7 @@ in {
           "allow_other"
           "args2env"
           "config=${config.sops.templates."backblaze/rclone.conf".path}"
-          "cache_dir=/var/cache/rclone"
+          "cache_dir=/var/cache/rclone/${identifier}"
           "vfs_cache_mode=full"
           "vfs_cache_max_age=24h"
           "no_modtime"
@@ -103,6 +106,19 @@ in {
         ];
       })
       flattenedMounts;
+
+    systemd.tmpfiles.settings."10-backblaze" =
+      lib.attrsets.genAttrs (identifier: {
+        "/var/cache/rclone/${identifier}" = {
+          d = {
+            user = "root";
+            group = "root";
+            mode = "0755";
+            age = "-";
+          };
+        };
+      })
+      identifiers;
 
     sops.secrets."backblaze/id" = {
       inherit restartUnits;
