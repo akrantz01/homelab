@@ -84,7 +84,7 @@ in {
       lib.lists.map (mount: {
         name = "${pathToIdent mount.destination}.mount";
         type = "rclone";
-        description = "Mounts the ${mount.source} path in the ${mount.bucket} bucket at ${mount.destination}";
+        description = "the ${mount.source} path in the ${mount.bucket} bucket at ${mount.destination}";
         what = "${mount.bucket}:${mount.source}";
         where = mount.destination;
         options = builtins.concatStringsSep "," [
