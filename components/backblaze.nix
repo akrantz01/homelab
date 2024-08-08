@@ -87,6 +87,13 @@ in {
         description = "Mounts the ${mount.source} path in the ${mount.bucket} bucket at ${mount.destination}";
         what = "${mount.bucket}:${mount.source}";
         where = mount.destination;
+        options = builtins.concatStringsSep "," [
+          "rw"
+          "_netdev"
+          "allow_other"
+          "args2env"
+          "config=${config.sops.templates."backblaze/rclone.conf".path}"
+        ];
       })
       flattenedMounts;
 
