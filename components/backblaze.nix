@@ -110,17 +110,16 @@ in {
       flattenedMounts;
 
     systemd.tmpfiles.settings."10-backblaze" =
-      lib.attrsets.genAttrs (identifier: {
-        "/var/cache/rclone/${identifier}" = {
-          d = {
-            user = "root";
-            group = "root";
-            mode = "0755";
-            age = "-";
-          };
+      lib.attrsets.genAttrs
+      (lib.lists.map (identifier: "/var/cache/rclone/${identifier}") identifiers)
+      (_: {
+        d = {
+          user = "root";
+          group = "root";
+          mode = "0755";
+          age = "-";
         };
-      })
-      identifiers;
+      });
 
     sops.secrets."backblaze/id" = {
       inherit restartUnits;
