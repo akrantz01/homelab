@@ -78,6 +78,11 @@
       pushNotifications.enable = true;
       smtp.enable = true;
     };
+
+    streaming = {
+      enable = true;
+      domain = "watch.krantz.dev";
+    };
   };
 
   # This value determines the NixOS release from which the default

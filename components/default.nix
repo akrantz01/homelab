@@ -9,6 +9,7 @@
     ./miniflux.nix
     ./reverse-proxy.nix
     ./ssh-tunnel.nix
+    ./streaming.nix
     ./vaultwarden.nix
   ];
 }
