@@ -13,6 +13,12 @@ in {
   options.components.reverseProxy = {
     enable = lib.mkEnableOption "Enable the reverse proxy component";
     sopsFile = extra.mkSecretSourceOption config;
+
+    defaultListenAddresses = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = ["0.0.0.0"] ++ lib.optional config.networking.enableIPv6 "[::0]";
+      description = "The default listen address for the reverse proxy";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -39,6 +45,8 @@ in {
 
       package = pkgs-unstable.nginxQuic;
       additionalModules = with pkgs-unstable.nginxModules; [moreheaders];
+
+      inherit (cfg) defaultListenAddresses;
 
       recommendedTlsSettings = true;
       recommendedProxySettings = true;
