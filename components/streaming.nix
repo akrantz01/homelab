@@ -14,6 +14,12 @@ in {
       example = "streaming.example.com";
       description = "The domain to use for the streaming instance";
     };
+
+    listenAddresses = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "The listen addresses for the reverse proxy virtual host";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -30,6 +36,8 @@ in {
     };
 
     services.nginx.virtualHosts.${cfg.domain} = {
+      inherit (cfg) listenAddresses;
+
       forceSSL = true;
       enableACME = true;
       acmeRoot = null;

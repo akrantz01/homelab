@@ -16,7 +16,7 @@
 
     reverseProxy = {
       enable = true;
-      defaultListenAddresses = ["23.139.82.37" "2602:fb89:1:25::37:1"];
+      defaultListenAddresses = ["23.139.82.37" "[2602:fb89:1:25::37:1]"];
     };
     database.enable = true;
     authentication = {
@@ -85,6 +85,7 @@
     streaming = {
       enable = true;
       domain = "watch.krantz.dev";
+      listenAddresses = ["23.139.82.253" "[2602:fb89:1:25::253:1]"];
     };
   };
 
