@@ -22,12 +22,12 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/root";
+      device = "/dev/disk/by-uuid/1e07748d-94c1-4000-b049-4e0f0d5c62d7";
       fsType = "ext4";
     };
 
     "/mnt" = {
-      device = "/dev/disk/by-label/data";
+      device = "/dev/disk/by-uuid/237bff13-bccd-4659-9eac-1897037d2c99";
       fsType = "ext4";
     };
   };
