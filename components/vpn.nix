@@ -33,8 +33,8 @@ in {
       description = "The address(es) of the VPN interface";
     };
     dns = lib.mkOption {
-      type = lib.types.str;
-      description = "The DNS server to use";
+      type = lib.types.listOf lib.types.str;
+      description = "The DNS server(s) to use";
     };
   };
 
@@ -46,6 +46,7 @@ in {
     boot.kernelModules = ["wireguard"];
 
     environment.systemPackages = [pkgs-stable.wireguard-tools];
+    environment.etc."netns/${namespace}/resolv.conf".text = builtins.concatStringsSep "\n" (lib.lists.map (server: "nameserver ${server}") cfg.dns);
 
     systemd.services.vpn = {
       description = "Namespaced WireGuard Tunnel";
