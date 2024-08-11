@@ -11,5 +11,6 @@
     ./ssh-tunnel.nix
     ./streaming.nix
     ./vaultwarden.nix
+    ./vpn.nix
   ];
 }
