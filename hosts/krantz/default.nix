@@ -16,7 +16,7 @@
     vpn = {
       enable = true;
       addresses = ["10.2.0.2"];
-      dns = ["10.2.0.1"];
+      dns = "10.2.0.1";
       peers = [
         {
           # ProtonVPN US-IL#257

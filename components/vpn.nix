@@ -26,6 +26,9 @@
       };
     };
   };
+
+  interface = "wg0";
+  namespace = "vpn";
 in {
   options.components.vpn = {
     enable = lib.mkEnableOption "Enable the WireGuard VPN component";
@@ -44,8 +47,8 @@ in {
       description = "The address(es) of the VPN interface";
     };
     dns = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      description = "The DNS server(s) to use";
+      type = lib.types.str;
+      description = "The DNS server to use";
     };
   };
 
@@ -56,21 +59,6 @@ in {
         message = "At least VPN one peer must be configured";
       }
     ];
-
-    networking.wg-quick.interfaces.wg0 = let
-      ip = "${pkgs-stable.iproute2}/bin/ip";
-    in {
-      privateKeyFile = config.sops.secrets."vpn/private_key".path;
-
-      address = cfg.addresses;
-      dns = cfg.dns;
-
-      peers = cfg.peers;
-
-      preUp = ["${ip} netns add vpn"];
-      postUp = ["${ip} link set $DEVICE netns vpn"];
-      postDown = ["${ip} netns del vpn"];
-    };
 
     sops.secrets."vpn/private_key" = {
       inherit (cfg) sopsFile;
