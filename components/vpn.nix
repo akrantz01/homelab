@@ -54,6 +54,7 @@ in {
       bindsTo = ["netns@${namespace}.service"];
       requires = ["network-online.target" "nss-lookup.target"];
       after = ["netns@${namespace}.service" "network-online.target" "nss-lookup.target"];
+      wantedBy = ["multi-user.target"];
 
       serviceConfig = let
         ip = "${pkgs-stable.iproute2}/bin/ip";
