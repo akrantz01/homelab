@@ -68,7 +68,7 @@ in {
       peers = cfg.peers;
 
       preUp = ["${ip} netns add vpn"];
-      postUp = ["${ip} link set %i netns vpn"];
+      postUp = ["${ip} link set $DEVICE netns vpn"];
       postDown = ["${ip} netns del vpn"];
     };
 
