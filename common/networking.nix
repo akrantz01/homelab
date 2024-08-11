@@ -1,6 +1,7 @@
 {
   host,
   lib,
+  pkgs-stable,
   ...
 }: {
   # Set the system hostname
@@ -51,5 +52,29 @@
 
     # Make the routes on this interface a dependency for network-online.target.
     linkConfig.RequiredForOnline = "routable";
+  };
+
+  systemd.services."netns@" = {
+    description = "%I network namespace";
+    before = ["network.target"];
+
+    path = with pkgs-stable; [iproute2 utillinux];
+
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+
+      PrivateNetwork = true;
+      PrivateMounts = false;
+
+      ExecStart = let
+        script = pkgs-stable.writers.writeBash "netns-up" ''
+          ip netns add $1
+          umount /var/run/netns/$1
+          mount --bind /proc/self/ns/net /var/run/netns/$1
+        '';
+      in "${script} %I";
+      ExecStop = "ip netns del %I";
+    };
   };
 }
