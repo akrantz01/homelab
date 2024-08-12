@@ -57,7 +57,9 @@ in {
           "--port=3563"
           "--allowedpath=${config.services.transmission.settings.download-dir}"
           "--allowedpath=${config.services.transmission.settings.incomplete-dir}"
-          "--trurl=unix:/run/transmission/rpc.sock"
+          "--trurl=unix:///run/transmission/rpc.sock"
+          "--truser=\"\""
+          "--trpass=\"\""
         ];
 
         User = "flood";
