@@ -10,6 +10,7 @@
     ./reverse-proxy.nix
     ./ssh-tunnel.nix
     ./streaming.nix
+    ./torrent.nix
     ./vaultwarden.nix
     ./vpn.nix
   ];
