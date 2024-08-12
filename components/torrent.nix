@@ -22,6 +22,8 @@ in {
       enable = true;
       package = pkgs-unstable.transmission_4;
 
+      downloadDirPermissions = "760";
+
       settings = {
         rpc-bind-address = "unix:/run/transmission/rpc.sock";
 
