@@ -18,12 +18,21 @@ in {
       }
     ];
 
-    services.rtorrent = {
+    services.transmission = {
       enable = true;
-      package = pkgs-unstable.rtorrent;
+      package = pkgs-unstable.transmission_4;
+
+      settings = {
+        rpc-bind-address = "unix:/run/transmission/rpc.sock";
+
+        download-dir = "${config.services.transmission.home}/complete";
+
+        incomplete-dir-enabled = true;
+        incomplete-dir = "${config.services.transmission.home}/incomplete";
+      };
     };
 
-    systemd.services.rtorrent = {
+    systemd.services.transmission = {
       bindsTo = ["vpn.service"];
       after = ["vpn.service"];
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
