@@ -80,10 +80,9 @@ in {
 
       serviceConfig = {
         Type = "simple";
-        KillMode = "process";
 
         ExecStart = pkgs-stable.writers.writeBash "exec-start-flood" ''
-          ${pkgs-unstable.flood}/bin/flood \
+          exec ${pkgs-unstable.flood}/bin/flood \
             --rundir=/var/lib/flood \
             --auth=none \
             --host=127.0.0.1 \
