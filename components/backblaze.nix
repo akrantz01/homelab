@@ -86,6 +86,7 @@ in {
         identifier = pathToIdent mount.destination;
       in {
         name = "${identifier}.mount";
+        enable = true;
         type = "rclone";
         description = "the ${mount.source} path in the ${mount.bucket} bucket at ${mount.destination}";
         what = "${mount.bucket}:${mount.source}";
