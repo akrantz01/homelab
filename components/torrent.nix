@@ -50,7 +50,30 @@ in {
       serviceConfig.PrivateNetwork = true;
     };
 
+    systemd.sockets.transmission-proxy = {
+      enable = true;
+      wantedBy = ["sockets.target"];
+      listenStreams = ["8767"];
+    };
+    systemd.services.transmission-proxy = {
+      enable = true;
+      description = "Transmission RPC proxy";
+      after = ["transmission.service" "transmission-proxy.socket"];
+      requires = ["transmission.service"];
+
+      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
+      serviceConfig = {
+        Type = "notify";
+
+        ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd /run/transmission/rpc.sock";
+
+        PrivateTmp = true;
+        PrivateNetwork = true;
+      };
+    };
+
     systemd.services.flood = {
+      enable = true;
       description = "Flood web UI for Transmission";
       after = ["netowrk.target"];
       wantedBy = ["multi-user.target"];
@@ -63,10 +86,11 @@ in {
           ${pkgs-unstable.flood}/bin/flood \
             --rundir=/var/lib/flood \
             --auth=none \
+            --host=127.0.0.1 \
             --port=3563 \
             --allowedpath=${config.services.transmission.settings.download-dir} \
             --allowedpath=${config.services.transmission.settings.incomplete-dir} \
-            --trurl=unix:///run/transmission/rpc.sock \
+            --trurl=http://127.0.0.1:8767 \
             --truser="$(cat ${config.sops.secrets."transmission/rpc/username".path})" \
             --trpass="$(cat ${config.sops.secrets."transmission/rpc/password".path})"
         '';
