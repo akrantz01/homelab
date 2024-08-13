@@ -49,6 +49,8 @@ in {
 
         incomplete-dir-enabled = true;
         incomplete-dir = "${config.services.transmission.home}/incomplete";
+
+        port-forwarding-enabled = false;
       };
       credentialsFile = config.sops.templates."transmission/credentials.json".path;
     };
