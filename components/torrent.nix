@@ -89,7 +89,7 @@ in {
             --port=3563 \
             --allowedpath=${config.services.transmission.settings.download-dir} \
             --allowedpath=${config.services.transmission.settings.incomplete-dir} \
-            --trurl=http://127.0.0.1:8767 \
+            --trurl=http://127.0.0.1:8767/transmission/rpc \
             --truser="$(cat ${config.sops.secrets."transmission/rpc/username".path})" \
             --trpass="$(cat ${config.sops.secrets."transmission/rpc/password".path})"
         '';
