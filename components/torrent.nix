@@ -53,7 +53,7 @@ in {
     systemd.sockets.transmission-proxy = {
       enable = true;
       wantedBy = ["sockets.target"];
-      listenStreams = ["8767"];
+      listenStreams = ["127.0.0.1:8767"];
     };
     systemd.services.transmission-proxy = {
       enable = true;
