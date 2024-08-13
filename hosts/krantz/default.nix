@@ -97,7 +97,10 @@
       domain = "watch.krantz.dev";
       listenAddresses = ["23.139.82.253" "[2602:fb89:1:25::253:1]"];
     };
-    torrent.enable = true;
+    torrent = {
+      enable = true;
+      domain = "torrent.krantz.cloud";
+    };
   };
 
   # This value determines the NixOS release from which the default

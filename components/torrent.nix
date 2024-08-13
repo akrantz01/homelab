@@ -12,6 +12,12 @@ in {
     enable = lib.mkEnableOption "Enable the torrenting component";
     sopsFile = extra.mkSecretSourceOption config;
 
+    domain = lib.mkOption {
+      type = lib.types.str;
+      example = "torrent.example.com";
+      description = "The domain to use for the torrenting UI";
+    };
+
     rpc = {
       username = extra.mkSecretOption "The username for the Transmission RPC socket" "transmission/rpc/username";
       password = extra.mkSecretOption "The password for the Transmission RPC socket" "transmission/rpc/password";
@@ -23,6 +29,10 @@ in {
       {
         assertion = config.components.vpn.enable;
         message = "The VPN component must be enabled to use the torrenting component";
+      }
+      {
+        assertion = config.components.reverseProxy.enable;
+        message = "The reverse proxy component must be enabled to use the torrenting component";
       }
     ];
 
@@ -87,6 +97,7 @@ in {
             --auth=none \
             --host=127.0.0.1 \
             --port=3563 \
+            --assets=false \
             --allowedpath=${config.services.transmission.settings.download-dir} \
             --allowedpath=${config.services.transmission.settings.incomplete-dir} \
             --trurl=http://127.0.0.1:8767/transmission/rpc \
@@ -102,6 +113,24 @@ in {
 
         StateDirectory = "flood";
       };
+    };
+
+    services.nginx.virtualHosts.${cfg.domain} = {
+      forceSSL = true;
+      enableACME = true;
+      acmeRoot = null;
+
+      root = "${pkgs-unstable.flood}/lib/node_modules/flood/dist/assets";
+
+      locations."/api" = {
+        proxyPass = "http://127.0.0.1:3563";
+        extraConfig = ''
+          proxy_buffering off;
+          proxy_cache off;
+        '';
+      };
+
+      locations."/".tryFiles = "$uri /index.html";
     };
 
     sops.secrets = let
