@@ -72,7 +72,7 @@
       domain = "shell.krantz.dev";
     };
     mealie = {
-      enable = false;
+      enable = true;
       domain = "recipes.krantz.dev";
     };
     miniflux = {
