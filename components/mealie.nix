@@ -52,6 +52,8 @@ in {
       };
     };
 
+    systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${pkgs-unstable.mealie}/alembic.ini";
+
     services.nginx.virtualHosts.${cfg.domain} = {
       forceSSL = true;
       enableACME = true;
