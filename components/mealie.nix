@@ -37,7 +37,7 @@ in {
 
       settings = {
         DB_ENGINE = "postgres";
-        POSTGRES_URL_OVERRIDE = "postgresql://mealie?host=/run/postgresql";
+        POSTGRES_URL_OVERRIDE = "postgresql://username:password@mealie?host=/run/postgresql";
 
         DEFAULT_GROUP = "Home";
 
