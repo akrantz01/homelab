@@ -32,7 +32,7 @@ in {
       enable = true;
       package = pkgs-unstable.mealie;
 
-      listenAddress = "::1";
+      listenAddress = "[::1]";
       port = 6325;
 
       settings = {
@@ -60,7 +60,7 @@ in {
       acmeRoot = null;
 
       locations."/" = {
-        proxyPass = "http://[${config.services.mealie.listenAddress}]:${builtins.toString config.services.mealie.port}";
+        proxyPass = "http://${config.services.mealie.listenAddress}:${builtins.toString config.services.mealie.port}";
         proxyWebsockets = true;
       };
     };
