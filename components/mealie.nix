@@ -93,6 +93,7 @@ in {
             OIDC_SIGNUP_ENABLED = true;
             OIDC_AUTO_REDIRECT = true;
 
+            OIDC_CONFIGURATION_URL = cfg.oidc.configurationUrl;
             OIDC_CLIENT_ID = cfg.oidc.clientId;
             OIDC_PROVIDER_NAME = cfg.oidc.provider;
 
