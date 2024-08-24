@@ -128,6 +128,8 @@ in {
         OnBootSec = "45s";
         OnUnitActiveSec = "45s";
 
+        AccuracySec = "1s";
+
         RandomizedDelaySec = 0;
         FixedRandomDelay = false;
       };
