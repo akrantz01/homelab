@@ -136,8 +136,11 @@ in {
 
     systemd.services.natpmp = {
       enable = true;
-      after = ["network.target" "transmission-proxy.service"];
+      after = ["network.target" "transmission-proxy.service" "vpn.service"];
       wants = ["transmission-proxy.service"];
+      bindsTo = ["vpn.service"];
+
+      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
 
       serviceConfig = {
         Type = "oneshot";
@@ -145,6 +148,8 @@ in {
           "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 udp"
           "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 tcp"
         ];
+
+        PrivateNetwork = true;
       };
     };
 
