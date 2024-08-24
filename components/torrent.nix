@@ -125,8 +125,7 @@ in {
       requires = ["transmission-proxy.service"];
 
       timerConfig = {
-        Persistent = true;
-        OnCalendar = "45s";
+        OnActiveSec = "45s";
 
         RandomizedDelaySec = 0;
         FixedRandomDelay = false;
