@@ -74,6 +74,13 @@
     mealie = {
       enable = true;
       domain = "recipes.krantz.dev";
+
+      oidc = {
+        enable = true;
+        provider = "JumpCloud";
+        configurationUrl = "https://oauth.id.jumpcloud.com/.well-known/openid-configuration";
+        clientId = "2bdfed45-810a-4a52-98ac-98b4a4e13377";
+      };
     };
     miniflux = {
       enable = true;

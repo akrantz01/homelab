@@ -17,6 +17,40 @@ in {
       default = "recipes.example.com";
       description = "The domain for the Mealie instance";
     };
+
+    oidc = {
+      enable = lib.mkEnableOption "Enable OIDC authentication for Mealie";
+
+      configurationUrl = lib.mkOption {
+        type = lib.types.str;
+        description = "The OIDC configuration URL";
+      };
+
+      clientId = lib.mkOption {
+        type = lib.types.str;
+        description = "The OIDC PKCE client ID";
+      };
+
+      provider = lib.mkOption {
+        type = lib.types.str;
+        default = "OAuth";
+        description = "Name of the OIDC provider";
+      };
+
+      groups = {
+        user = lib.mkOption {
+          type = lib.types.str;
+          default = "Recipes";
+          description = "The user group";
+        };
+
+        admin = lib.mkOption {
+          type = lib.types.str;
+          default = "Sysadmins";
+          description = "The admin group";
+        };
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -36,21 +70,36 @@ in {
       listenAddress = "[::1]";
       port = 6325;
 
-      settings = {
-        DB_ENGINE = "postgres";
-        POSTGRES_URL_OVERRIDE = "postgresql://:@mealie?host=/run/postgresql";
+      settings = lib.attrsets.mergeAttrsList [
+        {
+          DB_ENGINE = "postgres";
+          POSTGRES_URL_OVERRIDE = "postgresql://:@mealie?host=/run/postgresql";
 
-        DEFAULT_GROUP = "Home";
+          DEFAULT_GROUP = "Home";
 
-        BASE_URL = "https://${cfg.domain}";
+          BASE_URL = "https://${cfg.domain}";
 
-        TZ = "America/Vancouver";
+          TZ = "America/Vancouver";
 
-        ALLOW_SIGNUP = "false";
+          ALLOW_SIGNUP = "false";
 
-        SECURITY_MAX_LOGIN_ATTEMPTS = "3";
-        SECURITY_USER_LOCKOUT_TIME = "24";
-      };
+          SECURITY_MAX_LOGIN_ATTEMPTS = "3";
+          SECURITY_USER_LOCKOUT_TIME = "24";
+        }
+        (lib.optionalAttrs
+          cfg.oidc.enable
+          {
+            OIDC_AUTH_ENABLED = true;
+            OIDC_SIGNUP_ENABLED = true;
+            OIDC_AUTO_REDIRECT = true;
+
+            OIDC_CLIENT_ID = cfg.oidc.clientId;
+            OIDC_PROVIDER_NAME = cfg.oidc.provider;
+
+            OIDC_USER_GROUP = cfg.oidc.groups.user;
+            OIDC_ADMIN_GROUP = cfg.oidc.groups.admin;
+          })
+      ];
     };
 
     systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${pkgs-unstable.mealie}/alembic.ini";
