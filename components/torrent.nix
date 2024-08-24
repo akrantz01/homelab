@@ -105,6 +105,8 @@ in {
       requires = ["transmission-proxy.service"];
       wantedBy = ["multi-user.target"];
 
+      path = [pkgs-unstable.mediainfo];
+
       serviceConfig = {
         Type = "simple";
 
