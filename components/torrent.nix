@@ -18,6 +18,12 @@ in {
       description = "The domain to use for the torrenting UI";
     };
 
+    publicAddress = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "The public address to advertise to peers";
+    };
+
     rpc = {
       username = extra.mkSecretOption "The username for the Transmission RPC socket" "transmission/rpc/username";
       password = extra.mkSecretOption "The password for the Transmission RPC socket" "transmission/rpc/password";
@@ -51,6 +57,12 @@ in {
         incomplete-dir = "${config.services.transmission.home}/incomplete";
 
         port-forwarding-enabled = false;
+
+        announce-ip-enabled = cfg.publicAddress != null;
+        announce-ip =
+          if cfg.publicAddress != null
+          then cfg.publicAddress
+          else "";
       };
       credentialsFile = config.sops.templates."transmission/credentials.json".path;
     };

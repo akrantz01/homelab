@@ -107,6 +107,7 @@
     torrent = {
       enable = true;
       domain = "torrent.krantz.cloud";
+      publicAddress = "89.187.180.28";
     };
   };
 
