@@ -58,6 +58,8 @@ in {
 
         port-forwarding-enabled = false;
 
+        message-level = 6;
+
         announce-ip-enabled = cfg.publicAddress != null;
         announce-ip =
           if cfg.publicAddress != null
