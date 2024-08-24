@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs-stable,
   pkgs-unstable,
   ...
 }: let
@@ -37,7 +38,7 @@ in {
 
       settings = {
         DB_ENGINE = "postgres";
-        POSTGRES_URL_OVERRIDE = "postgresql://mealie:password@mealie?host=/run/postgresql";
+        POSTGRES_URL_OVERRIDE = "postgresql://:@mealie?host=/run/postgresql";
 
         DEFAULT_GROUP = "Home";
 
