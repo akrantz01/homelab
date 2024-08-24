@@ -1,7 +1,7 @@
 {
   lib,
   config,
-  pkgs-stable,
+  extra,
   pkgs-unstable,
   ...
 }: let
@@ -11,6 +11,7 @@
 in {
   options.components.mealie = {
     enable = lib.mkEnableOption "Enable the Mealie component";
+    sopsFile = extra.mkSecretSourceOption config;
 
     domain = lib.mkOption {
       type = lib.types.str;
@@ -51,6 +52,16 @@ in {
         };
       };
     };
+
+    openai = {
+      enable = lib.mkEnableOption "Enable OpenAI integration";
+      apiKey = extra.mkSecretOption "OpenAI api key" "mealie/openai_token";
+      model = lib.mkOption {
+        type = lib.types.str;
+        default = "gpt-4o";
+        description = "The OpenAI model to use";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -86,8 +97,7 @@ in {
           SECURITY_MAX_LOGIN_ATTEMPTS = "3";
           SECURITY_USER_LOCKOUT_TIME = "24";
         }
-        (lib.optionalAttrs
-          cfg.oidc.enable
+        (lib.optionalAttrs cfg.oidc.enable
           {
             OIDC_AUTH_ENABLED = true;
             OIDC_SIGNUP_ENABLED = true;
@@ -100,10 +110,25 @@ in {
             OIDC_USER_GROUP = cfg.oidc.groups.user;
             OIDC_ADMIN_GROUP = cfg.oidc.groups.admin;
           })
+        (lib.optionalAttrs cfg.openai.enable
+          {
+            # TODO: figure out how to set OPENAI_API_KEY
+            OPENAI_MODEL = cfg.openai.model;
+          })
       ];
     };
 
     systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${pkgs-unstable.mealie}/alembic.ini";
+
+    sops.secrets."mealie/openai_token" = {
+      key = cfg.openai.apiKey;
+      sopsFile = cfg.sopsFile;
+
+      owner = config.systemd.services.mealie.serviceConfig.User;
+      group = config.systemd.services.mealie.serviceConfig.User;
+
+      restartUnits = [config.systemd.services.mealie.name];
+    };
 
     services.nginx.virtualHosts.${cfg.domain} = {
       forceSSL = true;
