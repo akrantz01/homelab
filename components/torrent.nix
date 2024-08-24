@@ -87,7 +87,8 @@ in {
     systemd.services.flood = {
       enable = true;
       description = "Flood web UI for Transmission";
-      after = ["netowrk.target"];
+      after = ["network.target" "transmission-proxy.service"];
+      requires = ["transmission-proxy.service"];
       wantedBy = ["multi-user.target"];
 
       serviceConfig = {
@@ -114,6 +115,37 @@ in {
         RestartSec = 3;
 
         StateDirectory = "flood";
+      };
+    };
+
+    systemd.timers.natpmp = {
+      enable = true;
+      description = "NAT-PMP/PCP port forwarding for Transmission";
+      after = ["network.target" "transmission-proxy.service"];
+      requires = ["transmission-proxy.service"];
+
+      timerConfig = {
+        Persistent = true;
+        OnCalendar = "45s";
+
+        RandomizedDelaySec = 0;
+        FixedRandomDelay = false;
+      };
+
+      wantedBy = ["timers.target"];
+    };
+
+    systemd.services.natpmp = {
+      enable = true;
+      after = ["network.target" "transmission-proxy.service"];
+      wants = ["transmission-proxy.service"];
+
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = [
+          "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 udp"
+          "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 tcp"
+        ];
       };
     };
 
