@@ -74,6 +74,8 @@ in {
       after = ["vpn.service"];
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
       serviceConfig.PrivateNetwork = true;
+
+      environment.TR_CURL_VERBOSE = "1";
     };
 
     systemd.sockets.transmission-proxy = {
