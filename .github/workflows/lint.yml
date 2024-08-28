@@ -7,7 +7,7 @@ env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
   OPENTOFU_VERSION: 1.8.1
   # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
-  TERRAGRUNT_VERSION: v0.66.9
+  TERRAGRUNT_VERSION: v0.67.0
 
 jobs:
   terraform:
