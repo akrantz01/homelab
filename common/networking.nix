@@ -20,6 +20,7 @@
   # System resolver security
   services.resolved.llmnr = "false";
   services.resolved.dnssec = "allow-downgrade";
+  services.resolved.dnsovertls = "true";
 
   # Configure the WAN interface
   systemd.network.networks."10-wan" = let
@@ -44,10 +45,10 @@
       host.networking.routes);
 
     dns = [
-      "1.1.1.1"
-      "2606:4700:4700::1111"
-      "1.0.0.1"
-      "2606:4700:4700::1001"
+      "1.1.1.1#cloudflare-dns.com"
+      "2606:4700:4700::1111#cloudflare-dns.com"
+      "1.0.0.1#cloudflare-dns.com"
+      "2606:4700:4700::1001#cloudflare-dns.com"
     ];
 
     # Make the routes on this interface a dependency for network-online.target.
