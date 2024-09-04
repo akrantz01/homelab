@@ -19,7 +19,7 @@
 
   # System resolver security
   services.resolved.llmnr = "false";
-  services.resolved.dnssec = "allow-downgrade";
+  services.resolved.dnssec = "false";
   services.resolved.dnsovertls = "true";
 
   # Configure the WAN interface
