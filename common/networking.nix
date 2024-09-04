@@ -19,7 +19,7 @@
 
   # System resolver security
   services.resolved.llmnr = "false";
-  services.resolved.dnssec = "true";
+  services.resolved.dnssec = "allow-downgrade";
 
   # Configure the WAN interface
   systemd.network.networks."10-wan" = let
