@@ -5,6 +5,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # Pin to chromium 126 for now until https://github.com/FlareSolverr/FlareSolverr/issues/1318 is resolved
+    nixpkgs-chromium.url = "github:NixOS/nixpkgs/10c6033249917048251e2812c64b63d6588aa34b";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs = {

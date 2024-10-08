@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs-unstable,
+  pkgs-chromium,
   ...
 }: let
   cfg = config.components.pvr;
@@ -62,7 +63,13 @@ in {
       openFirewall = false;
     };
 
-    systemd.services.flaresolverr = {
+    systemd.services.flaresolverr = let
+      flaresolverr = pkgs-unstable.flaresolverr.override {
+        # Need to downgrade from latest chromium per
+        # https://github.com/FlareSolverr/FlareSolverr/issues/1318
+        chromium = pkgs-chromium.chromium;
+      };
+    in {
       description = "FlareSolverr";
       after = ["network.target"];
       wantedBy = ["multi-user.target"];
@@ -80,7 +87,7 @@ in {
         DynamicUser = true;
         RuntimeDirectory = "flaresolverr";
         WorkingDirectory = "/run/flaresolverr";
-        ExecStart = lib.getExe pkgs-unstable.flaresolverr;
+        ExecStart = lib.getExe flaresolverr;
         TimeoutStopSec = 30;
       };
     };
