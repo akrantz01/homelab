@@ -17,7 +17,7 @@
     enableACME = true;
     acmeRoot = null;
 
-    locations."/".proxyPass = "http://127.0.0.1:${toString port}";
+    locations."/".proxyPass = "http://[::1]:${toString port}";
   };
 in {
   options.components.pvr = {
