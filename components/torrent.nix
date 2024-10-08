@@ -7,6 +7,8 @@
   ...
 }: let
   cfg = config.components.torrent;
+
+  daemonPort = 58846;
 in {
   options.components.torrent = {
     enable = lib.mkEnableOption "Enable the torrenting component";
@@ -100,27 +102,27 @@ in {
       };
     };
 
-    # systemd.sockets.torrent-proxy = {
-    #   enable = true;
-    #   wantedBy = ["sockets.target"];
-    #   listenStreams = ["127.0.0.1:${config.services.deluge.web.port}"];
-    # };
-    # systemd.services.torrent-proxy = {
-    #   enable = true;
-    #   description = "Torrent API proxy";
-    #   after = ["deluged.service" "torrent-proxy.socket"];
-    #   requires = ["deluged.service"];
+    systemd.sockets.torrent-proxy = {
+      enable = true;
+      wantedBy = ["sockets.target"];
+      listenStreams = ["127.0.0.1:${toString daemonPort}"];
+    };
+    systemd.services.torrent-proxy = {
+      enable = true;
+      description = "Torrent API proxy";
+      after = ["deluged.service" "torrent-proxy.socket"];
+      requires = ["deluged.service"];
 
-    #   unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-    #   serviceConfig = {
-    #     Type = "notify";
+      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
+      serviceConfig = {
+        Type = "notify";
 
-    #     ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${config.services.deluge.web.port}";
+        ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString daemonPort}";
 
-    #     PrivateTmp = true;
-    #     PrivateNetwork = true;
-    #   };
-    # };
+        PrivateTmp = true;
+        PrivateNetwork = true;
+      };
+    };
 
     systemd.timers.natpmp = {
       enable = true;
