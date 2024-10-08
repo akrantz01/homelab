@@ -31,6 +31,7 @@ in {
     domains = {
       prowlarr = mkDomainOption "Prowlarr";
       radarr = mkDomainOption "Radarr";
+      sonarr = mkDomainOption "Sonarr";
     };
   };
 
@@ -38,6 +39,12 @@ in {
     services.radarr = {
       enable = true;
       package = pkgs-unstable.radarr;
+      openFirewall = false;
+    };
+
+    services.sonarr = {
+      enable = true;
+      package = pkgs-unstable.sonarr;
       openFirewall = false;
     };
 
@@ -49,6 +56,7 @@ in {
 
     services.nginx.virtualHosts = {
       ${cfg.domains.radarr} = mkVirtualHost 7878;
+      ${cfg.domains.sonarr} = mkVirtualHost 8989;
       ${cfg.domains.prowlarr} = mkVirtualHost 9696;
     };
   };
