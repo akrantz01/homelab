@@ -42,99 +42,73 @@ in {
       }
     ];
 
-    services.transmission = {
+    services.deluge = {
       enable = true;
-      package = pkgs-unstable.transmission_4;
+      package = pkgs-unstable.deluge-2_x;
 
-      downloadDirPermissions = "760";
+      openFirewall = false;
 
-      settings = {
-        rpc-bind-address = "unix:/run/transmission/rpc.sock";
-
-        download-dir = "${config.services.transmission.home}/complete";
-
-        incomplete-dir-enabled = true;
-        incomplete-dir = "${config.services.transmission.home}/incomplete";
-
-        port-forwarding-enabled = false;
-
-        message-level = 5;
-
-        announce-ip-enabled = cfg.publicAddress != null;
-        announce-ip =
-          if cfg.publicAddress != null
-          then cfg.publicAddress
-          else "";
+      web = {
+        enable = true;
+        openFirewall = false;
       };
-      credentialsFile = config.sops.templates."transmission/credentials.json".path;
     };
 
-    systemd.services.transmission = {
+    # services.transmission = {
+    #   enable = true;
+    #   package = pkgs-unstable.transmission_4;
+
+    #   downloadDirPermissions = "760";
+
+    #   settings = {
+    #     rpc-bind-address = "unix:/run/transmission/rpc.sock";
+
+    #     download-dir = "${config.services.transmission.home}/complete";
+
+    #     incomplete-dir-enabled = true;
+    #     incomplete-dir = "${config.services.transmission.home}/incomplete";
+
+    #     port-forwarding-enabled = false;
+
+    #     message-level = 5;
+
+    #     announce-ip-enabled = cfg.publicAddress != null;
+    #     announce-ip =
+    #       if cfg.publicAddress != null
+    #       then cfg.publicAddress
+    #       else "";
+    #   };
+    #   credentialsFile = config.sops.templates."transmission/credentials.json".path;
+    # };
+
+    systemd.services.deluged = {
       bindsTo = ["vpn.service"];
       after = ["vpn.service"];
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
       serviceConfig.PrivateNetwork = true;
-
-      environment.TR_CURL_VERBOSE = "1";
     };
 
-    systemd.sockets.transmission-proxy = {
-      enable = true;
-      wantedBy = ["sockets.target"];
-      listenStreams = ["127.0.0.1:8767"];
-    };
-    systemd.services.transmission-proxy = {
-      enable = true;
-      description = "Transmission RPC proxy";
-      after = ["transmission.service" "transmission-proxy.socket"];
-      requires = ["transmission.service"];
+    # systemd.sockets.torrent-proxy = {
+    #   enable = true;
+    #   wantedBy = ["sockets.target"];
+    #   listenStreams = ["127.0.0.1:${config.services.deluge.web.port}"];
+    # };
+    # systemd.services.torrent-proxy = {
+    #   enable = true;
+    #   description = "Torrent API proxy";
+    #   after = ["deluged.service" "torrent-proxy.socket"];
+    #   requires = ["deluged.service"];
 
-      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-      serviceConfig = {
-        Type = "notify";
+    #   unitConfig.JoinsNamespaceOf = "netns@vpn.service";
+    #   serviceConfig = {
+    #     Type = "notify";
 
-        ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd /run/transmission/rpc.sock";
+    #     ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${config.services.deluge.web.port}";
 
-        PrivateTmp = true;
-        PrivateNetwork = true;
-      };
-    };
-
-    systemd.services.flood = {
-      enable = true;
-      description = "Flood web UI for Transmission";
-      after = ["network.target" "transmission-proxy.service"];
-      requires = ["transmission-proxy.service"];
-      wantedBy = ["multi-user.target"];
-
-      path = [pkgs-unstable.mediainfo];
-
-      serviceConfig = {
-        Type = "simple";
-
-        ExecStart = pkgs-stable.writers.writeBash "exec-start-flood" ''
-          exec ${pkgs-unstable.flood}/bin/flood \
-            --rundir=/var/lib/flood \
-            --auth=none \
-            --host=127.0.0.1 \
-            --port=3563 \
-            --assets=false \
-            --allowedpath=${config.services.transmission.settings.download-dir} \
-            --allowedpath=${config.services.transmission.settings.incomplete-dir} \
-            --trurl=http://127.0.0.1:8767/transmission/rpc \
-            --truser="$(cat ${config.sops.secrets."transmission/rpc/username".path})" \
-            --trpass="$(cat ${config.sops.secrets."transmission/rpc/password".path})"
-        '';
-
-        User = config.services.transmission.user;
-        Group = config.services.transmission.group;
-
-        Restart = "on-failure";
-        RestartSec = 3;
-
-        StateDirectory = "flood";
-      };
-    };
+    #     PrivateTmp = true;
+    #     PrivateNetwork = true;
+    #   };
+    # };
 
     systemd.timers.natpmp = {
       enable = true;
@@ -179,17 +153,7 @@ in {
       enableACME = true;
       acmeRoot = null;
 
-      root = "${pkgs-unstable.flood}/lib/node_modules/flood/dist/assets";
-
-      locations."/api" = {
-        proxyPass = "http://127.0.0.1:3563";
-        extraConfig = ''
-          proxy_buffering off;
-          proxy_cache off;
-        '';
-      };
-
-      locations."/".tryFiles = "$uri /index.html";
+      locations."/".proxyPass = "http://127.0.0.1:${toString config.services.deluge.web.port}";
     };
 
     sops.secrets = let
@@ -197,11 +161,10 @@ in {
         inherit key;
         inherit (cfg) sopsFile;
 
-        owner = config.services.transmission.user;
-        group = config.services.transmission.group;
+        owner = config.services.deluge.user;
+        group = config.services.deluge.group;
 
-        reloadUnits = [config.systemd.services.transmission.name];
-        restartUnits = [config.systemd.services.flood.name];
+        reloadUnits = [config.systemd.services.deluged.name];
       };
     in {
       "transmission/rpc/username" = secret cfg.rpc.username;
@@ -214,8 +177,8 @@ in {
         rpc-password = config.sops.placeholder."transmission/rpc/password";
       };
 
-      owner = config.services.transmission.user;
-      group = config.services.transmission.group;
+      owner = config.services.deluge.user;
+      group = config.services.deluge.group;
     };
   };
 }
