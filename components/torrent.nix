@@ -86,9 +86,9 @@ in {
 
     systemd.timers.natpmp = {
       enable = true;
-      description = "NAT-PMP/PCP port forwarding for Transmission";
-      after = ["network.target" "transmission-proxy.service"];
-      requires = ["transmission-proxy.service"];
+      description = "NAT-PMP/PCP port forwarding for torrenting";
+      after = ["network.target" "torrent-proxy.service"];
+      requires = ["torrent-proxy.service"];
 
       timerConfig = {
         OnBootSec = "45s";
