@@ -62,6 +62,29 @@ in {
       openFirewall = false;
     };
 
+    systemd.services.flaresolverr = {
+      description = "FlareSolverr";
+      after = ["network.target"];
+      wantedBy = ["multi-user.target"];
+
+      environment = {
+        HOME = "/run/flaresolverr";
+        PORT = "8191";
+      };
+
+      serviceConfig = {
+        SyslogIdentifier = "flaresolverr";
+        Restart = "always";
+        RestartSec = 5;
+        Type = "simple";
+        DynamicUser = true;
+        RuntimeDirectory = "flaresolverr";
+        WorkingDirectory = "/run/flaresolverr";
+        ExecStart = lib.getExe pkgs-unstable.flaresolverr;
+        TimeoutStopSec = 30;
+      };
+    };
+
     services.nginx.virtualHosts = {
       ${cfg.domains.bazarr} = mkVirtualHost config.services.bazarr.listenPort;
       ${cfg.domains.radarr} = mkVirtualHost 7878;
