@@ -28,10 +28,19 @@ in {
       default = "example.com";
       description = "The base domain to use for the PVR UI";
     };
-    domains.prowlarr = mkDomainOption "Prowlarr";
+    domains = {
+      prowlarr = mkDomainOption "Prowlarr";
+      radarr = mkDomainOption "Radarr";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    services.radarr = {
+      enable = true;
+      package = pkgs-unstable.radarr;
+      openFirewall = false;
+    };
+
     services.prowlarr = {
       enable = true;
       package = pkgs-unstable.prowlarr;
@@ -39,6 +48,7 @@ in {
     };
 
     services.nginx.virtualHosts = {
+      ${cfg.domains.radarr} = mkVirtualHost 7878;
       ${cfg.domains.prowlarr} = mkVirtualHost 9696;
     };
   };
