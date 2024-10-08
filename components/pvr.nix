@@ -29,6 +29,7 @@ in {
       description = "The base domain to use for the PVR UI";
     };
     domains = {
+      bazarr = mkDomainOption "Bazarr";
       prowlarr = mkDomainOption "Prowlarr";
       radarr = mkDomainOption "Radarr";
       sonarr = mkDomainOption "Sonarr";
@@ -54,7 +55,15 @@ in {
       openFirewall = false;
     };
 
+    services.bazarr = {
+      enable = true;
+      # Bazarr does not allow overriding the package
+      # package = pkgs-unstable.bazarr;
+      openFirewall = false;
+    };
+
     services.nginx.virtualHosts = {
+      ${cfg.domains.bazarr} = mkVirtualHost config.services.bazarr.listenPort;
       ${cfg.domains.radarr} = mkVirtualHost 7878;
       ${cfg.domains.sonarr} = mkVirtualHost 8989;
       ${cfg.domains.prowlarr} = mkVirtualHost 9696;
