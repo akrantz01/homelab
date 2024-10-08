@@ -1,6 +1,5 @@
 {
   config,
-  extra,
   lib,
   pkgs-stable,
   pkgs-unstable,
@@ -12,23 +11,11 @@
 in {
   options.components.torrent = {
     enable = lib.mkEnableOption "Enable the torrenting component";
-    sopsFile = extra.mkSecretSourceOption config;
 
     domain = lib.mkOption {
       type = lib.types.str;
       example = "torrent.example.com";
       description = "The domain to use for the torrenting UI";
-    };
-
-    publicAddress = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "The public address to advertise to peers";
-    };
-
-    rpc = {
-      username = extra.mkSecretOption "The username for the Transmission RPC socket" "transmission/rpc/username";
-      password = extra.mkSecretOption "The password for the Transmission RPC socket" "transmission/rpc/password";
     };
   };
 
@@ -55,33 +42,6 @@ in {
         openFirewall = false;
       };
     };
-
-    # services.transmission = {
-    #   enable = true;
-    #   package = pkgs-unstable.transmission_4;
-
-    #   downloadDirPermissions = "760";
-
-    #   settings = {
-    #     rpc-bind-address = "unix:/run/transmission/rpc.sock";
-
-    #     download-dir = "${config.services.transmission.home}/complete";
-
-    #     incomplete-dir-enabled = true;
-    #     incomplete-dir = "${config.services.transmission.home}/incomplete";
-
-    #     port-forwarding-enabled = false;
-
-    #     message-level = 5;
-
-    #     announce-ip-enabled = cfg.publicAddress != null;
-    #     announce-ip =
-    #       if cfg.publicAddress != null
-    #       then cfg.publicAddress
-    #       else "";
-    #   };
-    #   credentialsFile = config.sops.templates."transmission/credentials.json".path;
-    # };
 
     systemd.services.deluged = {
       bindsTo = ["vpn.service"];
@@ -145,8 +105,8 @@ in {
 
     systemd.services.natpmp = {
       enable = true;
-      after = ["network.target" "transmission-proxy.service" "vpn.service"];
-      wants = ["transmission-proxy.service"];
+      after = ["network.target" "torrent-proxy.service" "vpn.service"];
+      wants = ["torrent-proxy.service"];
       bindsTo = ["vpn.service"];
 
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
@@ -168,31 +128,6 @@ in {
       acmeRoot = null;
 
       locations."/".proxyPass = "http://127.0.0.1:${toString config.services.deluge.web.port}";
-    };
-
-    sops.secrets = let
-      secret = key: {
-        inherit key;
-        inherit (cfg) sopsFile;
-
-        owner = config.services.deluge.user;
-        group = config.services.deluge.group;
-
-        reloadUnits = [config.systemd.services.deluged.name];
-      };
-    in {
-      "transmission/rpc/username" = secret cfg.rpc.username;
-      "transmission/rpc/password" = secret cfg.rpc.password;
-    };
-
-    sops.templates."transmission/credentials.json" = {
-      content = builtins.toJSON {
-        rpc-username = config.sops.placeholder."transmission/rpc/username";
-        rpc-password = config.sops.placeholder."transmission/rpc/password";
-      };
-
-      owner = config.services.deluge.user;
-      group = config.services.deluge.group;
     };
   };
 }
