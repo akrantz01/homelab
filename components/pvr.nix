@@ -68,6 +68,31 @@ in {
         # Need to downgrade from latest chromium per
         # https://github.com/FlareSolverr/FlareSolverr/issues/1318
         chromium = pkgs-chromium.chromium;
+        # Chrome 126 was packaged differently than 129, so we need to change how
+        # undetected-chromedriver does it's patching
+        undetected-chromedriver = (
+          pkgs-unstable.undetected-chromedriver.overrideAttrs {
+            buildCommand = ''
+              export HOME=$(mktemp -d)
+
+              cp ${pkgs-chromium.chromedriver}/bin/.chromedriver-wrapped .
+              chmod +w .chromedriver-wrapped
+
+              python <<EOF
+              import logging
+              from undetected_chromedriver.patcher import Patcher
+
+              logging.basicConfig(level=logging.DEBUG)
+
+              success = Patcher(executable_path=".chromedriver-wrapped").patch()
+              assert success, "Failed to patch ChromeDriver"
+              EOF
+
+              install -D -m 0555 .chromedriver-wrapped $out/bin/.chromedriver-wrapped
+              sed "s#${pkgs-chromium.chromedriver}#$out#g" ${pkgs-chromium.chromedriver}/bin/chromedriver > $out/bin/undetected-chromedriver
+            '';
+          }
+        );
       };
     in {
       description = "FlareSolverr";
