@@ -110,6 +110,7 @@ in {
       environment = {
         HOME = "/run/flaresolverr";
         PORT = "8191";
+        LOG_LEVEL = "debug";
       };
 
       serviceConfig = {
