@@ -90,6 +90,7 @@ in {
 
               install -D -m 0555 .chromedriver-wrapped $out/bin/.chromedriver-wrapped
               sed "s#${pkgs-chromium.chromedriver}#$out#g" ${pkgs-chromium.chromedriver}/bin/chromedriver > $out/bin/undetected-chromedriver
+              chmod +x $out/bin/undetected-chromedriver
             '';
           }
         );
