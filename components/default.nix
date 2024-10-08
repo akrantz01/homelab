@@ -7,6 +7,7 @@
     ./database.nix
     ./mealie.nix
     ./miniflux.nix
+    ./pvr.nix
     ./reverse-proxy.nix
     ./ssh-tunnel.nix
     ./streaming.nix

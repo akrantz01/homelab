@@ -108,6 +108,10 @@
       enable = true;
       domain = "torrent.krantz.cloud";
     };
+    pvr = {
+      enable = true;
+      baseDomain = "krantz.cloud";
+    };
   };
 
   # This value determines the NixOS release from which the default
