@@ -64,36 +64,43 @@ in {
     };
 
     systemd.services.flaresolverr = let
+      chromium = pkgs-chromium.chromium;
       flaresolverr = pkgs-unstable.flaresolverr.override {
         # Need to downgrade from latest chromium per
         # https://github.com/FlareSolverr/FlareSolverr/issues/1318
-        chromium = pkgs-chromium.chromium;
-        # Chrome 126 was packaged differently than 129, so we need to change how
-        # undetected-chromedriver does it's patching
-        undetected-chromedriver = (
-          pkgs-unstable.undetected-chromedriver.overrideAttrs {
-            buildCommand = ''
-              export HOME=$(mktemp -d)
+        inherit chromium;
 
-              cp ${pkgs-chromium.chromedriver}/bin/.chromedriver-wrapped .
-              chmod +w .chromedriver-wrapped
+        # The chromedriver for Chrome 126 was packaged differently than 129, so we need to change
+        # how it's built to match what undetected-chromedriver expects. This copies the build process for 129 from:
+        # https://github.com/NixOS/nixpkgs/blob/c31898ad/pkgs/development/tools/selenium/chromedriver/source.nix
+        undetected-chromedriver = pkgs-unstable.undetected-chromedriver.override {
+          chromedriver = chromium.mkDerivation (_: {
+            name = "chromedriver";
+            packageName = "chromedriver";
 
-              python <<EOF
-              import logging
-              from undetected_chromedriver.patcher import Patcher
+            buildTargets = ["chromedriver.unstripped"];
 
-              logging.basicConfig(level=logging.DEBUG)
-
-              success = Patcher(executable_path=".chromedriver-wrapped").patch()
-              assert success, "Failed to patch ChromeDriver"
-              EOF
-
-              install -D -m 0555 .chromedriver-wrapped $out/bin/.chromedriver-wrapped
-              sed "s#${pkgs-chromium.chromedriver}#$out#g" ${pkgs-chromium.chromedriver}/bin/chromedriver > $out/bin/undetected-chromedriver
-              chmod +x $out/bin/undetected-chromedriver
+            installPhase = ''
+              install -Dm555 $buildPath/chromedriver.unstripped $out/bin/chromedriver
             '';
-          }
-        );
+
+            postFixup = null;
+
+            meta =
+              chromium.meta
+              // {
+                homepage = "https://chromedriver.chromium.org/";
+                description = "WebDriver server for running Selenium tests on Chrome";
+                longDescription = ''
+                  WebDriver is an open source tool for automated testing of webapps across
+                  many browsers. It provides capabilities for navigating to web pages, user
+                  input, JavaScript execution, and more. ChromeDriver is a standalone
+                  server that implements the W3C WebDriver standard.
+                '';
+                mainProgram = "chromedriver";
+              };
+          });
+        };
       };
     in {
       description = "FlareSolverr";
