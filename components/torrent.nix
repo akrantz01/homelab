@@ -88,6 +88,18 @@ in {
       serviceConfig.PrivateNetwork = true;
     };
 
+    systemd.services.delugeweb = {
+      serviceConfig = {
+        ExecStart = lib.mkForce ''
+          ${config.services.deluge.package}/bin/deluge-web \
+            --do-not-daemonize \
+            --config ${config.services.deluge.dataDir}/.config/deluge \
+            --port ${toString config.services.deluge.web.port} \
+            --interface 127.0.0.1
+        '';
+      };
+    };
+
     # systemd.sockets.torrent-proxy = {
     #   enable = true;
     #   wantedBy = ["sockets.target"];
