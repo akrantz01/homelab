@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-chromium": {
-      "locked": {
-        "lastModified": 1721298242,
-        "narHash": "sha256-QOos9uYnqQ1tfNAsdAfYuhznEozOqbr19JwbjEcCvFU=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "10c6033249917048251e2812c64b63d6588aa34b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "10c6033249917048251e2812c64b63d6588aa34b",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1728241625,
@@ -51,7 +35,6 @@
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
-        "nixpkgs-chromium": "nixpkgs-chromium",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix"
       }

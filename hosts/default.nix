@@ -2,7 +2,6 @@ inputs @ {
   self,
   nixpkgs,
   nixpkgs-unstable,
-  nixpkgs-chromium,
   sops-nix,
   ...
 }: let
@@ -14,8 +13,6 @@ inputs @ {
 
   pkgs-stable = import nixpkgs {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
-
-  pkgs-chromium = import nixpkgs-chromium {inherit system;};
 
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
@@ -32,7 +29,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-chromium self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
             }
           ];
         };
