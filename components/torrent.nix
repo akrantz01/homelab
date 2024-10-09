@@ -47,7 +47,16 @@ in {
       bindsTo = ["vpn.service"];
       after = ["vpn.service"];
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-      serviceConfig.PrivateNetwork = true;
+      serviceConfig = {
+        PrivateNetwork = true;
+
+        ExecStart = lib.mkForce ''
+          ${config.services.deluge.package}/bin/deluged \
+            --do-not-daemonize \
+            --config ${config.services.deluge.dataDir}/.config/deluge \
+            --loglevel info
+        '';
+      };
     };
 
     systemd.services.delugeweb = {
