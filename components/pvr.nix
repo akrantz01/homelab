@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs-stable,
   pkgs-unstable,
   ...
 }: let
@@ -56,11 +57,33 @@ in {
       openFirewall = false;
     };
 
-    services.bazarr = {
-      enable = true;
-      # Bazarr does not allow overriding the package
-      # package = pkgs-unstable.bazarr;
-      openFirewall = false;
+    # Manually copying over the Bazarr service definition as it does not support overriding the package
+    systemd.services.bazarr = {
+      description = "bazarr";
+      after = ["network.target"];
+      wantedBy = ["multi-user.target"];
+
+      serviceConfig = rec {
+        Type = "simple";
+        User = config.users.users.bazarr.name;
+        Group = config.users.users.bazarr.group;
+        StateDirectory = "bazarr";
+        SyslogIdentifier = "bazarr";
+        ExecStart = pkgs-stable.writeShellScript "start-bazarr" ''
+          ${pkgs-unstable.bazarr}/bin/bazarr \
+            --config '/var/lib/${StateDirectory}' \
+            --port ${toString config.services.bazarr.listenPort} \
+            --no-update True
+        '';
+        Restart = "on-failure";
+      };
+    };
+
+    users.groups.bazarr = {};
+    users.users.bazarr = {
+      isSystemUser = true;
+      group = config.users.groups.bazarr.name;
+      home = "/var/lib/${config.systemd.services.bazarr.serviceConfig.StateDirectory}";
     };
 
     # Manually copying over the Jellyseer service definition as it does not support overriding the package
