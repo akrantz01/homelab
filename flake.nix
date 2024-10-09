@@ -28,6 +28,7 @@
       packages = with pkgs; [
         alejandra
         bashInteractive
+        copier
         just
         opentofu
         sops
