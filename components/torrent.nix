@@ -54,7 +54,7 @@ in {
           ${config.services.deluge.package}/bin/deluged \
             --do-not-daemonize \
             --config ${config.services.deluge.dataDir}/.config/deluge \
-            --loglevel debug
+            --loglevel info
         '';
       };
     };
