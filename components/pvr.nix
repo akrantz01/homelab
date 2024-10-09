@@ -30,6 +30,7 @@ in {
     };
     domains = {
       bazarr = mkDomainOption "Bazarr";
+      jellyseerr = mkDomainOption "Jellyseer";
       prowlarr = mkDomainOption "Prowlarr";
       radarr = mkDomainOption "Radarr";
       sonarr = mkDomainOption "Sonarr";
@@ -62,8 +63,43 @@ in {
       openFirewall = false;
     };
 
+    # Manually copying over the Jellyseer service definition as it does not support overriding the package
+    systemd.services.jellyseerr = let
+      jellyseerr = pkgs-unstable.jellyseerr;
+    in {
+      description = "Jellyseerr, a requests manager for Jellyfin";
+      after = ["network.target"];
+      wantedBy = ["multi-user.target"];
+      environment.PORT = toString config.services.jellyseerr.port;
+      serviceConfig = {
+        Type = "exec";
+        StateDirectory = "jellyseerr";
+        WorkingDirectory = "${jellyseerr}/libexec/jellyseerr/deps/jellyseerr";
+        DynamicUser = true;
+        ExecStart = "${jellyseerr}/bin/jellyseerr";
+        BindPaths = ["/var/lib/jellyseerr/:${jellyseerr}/libexec/jellyseerr/deps/jellyseerr/config/"];
+        Restart = "on-failure";
+        ProtectHome = true;
+        ProtectSystem = "strict";
+        PrivateTmp = true;
+        PrivateDevices = true;
+        ProtectHostname = true;
+        ProtectClock = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectKernelLogs = true;
+        ProtectControlGroups = true;
+        NoNewPrivileges = true;
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        RemoveIPC = true;
+        PrivateMounts = true;
+      };
+    };
+
     services.nginx.virtualHosts = {
       ${cfg.domains.bazarr} = mkVirtualHost config.services.bazarr.listenPort;
+      ${cfg.domains.jellyseerr} = mkVirtualHost config.services.jellyseerr.port;
       ${cfg.domains.radarr} = mkVirtualHost 7878;
       ${cfg.domains.sonarr} = mkVirtualHost 8989;
       ${cfg.domains.prowlarr} = mkVirtualHost 9696;

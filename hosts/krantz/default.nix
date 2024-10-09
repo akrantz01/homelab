@@ -111,6 +111,7 @@
     pvr = {
       enable = true;
       baseDomain = "krantz.cloud";
+      domains.jellyseerr = "media.krantz.dev";
     };
   };
 
