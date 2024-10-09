@@ -1,6 +1,6 @@
 # Show all the tasks
 list:
-  @just -lu
+  @just --list --unsorted
 
 # Initialize project dependencies
 init:
