@@ -1,4 +1,5 @@
 ---
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 _src_path: applications/template
-requires_email: false
+email_domain: krantz.dev
+requires_email: true
