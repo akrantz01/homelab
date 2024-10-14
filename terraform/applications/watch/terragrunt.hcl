@@ -22,6 +22,6 @@ dependency "email" {
 
 inputs = {
   email_groups = {
-    krantz_dev  = dependency.email.outputs.krantz_dev
+    krantz_dev = dependency.email.outputs.krantz_dev
   }
 }
