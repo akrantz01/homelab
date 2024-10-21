@@ -12,12 +12,4 @@ dependency "github-actions" {
   skip_outputs = true
 }
 
-dependency "email" {
-  config_path = "../../email"
-}
-
-inputs = {
-  email_groups = {
-    krantz_dev = dependency.email.outputs.krantz_dev
-  }
-}
+inputs = {}
