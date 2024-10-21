@@ -54,6 +54,7 @@
         address = "notifier/address";
         username = "notifier/username";
         password = "notifier/password";
+        from.address = "no-reply@krantz.dev";
       };
     };
     backblaze = {
@@ -99,7 +100,10 @@
         public = true;
       };
       pushNotifications.enable = true;
-      smtp.enable = true;
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
     };
 
     streaming = {
