@@ -1,9 +1,5 @@
 terraform {
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.72.0"
-    }
     b2 = {
       source  = "Backblaze/b2"
       version = "0.8.12"
@@ -19,13 +15,4 @@ resource "b2_bucket" "storage" {
     mode      = "SSE-B2"
     algorithm = "AES256"
   }
-}
-
-module "email_user" {
-  source = "../../modules/user"
-
-  name = "watch"
-  path = "/services/"
-
-  groups = [var.email_groups.krantz_dev]
 }
