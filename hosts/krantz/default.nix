@@ -30,7 +30,8 @@
     };
     database.enable = true;
     authentication = {
-      enable = true;
+      # Disabled in favor of Cloudflare Zero Trust
+      enable = false;
       domain = "login.krantz.dev";
 
       passwordResetUrl = "https://console.jumpcloud.com/login?template=resetUserPassword";
