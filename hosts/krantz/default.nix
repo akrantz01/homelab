@@ -60,12 +60,15 @@
     };
     backblaze = {
       enable = true;
-      buckets.watch-krantz-dev = {
-        chunked = true;
-        paths = {
-          "/mnt/movies" = "movies";
-          "/mnt/tv" = "tv";
+      buckets = {
+        watch-krantz-dev = {
+          chunked = true;
+          paths = {
+            "/mnt/movies" = "movies";
+            "/mnt/tv" = "tv";
+          };
         };
+        primary-krantz-dev-backups.paths."/mnt/backups/postgres" = "postgres";
       };
     };
 
