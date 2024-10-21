@@ -12,6 +12,4 @@ module "user" {
 
   name = "outline"
   path = "/services/"
-
-  groups = [var.email_groups.krantz_dev]
 }
