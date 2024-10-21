@@ -14,6 +14,15 @@ in {
       type = lib.types.listOf lib.types.str;
       description = "List of databases and their corresponding users to create";
     };
+
+    backups = {
+      enable = lib.mkEnableOption "Enable database backups";
+      location = lib.mkOption {
+        type = lib.types.str;
+        default = "/mnt/backups/postgres";
+        description = "Location to store database backups";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -31,6 +40,14 @@ in {
           ensureDBOwnership = true;
         })
         cfg.databases;
+    };
+
+    services.postgresqlBackup = {
+      enable = cfg.backups.enable;
+      location = cfg.backups.location;
+
+      backupAll = true;
+      compression = "zstd";
     };
   };
 }

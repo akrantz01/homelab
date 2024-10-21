@@ -28,7 +28,10 @@
       enable = true;
       defaultListenAddresses = ["23.139.82.37" "[2602:fb89:1:25::37:1]"];
     };
-    database.enable = true;
+    database = {
+      enable = true;
+      backups.enable = true;
+    };
     authentication = {
       # Disabled in favor of Cloudflare Zero Trust
       enable = false;
