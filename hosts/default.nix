@@ -2,6 +2,7 @@ inputs @ {
   self,
   nixpkgs,
   nixpkgs-unstable,
+  nixpkgs-actualbudget,
   sops-nix,
   ...
 }: let
@@ -13,6 +14,7 @@ inputs @ {
 
   pkgs-stable = import nixpkgs {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
+  pkgs-actualbudget = import nixpkgs-actualbudget {inherit system;};
 
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
@@ -24,12 +26,14 @@ inputs @ {
           modules = [
             sops-nix.nixosModules.sops
 
+            "${nixpkgs-actualbudget}/nixos/modules/services/web-apps/actual.nix"
+
             "${self}/hosts/${host.hostname}"
             "${self}/common"
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-actualbudget self settings;};
             }
           ];
         };

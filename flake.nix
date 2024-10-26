@@ -5,6 +5,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # TODO: remove this once NixOS/nixpkgs#347825 is merged
+    nixpkgs-actualbudget.url = "github:oddlama/nixpkgs/feat-actual-budget";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs = {
