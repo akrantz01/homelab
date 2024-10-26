@@ -20,9 +20,19 @@ in {
     services.actual = {
       enable = true;
       # TODO: Change to pkgs-unstable.actual-server
-      package = pkgs-actualbudget.actual-server;
+      package = pkgs-actualbudget.actual-server.overrideAttrs (oldAttrs: {
+        patches =
+          (oldAttrs.patches or [])
+          ++ [
+            ./trust-proxy.patch
+          ];
+      });
 
       openFirewall = false;
+
+      settings = {
+        trustedProxies = [];
+      };
     };
 
     services.nginx.virtualHosts.${cfg.domain} = {

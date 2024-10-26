@@ -1,0 +1,12 @@
+diff --git a/src/app.js b/src/app.js
+index 6dbf350..c704e1f 100644
+--- a/src/app.js
++++ b/src/app.js
+@@ -19,6 +19,7 @@ process.on('unhandledRejection', (reason) => {
+ });
+ 
+ app.disable('x-powered-by');
++app.set('trust proxy', 2);
+ app.use(cors());
+ app.use(
+   rateLimit({
