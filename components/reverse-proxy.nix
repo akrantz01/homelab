@@ -9,6 +9,68 @@
 }: let
   cfg = config.components.reverseProxy;
   acme = settings.acme;
+
+  locationsType = lib.types.submodule {
+    options = {
+      proxyTo = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "The URL to proxy to";
+      };
+
+      proxyWebsockets = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Whether to proxy websockets";
+      };
+
+      recommendedProxySettings = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether to apply recommended proxy settings";
+      };
+
+      return = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Adds a return directive, for e.g. redirections.";
+      };
+
+      extraConfig = lib.mkOption {
+        type = lib.types.lines;
+        default = "";
+        description = "These lines go to the end of the upstream verbatim";
+      };
+
+      priority = lib.mkOption {
+        type = lib.types.int;
+        default = 1000;
+        description = "The priority of the location";
+      };
+    };
+  };
+
+  virtualHostsType = lib.types.submodule {
+    options = {
+      locations = lib.mkOption {
+        type = lib.types.attrsOf locationsType;
+        default = {};
+        description = "Declarative location config";
+      };
+
+      listenAddresses = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "The listen address for the virtual host";
+      };
+
+      extraConfig = lib.mkOption {
+        type = lib.types.lines;
+        default = "";
+        description = "These lines go to the end of the upstream verbatim";
+      };
+    };
+  };
 in {
   options.components.reverseProxy = {
     enable = lib.mkEnableOption "Enable the reverse proxy component";
@@ -18,6 +80,12 @@ in {
       type = lib.types.listOf lib.types.str;
       default = ["0.0.0.0"] ++ lib.optional config.networking.enableIPv6 "[::0]";
       description = "The default listen address for the reverse proxy";
+    };
+
+    hosts = lib.mkOption {
+      type = lib.types.attrsOf virtualHostsType;
+      default = {};
+      description = "Virtual hosts to configure";
     };
   };
 
@@ -72,6 +140,23 @@ in {
         ${realIpsFromList cloudflareIpV6}
         real_ip_header CF-Connecting-IP;
       '';
+
+      virtualHosts =
+        lib.attrsets.mapAttrs (name: host: {
+          forceSSL = true;
+          enableACME = true;
+          acmeRoot = null;
+
+          inherit (host) listenAddresses extraConfig;
+
+          locations =
+            lib.attrsets.mapAttrs (path: location: {
+              inherit (location) proxyWebsockets recommendedProxySettings return extraConfig priority;
+              proxyPass = location.proxyTo;
+            })
+            host.locations;
+        })
+        cfg.hosts;
     };
   };
 }

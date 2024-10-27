@@ -224,27 +224,20 @@ in {
       secrets.manual = true;
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations = let
-        server = config.services.authelia.instances.default.settings.server;
-        upstream = "http://[${server.host}]:${builtins.toString server.port}";
-      in {
-        "/api/verify" = {
-          proxyPass = upstream;
-          recommendedProxySettings = false;
-        };
-
-        "/api/authz/" = {
-          proxyPass = upstream;
-          recommendedProxySettings = false;
-        };
-
-        "/".proxyPass = upstream;
+    components.reverseProxy.hosts.${cfg.domain}.locations = let
+      server = config.services.authelia.instances.default.settings.server;
+      proxyTo = "http://[${server.host}]:${builtins.toString server.port}";
+    in {
+      "/api/verify" = {
+        inherit proxyTo;
+        recommendedProxySettings = false;
       };
+      "/api/authz/" = {
+        inherit proxyTo;
+        recommendedProxySettings = false;
+      };
+
+      "/".proxyTo = proxyTo;
     };
 
     services.redis.package = pkgs-unstable.redis;

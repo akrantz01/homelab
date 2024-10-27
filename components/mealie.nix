@@ -130,15 +130,14 @@ in {
       restartUnits = [config.systemd.services.mealie.name];
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
+    components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
+      proxyTo = let
+        mealie = config.services.mealie;
+        host = mealie.listenAddress;
+        port = builtins.toString mealie.port;
+      in "http://${host}:${port}";
 
-      locations."/" = {
-        proxyPass = "http://${config.services.mealie.listenAddress}:${builtins.toString config.services.mealie.port}";
-        proxyWebsockets = true;
-      };
+      proxyWebsockets = true;
     };
   };
 }

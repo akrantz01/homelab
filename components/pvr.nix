@@ -14,11 +14,7 @@
       description = "The domain to use for the ${for} UI";
     };
   mkVirtualHost = port: {
-    forceSSL = true;
-    enableACME = true;
-    acmeRoot = null;
-
-    locations."/".proxyPass = "http://[::1]:${toString port}";
+    locations."/".proxyTo = "http://[::1]:${toString port}";
   };
 in {
   options.components.pvr = {
@@ -120,7 +116,7 @@ in {
       };
     };
 
-    services.nginx.virtualHosts = {
+    components.reverseProxy.hosts = {
       ${cfg.domains.bazarr} = mkVirtualHost config.services.bazarr.listenPort;
       ${cfg.domains.jellyseerr} = mkVirtualHost config.services.jellyseerr.port;
       ${cfg.domains.radarr} = mkVirtualHost 7878;

@@ -90,13 +90,7 @@ in {
       "oauth2-client-secret:${config.sops.secrets."miniflux/client-secret".path}"
     ];
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations."/".proxyPass = "http://${config.services.miniflux.config.LISTEN_ADDR}";
-    };
+    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = "http://${config.services.miniflux.config.LISTEN_ADDR}";
 
     sops.secrets = lib.mkIf oauth2Enabled {
       "miniflux/client-id" = {

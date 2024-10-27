@@ -35,12 +35,8 @@ in {
       package = pkgs-unstable.jellyfin;
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
+    components.reverseProxy.hosts.${cfg.domain} = {
       inherit (cfg) listenAddresses;
-
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
 
       extraConfig = ''
         # Security / XSS Mitigation Headers
@@ -63,14 +59,14 @@ in {
       };
 
       locations."/" = {
-        proxyPass = "http://127.0.0.1:8096";
+        proxyTo = "http://127.0.0.1:8096";
         priority = 50;
 
         extraConfig = "proxy_buffering off;";
       };
 
       locations."/socket" = {
-        proxyPass = "http://127.0.0.1:8096";
+        proxyTo = "http://127.0.0.1:8096";
         proxyWebsockets = true;
         priority = 50;
       };

@@ -35,16 +35,10 @@ in {
       };
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations."/".proxyPass = let
-        settings = config.services.actual.settings;
-        hostname = settings.hostname;
-        port = settings.port;
-      in "http://[${hostname}]:${builtins.toString port}";
-    };
+    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = let
+      actual = config.services.actual;
+      host = actual.settings.hostname;
+      port = builtins.toString actual.settings.port;
+    in "http://[${host}]:${port}";
   };
 }

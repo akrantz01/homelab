@@ -31,12 +31,10 @@ in {
       database.createLocally = true;
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations."/".proxyPass = "http://[${config.services.atuin.host}]:${builtins.toString config.services.atuin.port}";
-    };
+    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = let
+      atuin = config.services.atuin;
+      host = atuin.host;
+      port = builtins.toString atuin.port;
+    in "http://[${host}]:${port}";
   };
 }

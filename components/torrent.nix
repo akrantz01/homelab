@@ -131,12 +131,6 @@ in {
       };
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations."/".proxyPass = "http://127.0.0.1:${toString config.services.deluge.web.port}";
-    };
+    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
   };
 }

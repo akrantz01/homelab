@@ -152,15 +152,9 @@ in {
       };
     };
 
-    services.nginx.virtualHosts.${cfg.domain} = {
-      forceSSL = true;
-      enableACME = true;
-      acmeRoot = null;
-
-      locations."/" = {
-        proxyPass = "http://[${listenAddress}]:${listenPort}";
-        proxyWebsockets = true;
-      };
+    components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
+      proxyTo = "http://[${listenAddress}]:${listenPort}";
+      proxyWebsockets = true;
     };
 
     sops.secrets = {
