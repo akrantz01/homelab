@@ -9,7 +9,7 @@ concurrency:
 
 env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
-  OPENTOFU_VERSION: 1.8.4
+  OPENTOFU_VERSION: 1.8.5
   # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
   TERRAGRUNT_VERSION: 0.68.6
   WORKING_DIRECTORY: terraform
