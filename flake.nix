@@ -33,6 +33,7 @@
         bashInteractive
         copier
         just
+        nix-diff
         opentofu
         sops
         terragrunt
