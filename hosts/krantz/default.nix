@@ -75,10 +75,6 @@
       };
     };
 
-    actualbudget = {
-      enable = true;
-      domain = "budget.krantz.dev";
-    };
     atuin = {
       enable = true;
       domain = "shell.krantz.dev";
