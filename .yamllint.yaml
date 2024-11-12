@@ -11,7 +11,7 @@ rules:
     forbid-implicit-octal: true
   comments:
     level: error
-    require-starting-space: true
+    require-starting-space: false
     min-spaces-from-content: 1
 
   document-start:
