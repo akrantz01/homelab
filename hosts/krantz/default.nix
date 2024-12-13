@@ -10,6 +10,10 @@
 
   time.timeZone = "America/New_York";
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "dotnet-sdk-6.0.428"
+  ];
+
   components = {
     continuousDeployment.enable = true;
     sshTunnel.enable = true;
