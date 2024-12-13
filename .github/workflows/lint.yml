@@ -5,7 +5,7 @@ name: Lint
 
 env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
-  OPENTOFU_VERSION: 1.8.5
+  OPENTOFU_VERSION: 1.8.7
   # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
   TERRAGRUNT_VERSION: v0.68.7
 
