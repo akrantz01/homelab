@@ -7,7 +7,27 @@
 }: let
   cfg = config.components.mealie;
 
+  secretsDir = "/run/secrets/mealie";
   database = "mealie";
+
+  mkSecret = key: name: {
+    inherit key;
+    sopsFile = cfg.sopsFile;
+
+    path = "${secretsDir}/${name}";
+    owner = config.systemd.services.mealie.serviceConfig.User;
+    group = config.systemd.services.mealie.serviceConfig.User;
+
+    restartUnits = [config.systemd.services.mealie.name];
+  };
+
+  mealie = pkgs-unstable.mealie.overrideAttrs (oldAttrs: {
+    patches =
+      (oldAttrs.patches or [])
+      ++ [
+        ./custom-secrets-dir.patch
+      ];
+  });
 in {
   options.components.mealie = {
     enable = lib.mkEnableOption "Enable the Mealie component";
@@ -29,8 +49,10 @@ in {
 
       clientId = lib.mkOption {
         type = lib.types.str;
-        description = "The OIDC PKCE client ID";
+        description = "The OIDC client ID";
       };
+
+      clientSecret = extra.mkSecretOption "The OIDC client secret" "mealie/oidc_client_secret";
 
       provider = lib.mkOption {
         type = lib.types.str;
@@ -55,7 +77,7 @@ in {
 
     openai = {
       enable = lib.mkEnableOption "Enable OpenAI integration";
-      apiKey = extra.mkSecretOption "OpenAI api key" "mealie/openai_token";
+      apiKey = extra.mkSecretOption "OpenAI api key" "mealie/openai_api_key";
       model = lib.mkOption {
         type = lib.types.str;
         default = "gpt-4o";
@@ -76,13 +98,15 @@ in {
 
     services.mealie = {
       enable = true;
-      package = pkgs-unstable.mealie;
+      package = mealie;
 
       listenAddress = "[::1]";
       port = 6325;
 
       settings = lib.attrsets.mergeAttrsList [
         {
+          SECRETS_DIR = secretsDir;
+
           DB_ENGINE = "postgres";
           POSTGRES_URL_OVERRIDE = "postgresql://:@mealie?host=/run/postgresql";
 
@@ -112,22 +136,16 @@ in {
           })
         (lib.optionalAttrs cfg.openai.enable
           {
-            # TODO: figure out how to set OPENAI_API_KEY
             OPENAI_MODEL = cfg.openai.model;
           })
       ];
     };
 
-    systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${pkgs-unstable.mealie}/alembic.ini";
+    systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${mealie}/alembic.ini";
 
-    sops.secrets."mealie/openai_token" = {
-      key = cfg.openai.apiKey;
-      sopsFile = cfg.sopsFile;
-
-      owner = config.systemd.services.mealie.serviceConfig.User;
-      group = config.systemd.services.mealie.serviceConfig.User;
-
-      restartUnits = [config.systemd.services.mealie.name];
+    sops.secrets = {
+      "mealie/openai_api_key" = mkSecret cfg.openai.apiKey "openai_api_key";
+      "mealie/oidc_client_secret" = mkSecret cfg.oidc.clientSecret "oidc_client_secret";
     };
 
     components.reverseProxy.hosts.${cfg.domain}.locations."/" = {

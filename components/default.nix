@@ -6,7 +6,7 @@
     ./backblaze.nix
     ./continuous-deployment.nix
     ./database.nix
-    ./mealie.nix
+    ./mealie
     ./miniflux.nix
     ./pvr.nix
     ./reverse-proxy.nix
