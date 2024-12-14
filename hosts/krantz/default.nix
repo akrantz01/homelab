@@ -87,7 +87,7 @@
         enable = true;
         provider = "JumpCloud";
         configurationUrl = "https://oauth.id.jumpcloud.com/.well-known/openid-configuration";
-        clientId = "deeb8199-fe70-44d9-b0a3-f8dd5a364599";
+        clientId = "13f91be7-8a05-45d5-bed3-2131b55dcc33";
       };
     };
     miniflux = {
