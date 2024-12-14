@@ -18,17 +18,33 @@
     },
     "nixpkgs-actualbudget": {
       "locked": {
-        "lastModified": 1730981691,
-        "narHash": "sha256-w6Y0cyvMTvy/dJQedSykvLYRNNIqK5n/VaN0XOEMsaU=",
+        "lastModified": 1734135888,
+        "narHash": "sha256-PlnCFo7OIzyKmEyKJZNs2+eeFzHv0l5xuYFfbH/9bZg=",
         "owner": "oddlama",
         "repo": "nixpkgs",
-        "rev": "afaa4612924a1e7ba4589b30b31abcba95f37c0e",
+        "rev": "276a9e2158d6c2cf4638568e65b4b855ce278623",
         "type": "github"
       },
       "original": {
         "owner": "oddlama",
         "ref": "feat-actual-budget",
         "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-sonarr": {
+      "locked": {
+        "lastModified": 1730785428,
+        "narHash": "sha256-Zwl8YgTVJTEum+L+0zVAWvXAGbWAuXHax3KzuejaDyo=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "4aa36568d413aca0ea84a1684d2d46f55dbabad7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "4aa36568d413aca0ea84a1684d2d46f55dbabad7",
         "type": "github"
       }
     },
@@ -52,6 +68,7 @@
       "inputs": {
         "nixpkgs": "nixpkgs",
         "nixpkgs-actualbudget": "nixpkgs-actualbudget",
+        "nixpkgs-sonarr": "nixpkgs-sonarr",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix"
       }

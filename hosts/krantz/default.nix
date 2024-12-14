@@ -10,14 +10,6 @@
 
   time.timeZone = "America/New_York";
 
-  # Required until NixOS/nixpkgs#360592 is closed
-  nixpkgs.config.permittedInsecurePackages = [
-    "aspnetcore-runtime-6.0.36"
-    "aspnetcore-runtime-wrapped-6.0.36"
-    "dotnet-sdk-6.0.428"
-    "dotnet-sdk-wrapped-6.0.428"
-  ];
-
   components = {
     continuousDeployment.enable = true;
     sshTunnel.enable = true;

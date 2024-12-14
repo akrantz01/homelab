@@ -7,6 +7,8 @@
 
     # TODO: remove this once NixOS/nixpkgs#347825 is merged
     nixpkgs-actualbudget.url = "github:oddlama/nixpkgs/feat-actual-budget";
+    # TODO: remove this once NixOS/nixpkgs#360592 is merged
+    nixpkgs-sonarr.url = "github:NixOS/nixpkgs/4aa36568d413aca0ea84a1684d2d46f55dbabad7";
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
