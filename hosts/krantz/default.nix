@@ -89,7 +89,10 @@
         configurationUrl = "https://oauth.id.jumpcloud.com/.well-known/openid-configuration";
         clientId = "13f91be7-8a05-45d5-bed3-2131b55dcc33";
       };
-      smtp.enable = true;
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
     };
     miniflux = {
       enable = true;
