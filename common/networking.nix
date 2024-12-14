@@ -34,13 +34,11 @@
     DHCP = dhcp;
     networkConfig.IPv6AcceptRA = dhcp;
 
-    addresses = lib.mkIf (!host.networking.dhcp) (builtins.map (addr: {addressConfig.Address = addr;}) host.networking.addresses);
+    addresses = lib.mkIf (!host.networking.dhcp) (builtins.map (addr: {Address = addr;}) host.networking.addresses);
     routes = lib.mkIf (!host.networking.dhcp) (builtins.map
       (route: {
-        routeConfig = {
-          Gateway = route;
-          GatewayOnLink = lib.mkIf (lib.strings.hasInfix ":" route) true;
-        };
+        Gateway = route;
+        GatewayOnLink = lib.mkIf (lib.strings.hasInfix ":" route) true;
       })
       host.networking.routes);
 
