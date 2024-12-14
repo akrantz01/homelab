@@ -7,7 +7,7 @@
 }: let
   cfg = config.components.mealie;
 
-  secretsDir = "/run/secrets/mealie";
+  secretsDir = "/var/lib/mealie/secrets";
   database = "mealie";
 
   mkSecret = key: name: {
@@ -142,6 +142,13 @@ in {
     };
 
     systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${mealie}/alembic.ini";
+
+    systemd.tmpfiles.settings."10-mealie"."/var/lib/mealie/secrets".d = {
+      user = config.systemd.services.mealie.serviceConfig.User;
+      group = config.systemd.services.mealie.serviceConfig.User;
+      mode = "0700";
+      age = "-";
+    };
 
     sops.secrets = {
       "mealie/openai_api_key" = mkSecret cfg.openai.apiKey "openai_api_key";
