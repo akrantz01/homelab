@@ -4,7 +4,7 @@ module "bucket" {
   prefix = "cms-krantz-dev"
 
   acl            = "private"
-  public_objects = false
+  public_objects = true
 }
 
 resource "aws_iam_policy" "bucket_policy" {
