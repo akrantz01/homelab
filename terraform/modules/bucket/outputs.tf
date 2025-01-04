@@ -3,6 +3,11 @@ output "name" {
   description = "The resulting bucket name"
 }
 
+output "arn" {
+  value       = aws_s3_bucket.bucket.arn
+  description = "The resulting bucket ARN"
+}
+
 output "policy" {
   value       = data.aws_iam_policy_document.policy.json
   description = "The policy for allowing read and write access to the bucket"
