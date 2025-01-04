@@ -17,7 +17,7 @@ resource "aws_kms_key_policy" "sops" {
 
 data "aws_iam_policy_document" "sops_key_policy" {
   statement {
-    sid = "Root User Permissions"
+    sid = "RootUserPermissions"
 
     effect = "Allow"
 
@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "sops_key_policy" {
   }
 
   statement {
-    sid = "GitHub Actions"
+    sid = "GitHubActions"
 
     effect = "Allow"
 
