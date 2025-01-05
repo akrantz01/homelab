@@ -18,7 +18,7 @@ resource "aws_iam_user_group_membership" "membership" {
 }
 
 resource "aws_iam_user_policy_attachment" "attachment" {
-  for_each = toset(var.policies)
+  for_each = var.policies
 
   user       = aws_iam_user.user.name
   policy_arn = each.value

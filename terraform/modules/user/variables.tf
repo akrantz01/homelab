@@ -16,7 +16,7 @@ variable "groups" {
 }
 
 variable "policies" {
-  type        = list(string)
-  default     = []
+  type        = map(string)
+  default     = {}
   description = "The policy ARNs to attach to the user"
 }
