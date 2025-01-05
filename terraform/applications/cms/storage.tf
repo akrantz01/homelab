@@ -42,6 +42,14 @@ data "aws_iam_policy_document" "bucket_readwrite_policy" {
   statement {
     actions = [
       "s3:GetBucketLocation",
+      "s3:ListBucket"
+    ]
+    resources = [module.bucket.arn]
+  }
+
+  statement {
+    actions = [
+      "s3:GetBucketLocation",
       "s3:ListBucket",
       "s3:PutObject",
       "s3:GetObject",
