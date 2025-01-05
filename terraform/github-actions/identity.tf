@@ -12,7 +12,8 @@ resource "aws_iam_role" "homelab" {
     data.aws_iam_policy.iam_full_access.arn,
     data.aws_iam_policy.kms_full_access.arn,
     data.aws_iam_policy.s3_full_access.arn,
-    data.aws_iam_policy.ses_full_access.arn
+    data.aws_iam_policy.ses_full_access.arn,
+    data.aws_iam_policy.cloudfront_full_access.arn
   ]
 }
 
@@ -59,4 +60,8 @@ data "aws_iam_policy" "s3_full_access" {
 
 data "aws_iam_policy" "ses_full_access" {
   name = "AmazonSESFullAccess"
+}
+
+data "aws_iam_policy" "cloudfront_full_access" {
+  name = "CloudFrontFullAccess"
 }
