@@ -2,14 +2,6 @@ locals {
   default_origin = module.bucket.domain_name
 }
 
-data "aws_cloudfront_cache_policy" "default" {
-  name = "Managed-CachingOptimized"
-}
-
-data "aws_cloudfront_response_headers_policy" "default" {
-  name = "Managed-CORS-and-SecurityHeadersPolicy"
-}
-
 resource "aws_cloudfront_origin_access_control" "cms" {
   name        = "CmsBucket"
   description = "Restrict access to the CMS asset bucket"
@@ -55,5 +47,32 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
+  }
+}
+
+resource "aws_iam_policy" "cdn_cache_invalidation" {
+  name        = "CdnCacheInvalidationPolicy"
+  path        = "/services/cms/"
+  description = "Policy for invalidating the CDN cache"
+
+  policy = data.aws_iam_policy_document.cdn_cache_invalidation.json
+}
+
+data "aws_cloudfront_cache_policy" "default" {
+  name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_response_headers_policy" "default" {
+  name = "Managed-CORS-and-SecurityHeadersPolicy"
+}
+
+data "aws_iam_policy_document" "cdn_cache_invalidation" {
+  statement {
+    actions = [
+      "cloudfront:CreateInvalidation",
+      "cloudfront:GetInvalidation",
+      "cloudfront:ListInvalidations"
+    ]
+    resources = [aws_cloudfront_distribution.cdn.arn]
   }
 }
