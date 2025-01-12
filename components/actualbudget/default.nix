@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  pkgs-actualbudget,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.actualbudget;
@@ -19,8 +19,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.actual = {
       enable = true;
-      # TODO: Change to pkgs-unstable.actual-server
-      package = pkgs-actualbudget.actual-server.overrideAttrs (oldAttrs: {
+      package = pkgs-unstable.actual-server.overrideAttrs (oldAttrs: {
         patches =
           (oldAttrs.patches or [])
           ++ [
