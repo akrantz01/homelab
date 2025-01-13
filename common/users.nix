@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs-stable,
   ...
@@ -21,7 +22,11 @@ in {
     description = "Alex Krantz";
     extraGroups = ["wheel"];
     openssh.authorizedKeys.keys = githubSshKeys "akrantz01" "sha256-Ziu5Kn8Vg5u1bWcCtySa6eXCFgMzlupQskzzjxn2PQc=";
+    hashedPasswordFile = config.sops.secrets."users/alex".path;
   };
+
+  # Secrets containing hashed user passwords
+  sops.secrets."users/alex".neededForUsers = true;
 
   # Allow passwordless sudo
   security.sudo.wheelNeedsPassword = false;
