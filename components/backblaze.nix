@@ -112,6 +112,17 @@ in {
       })
       flattenedMounts;
 
+    systemd.automounts =
+      lib.lists.map (mount: let
+        identifier = pathToIdent mount.destination;
+      in {
+        name = "${identifier}.automount";
+        enable = true;
+        description = "automatically mounts ${mount.destination}";
+        where = mount.destination;
+      })
+      flattenedMounts;
+
     systemd.tmpfiles.settings."10-backblaze" =
       lib.attrsets.genAttrs
       (lib.lists.map (identifier: "/var/cache/rclone/${identifier}") identifiers)
