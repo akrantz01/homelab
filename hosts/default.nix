@@ -2,7 +2,6 @@ inputs @ {
   self,
   nixpkgs,
   nixpkgs-unstable,
-  nixpkgs-actualbudget,
   nixpkgs-sonarr,
   sops-nix,
   ...
@@ -15,7 +14,6 @@ inputs @ {
 
   pkgs-stable = import nixpkgs {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
-  pkgs-actualbudget = import nixpkgs-actualbudget {inherit system;};
   pkgs-sonarr = import nixpkgs-sonarr {inherit system;};
 
   makeSystems = hosts:
@@ -28,14 +26,14 @@ inputs @ {
           modules = [
             sops-nix.nixosModules.sops
 
-            "${nixpkgs-actualbudget}/nixos/modules/services/web-apps/actual.nix"
+            "${nixpkgs-unstable}/nixos/modules/services/web-apps/actual.nix"
 
             "${self}/hosts/${host.hostname}"
             "${self}/common"
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-actualbudget pkgs-sonarr self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-sonarr self settings;};
             }
           ];
         };
