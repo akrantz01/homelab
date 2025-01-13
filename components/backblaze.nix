@@ -120,6 +120,7 @@ in {
         enable = true;
         description = "automatically mounts ${mount.destination}";
         where = mount.destination;
+        wantedBy = ["multi-user.target"];
       })
       flattenedMounts;
 
