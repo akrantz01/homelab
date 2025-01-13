@@ -83,37 +83,16 @@ in {
       home = "/var/lib/${config.systemd.services.bazarr.serviceConfig.StateDirectory}";
     };
 
-    # Manually copying over the Jellyseer service definition as it does not support overriding the package
-    systemd.services.jellyseerr = let
-      jellyseerr = pkgs-unstable.jellyseerr;
-    in {
-      description = "Jellyseerr, a requests manager for Jellyfin";
-      after = ["network.target"];
-      wantedBy = ["multi-user.target"];
-      environment.PORT = toString config.services.jellyseerr.port;
+    services.jellyseerr = {
+      enable = true;
+      package = pkgs-unstable.jellyseerr;
+      openFirewall = false;
+    };
+    systemd.services.jellyseerr = {
+      environment.CONFIG_DIRECTORY = "/var/lib/jellyseerr/config";
       serviceConfig = {
-        Type = "exec";
-        StateDirectory = "jellyseerr";
-        WorkingDirectory = "${jellyseerr}/libexec/jellyseerr/deps/jellyseerr";
-        DynamicUser = true;
-        ExecStart = "${jellyseerr}/bin/jellyseerr";
-        BindPaths = ["/var/lib/jellyseerr/:${jellyseerr}/libexec/jellyseerr/deps/jellyseerr/config/"];
-        Restart = "on-failure";
-        ProtectHome = true;
-        ProtectSystem = "strict";
-        PrivateTmp = true;
-        PrivateDevices = true;
-        ProtectHostname = true;
-        ProtectClock = true;
-        ProtectKernelTunables = true;
-        ProtectKernelModules = true;
-        ProtectKernelLogs = true;
-        ProtectControlGroups = true;
-        NoNewPrivileges = true;
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        RemoveIPC = true;
-        PrivateMounts = true;
+        WorkingDirectory = lib.mkForce "/";
+        BindPaths = lib.mkForce [];
       };
     };
 
