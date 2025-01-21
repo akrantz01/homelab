@@ -73,8 +73,6 @@ in {
 
         DISABLE_LOCAL_AUTH = 1;
 
-        WEBAUTHN = 1;
-
         OAUTH2_PROVIDER = lib.mkIf oauth2Enabled cfg.oauth2.provider;
         OAUTH2_OIDC_DISCOVERY_ENDPOINT = lib.mkIf oauth2Enabled cfg.oauth2.discoveryEndpoint;
         OAUTH2_CLIENT_ID_FILE = lib.mkIf oauth2Enabled "%d/oauth2-client-id";
