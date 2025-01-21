@@ -82,8 +82,6 @@ in {
 
         # No admin user here, we'll handle everything through OIDC
         CREATE_ADMIN = lib.mkForce 0;
-
-        LOG_LEVEL = "debug";
       };
     };
 
