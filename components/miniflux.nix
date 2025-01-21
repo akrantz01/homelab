@@ -96,10 +96,14 @@ in {
       "miniflux/client-id" = {
         inherit (cfg) sopsFile;
         key = cfg.oauth2.clientId;
+
+        restartUnits = ["miniflux.service"];
       };
       "miniflux/client-secret" = {
         inherit (cfg) sopsFile;
         key = cfg.oauth2.clientSecret;
+
+        restartUnits = ["miniflux.service"];
       };
     };
   };
