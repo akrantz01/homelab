@@ -71,6 +71,8 @@ in {
         BASE_URL = "https://${cfg.domain}";
         HTTPS = 1;
 
+        DISABLE_LOCAL_AUTH = 1;
+
         WEBAUTHN = 1;
 
         OAUTH2_PROVIDER = lib.mkIf oauth2Enabled cfg.oauth2.provider;
