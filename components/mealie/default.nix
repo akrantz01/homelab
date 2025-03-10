@@ -172,8 +172,6 @@ in {
       ];
     };
 
-    systemd.services.mealie.environment.ALEMBIC_CONFIG_FILE = lib.mkForce "${mealie}/alembic.ini";
-
     systemd.tmpfiles.settings."10-mealie"."/var/lib/mealie/secrets".d = {
       user = config.systemd.services.mealie.serviceConfig.User;
       group = config.systemd.services.mealie.serviceConfig.User;
