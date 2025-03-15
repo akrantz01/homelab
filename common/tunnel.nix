@@ -10,8 +10,6 @@
     openFirewall = true;
 
     authKeyFile = config.sops.secrets."tailscale/key".path;
-    authKeyParameters.preauthorized = true;
-
     extraUpFlags = ["--ssh"];
   };
 
