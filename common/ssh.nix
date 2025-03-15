@@ -1,13 +1,15 @@
 {...}: {
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    openFirewall = false;
 
-  services.openssh.settings = {
-    PermitRootLogin = "no";
+    settings = {
+      PermitRootLogin = "no";
 
-    PasswordAuthentication = false;
-    KbdInteractiveAuthentication = false;
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
 
-    X11Forwarding = false;
+      X11Forwarding = false;
+    };
   };
 }
