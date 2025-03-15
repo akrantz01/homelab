@@ -12,7 +12,6 @@
 
   components = {
     continuousDeployment.enable = true;
-    sshTunnel.enable = true;
     vpn = {
       enable = true;
       addresses = ["10.2.0.2"];
