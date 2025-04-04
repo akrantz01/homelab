@@ -1,7 +1,3 @@
-data "aws_iam_openid_connect_provider" "github" {
-  url = "https://token.actions.githubusercontent.com"
-}
-
 resource "aws_iam_role" "homelab" {
   name        = "GitHubActionsHomelab"
   description = "The role assumed by the akrantz01/homelab repository on GitHub."
@@ -18,7 +14,8 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
     data.aws_iam_policy.kms_full_access.arn,
     data.aws_iam_policy.s3_full_access.arn,
     data.aws_iam_policy.ses_full_access.arn,
-    data.aws_iam_policy.cloudfront_full_access.arn
+    data.aws_iam_policy.cloudfront_full_access.arn,
+    data.aws_iam_policy.ecrpublic_full_access.arn,
   ]
 }
 
@@ -69,4 +66,8 @@ data "aws_iam_policy" "ses_full_access" {
 
 data "aws_iam_policy" "cloudfront_full_access" {
   name = "CloudFrontFullAccess"
+}
+
+data "aws_iam_policy" "ecrpublic_full_access" {
+  name = "AmazonElasticContainerRegistryPublicFullAccess"
 }
