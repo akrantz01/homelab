@@ -1,7 +1,3 @@
-data "aws_iam_openid_connect_provider" "github" {
-  url = "https://token.actions.githubusercontent.com"
-}
-
 resource "aws_iam_role" "homelab" {
   name        = "GitHubActionsHomelab"
   description = "The role assumed by the akrantz01/homelab repository on GitHub."
