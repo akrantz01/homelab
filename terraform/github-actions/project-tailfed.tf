@@ -5,11 +5,11 @@ resource "aws_iam_role" "tailfed" {
   assume_role_policy = data.aws_iam_policy_document.tailfed_trust_policy.json
 }
 
-resource "aws_iam_role_policy" "tailfed_ecr" {
-  name = "GitHubActionsTailfedECR"
+resource "aws_iam_role_policy" "tailfed_artifacts" {
+  name = "GitHubActionsTailfedArtifacts"
   role = aws_iam_role.tailfed.id
 
-  policy = data.aws_iam_policy_document.tailfed_ecr_policy.json
+  policy = data.aws_iam_policy_document.tailfed_artifacts_policy.json
 }
 
 data "aws_iam_policy_document" "tailfed_trust_policy" {
@@ -37,27 +37,12 @@ data "aws_iam_policy_document" "tailfed_trust_policy" {
   }
 }
 
-data "aws_iam_policy_document" "tailfed_ecr_policy" {
+data "aws_iam_policy_document" "tailfed_artifacts_policy" {
   statement {
     effect = "Allow"
     actions = [
-      "ecr-public:GetAuthorizationToken",
-      "sts:GetServiceBearerToken",
+      "s3:PutObject",
     ]
-    resources = ["*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "ecr-public:BatchCheckLayerAvailability",
-      "ecr-public:CompleteLayerUpload",
-      "ecr-public:InitiateLayerUpload",
-      "ecr-public:PutImage",
-      "ecr-public:UploadLayerPart",
-    ]
-    resources = [
-      "arn:aws:ecr-public::${data.aws_caller_identity.current.account_id}:repository/tailfed/*"
-    ]
+    resources = ["arn:aws:s3:::tailfed-artifacts/*"]
   }
 }
