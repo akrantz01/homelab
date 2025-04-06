@@ -39,10 +39,8 @@ data "aws_iam_policy_document" "tailfed_trust_policy" {
 
 data "aws_iam_policy_document" "tailfed_artifacts_policy" {
   statement {
-    effect = "Allow"
-    actions = [
-      "s3:PutObject",
-    ]
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
     resources = ["arn:aws:s3:::tailfed-artifacts/*"]
   }
 }
