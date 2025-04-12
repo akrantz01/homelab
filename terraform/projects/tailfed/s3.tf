@@ -2,22 +2,12 @@ resource "aws_s3_bucket" "global_artifacts" {
   bucket = "tailfed-artifacts"
 }
 
-moved {
-  from = aws_s3_bucket.artifacts
-  to = aws_s3_bucket.global_artifacts
-}
-
 resource "aws_s3_bucket_ownership_controls" "global_artifacts" {
   bucket = aws_s3_bucket.global_artifacts.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
-}
-
-moved {
-  from = aws_s3_bucket_ownership_controls.artifacts
-  to = aws_s3_bucket_ownership_controls.global_artifacts
 }
 
 resource "aws_s3_bucket_public_access_block" "global_artifacts" {
@@ -27,11 +17,6 @@ resource "aws_s3_bucket_public_access_block" "global_artifacts" {
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
-}
-
-moved {
-  from = aws_s3_bucket_public_access_block.artifacts
-  to = aws_s3_bucket_public_access_block.global_artifacts
 }
 
 resource "aws_s3_bucket_acl" "global_artifacts" {
@@ -44,20 +29,10 @@ resource "aws_s3_bucket_acl" "global_artifacts" {
   acl    = "public-read"
 }
 
-moved {
-  from = aws_s3_bucket_acl.artifacts
-  to = aws_s3_bucket_acl.global_artifacts
-}
-
 resource "aws_s3_bucket_policy" "global_artifacts" {
   bucket = aws_s3_bucket.global_artifacts.id
 
   policy = data.aws_iam_policy_document.global_artifacts.json
-}
-
-moved {
-  from = aws_s3_bucket_policy.artifacts
-  to = aws_s3_bucket_policy.global_artifacts
 }
 
 data "aws_iam_policy_document" "global_artifacts" {
