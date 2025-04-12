@@ -37,9 +37,9 @@ resource "aws_s3_bucket_policy" "artifacts" {
 
 data "aws_iam_policy_document" "artifacts" {
   statement {
-    sid     = "AllowGetObject"
-    effect  = "Allow"
-    actions = ["s3:GetObject"]
+    sid       = "AllowGetObject"
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.artifacts.arn}/*"]
     principals {
       type        = "AWS"
