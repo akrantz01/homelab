@@ -17,26 +17,29 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-unstable,
     ...
   }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
+    pkgs-unstable = import nixpkgs-unstable {inherit system;};
   in {
     nixosConfigurations = import ./hosts inputs;
 
     devShells.${system}.default = pkgs.mkShell {
-      packages = with pkgs; [
-        alejandra
-        bashInteractive
-        copier
-        just
-        nix-diff
-        opentofu
-        sops
-        terragrunt
-        tflint
-        yamllint
-      ];
+      packages =
+        (with pkgs; [
+          alejandra
+          bashInteractive
+          copier
+          just
+          nix-diff
+          sops
+          terragrunt
+          tflint
+          yamllint
+        ])
+        ++ [pkgs-unstable.opentofu];
 
       shellHook = ''
         alias j=just
