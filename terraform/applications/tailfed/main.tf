@@ -26,7 +26,7 @@ provider "aws" {
 }
 
 module "tailfed" {
-  source = "git@github.com:akrantz01/tailfed.git//terraform?ref=main"
+  source = "github.com/akrantz01/tailfed//terraform?ref=main"
   providers = {
     aws.release = aws.us_east_1
   }
