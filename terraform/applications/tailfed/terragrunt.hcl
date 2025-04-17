@@ -1,6 +1,6 @@
 locals {
   secrets_path = "${get_repo_root()}/secrets/github/tailfed.yaml"
-  secrets = yamldecode(sops_decrypt_file(local.secrets_path))
+  secrets      = yamldecode(sops_decrypt_file(local.secrets_path))
 }
 
 include "root" {
