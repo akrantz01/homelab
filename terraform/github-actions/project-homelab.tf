@@ -15,7 +15,7 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
     data.aws_iam_policy.s3_full_access.arn,
     data.aws_iam_policy.ses_full_access.arn,
     data.aws_iam_policy.cloudfront_full_access.arn,
-    data.aws_iam_policy.ecrpublic_full_access.arn,
+    data.aws_iam_policy.ssm_full_access.arn,
   ]
 }
 
@@ -68,6 +68,6 @@ data "aws_iam_policy" "cloudfront_full_access" {
   name = "CloudFrontFullAccess"
 }
 
-data "aws_iam_policy" "ecrpublic_full_access" {
-  name = "AmazonElasticContainerRegistryPublicFullAccess"
+data "aws_iam_policy" "ssm_full_access" {
+  name = "AmazonSSMFullAccess"
 }
