@@ -4,8 +4,7 @@ resource "tailscale_tailnet_key" "verifier" {
   reusable      = true
   ephemeral     = true
   preauthorized = true
-  expiry        = 60 * 60 * 24 # 1 day
-  # expiry        = 30 * 60 * 60 * 24 # 30 days
+  expiry        = 30 * 60 * 60 * 24 # 30 days
 
   tags = ["tag:homelab"]
 
