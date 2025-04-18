@@ -26,6 +26,7 @@ provider "aws" {
 }
 
 module "tailfed" {
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/akrantz01/tailfed//terraform?ref=main"
   providers = {
     aws.release = aws.us_east_1
