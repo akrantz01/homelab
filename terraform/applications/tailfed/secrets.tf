@@ -17,6 +17,7 @@ resource "aws_ssm_parameter" "tailnet" {
   type  = "String"
   value = var.tailscale_tailnet
 
+  key_id    = aws_kms_alias.secrets.arn
   overwrite = true
 }
 
@@ -25,6 +26,7 @@ resource "aws_ssm_parameter" "auth_key" {
   type  = "SecureString"
   value = tailscale_tailnet_key.verifier.key
 
+  key_id    = aws_kms_alias.secrets.arn
   overwrite = true
 }
 
@@ -33,6 +35,7 @@ resource "aws_ssm_parameter" "oauth_client_id" {
   type  = "SecureString"
   value = var.tailfed_tailscale_oauth_client_id
 
+  key_id    = aws_kms_alias.secrets.arn
   overwrite = true
 }
 
@@ -41,5 +44,55 @@ resource "aws_ssm_parameter" "oauth_client_secret" {
   type  = "SecureString"
   value = var.tailfed_tailscale_oauth_client_secret
 
+  key_id    = aws_kms_alias.secrets.arn
   overwrite = true
+}
+
+data "aws_iam_policy_document" "secrets_access" {
+  statement {
+    sid     = "AllowGetParameter"
+    effect  = "Allow"
+    actions = ["ssm:GetParameter"]
+    resources = [
+      aws_ssm_parameter.tailnet.arn,
+      aws_ssm_parameter.auth_key.arn,
+      aws_ssm_parameter.oauth_client_id.arn,
+      aws_ssm_parameter.oauth_client_secret.arn
+    ]
+  }
+
+  statement {
+    sid     = "AllowDecryptParameter"
+    effect  = "Allow"
+    actions = ["kms:Decrypt"]
+    resources = [
+      aws_kms_key.secrets.arn,
+      aws_kms_alias.secrets.arn
+    ]
+  }
+}
+
+resource "aws_kms_key" "secrets" {
+  description = "KMS key for encrypting Tailfed secrets"
+  key_usage   = "ENCRYPT_DECRYPT"
+  policy      = data.aws_iam_policy_document.secrets.json
+}
+
+resource "aws_kms_alias" "secrets" {
+  target_key_id = aws_kms_key.secrets.key_id
+  name          = "alias/tailfed/secrets"
+}
+
+data "aws_iam_policy_document" "secrets" {
+  statement {
+    sid       = "EnableIAMUserPermissions"
+    effect    = "Allow"
+    actions   = ["kms:*"]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
 }

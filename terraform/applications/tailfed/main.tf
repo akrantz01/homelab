@@ -25,6 +25,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_caller_identity" "current" {}
+
 module "tailfed" {
   # tflint-ignore: terraform_module_pinned_source
   source = "github.com/akrantz01/tailfed//terraform?ref=main"
@@ -48,5 +50,9 @@ module "tailfed" {
   domain = {
     name        = local.domain
     certificate = aws_acm_certificate.domain.arn
+  }
+
+  execution_role_policies = {
+    Secrets = data.aws_iam_policy_document.secrets_access.json
   }
 }
