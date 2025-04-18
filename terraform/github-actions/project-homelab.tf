@@ -25,6 +25,12 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
   ]
 }
 
+resource "aws_iam_role_policy" "homelab_kms_decrypt" {
+  role   = aws_iam_role.homelab.id
+  name   = "KMSDecrypt"
+  policy = data.aws_iam_policy_document.kms_decrypt.json
+}
+
 data "aws_iam_policy_document" "homelab_trust_policy" {
   statement {
     effect = "Allow"
@@ -47,6 +53,14 @@ data "aws_iam_policy_document" "homelab_trust_policy" {
       variable = "token.actions.githubusercontent.com:sub"
       values   = ["repo:akrantz01/homelab:ref:refs/heads/*"]
     }
+  }
+}
+
+data "aws_iam_policy_document" "kms_decrypt" {
+  statement {
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
+    resources = ["*"]
   }
 }
 
