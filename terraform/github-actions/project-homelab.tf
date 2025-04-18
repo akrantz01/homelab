@@ -25,10 +25,10 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
   ]
 }
 
-resource "aws_iam_role_policy" "homelab_kms_decrypt" {
+resource "aws_iam_role_policy" "homelab_kms_ssm" {
   role   = aws_iam_role.homelab.id
-  name   = "KMSDecrypt"
-  policy = data.aws_iam_policy_document.kms_decrypt.json
+  name   = "KMSForSSM"
+  policy = data.aws_iam_policy_document.kms_ssm.json
 }
 
 data "aws_iam_policy_document" "homelab_trust_policy" {
@@ -56,10 +56,10 @@ data "aws_iam_policy_document" "homelab_trust_policy" {
   }
 }
 
-data "aws_iam_policy_document" "kms_decrypt" {
+data "aws_iam_policy_document" "kms_ssm" {
   statement {
     effect    = "Allow"
-    actions   = ["kms:Decrypt"]
+    actions   = ["kms:Decrypt", "kms:Encrypt"]
     resources = ["*"]
   }
 }
