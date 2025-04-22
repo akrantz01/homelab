@@ -16,7 +16,6 @@ resource "aws_ssm_parameter" "tailnet" {
   type  = "String"
   value = var.tailscale_tailnet
 
-  key_id    = aws_kms_alias.secrets.arn
   overwrite = true
 }
 
