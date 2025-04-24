@@ -74,7 +74,7 @@ in {
         RemainAfterExit = true;
 
         ExecStart = let
-          addresses = lib.lists.map (address: "${ip} address add ${address} dev wg0") cfg.addresses;
+          addresses = lib.lists.map (address: "${ip} -n ${namespace} address add ${address} dev wg0") cfg.addresses;
         in
           pkgs-stable.writers.writeBash "vpn-up" ''
             set -ex
@@ -93,7 +93,7 @@ in {
 
             ${builtins.concatStringsSep "\n" addresses}
 
-            ${ip} link set ${interface} up
+            ${ip} -n ${namespace} link set ${interface} up
 
             ${ip} link set ${interface} netns ${namespace}
 
