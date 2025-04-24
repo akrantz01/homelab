@@ -17,9 +17,9 @@
       addresses = ["10.2.0.2"];
       dns = ["1.1.1.1" "1.0.0.1"];
       peer = {
-        # ProtonVPN US-IL#257
+        # ProtonVPN US-IL#268
         publicKey = "houxrsE+RottYWy4pSsRM8ZEReqN0cEzPGtYOzmjOF0=";
-        address = "89.187.180.27";
+        address = "89.187.180.40";
       };
     };
 
