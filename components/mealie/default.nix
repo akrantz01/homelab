@@ -148,6 +148,8 @@ in {
 
           SECURITY_MAX_LOGIN_ATTEMPTS = "3";
           SECURITY_USER_LOCKOUT_TIME = "24";
+
+          NLTK_DATA = pkgs-unstable.nltk-data.averaged_perceptron_tagger_eng;
         }
         (lib.optionalAttrs cfg.oidc.enable
           {
