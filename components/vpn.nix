@@ -67,7 +67,7 @@ in {
 
         grep = "${pkgs-stable.gnugrep}/bin/grep";
         ip = "${pkgs-stable.iproute2}/bin/ip";
-        ping = "${pkgs-stable.inetutils}/bin/ping";
+        ping = "${pkgs-stable.iputils}/bin/ping";
         wg = "${pkgs-stable.wireguard-tools}/bin/wg";
       in {
         Type = "oneshot";
