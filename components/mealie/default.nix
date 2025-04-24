@@ -7,16 +7,11 @@
 }: let
   cfg = config.components.mealie;
 
-  secretsDir = "/var/lib/mealie/secrets";
   database = "mealie";
 
-  mkSecret = key: name: {
+  mkSecret = key: {
     inherit key;
     sopsFile = cfg.sopsFile;
-
-    path = "${secretsDir}/${name}";
-    owner = config.systemd.services.mealie.serviceConfig.User;
-    group = config.systemd.services.mealie.serviceConfig.User;
 
     restartUnits = [config.systemd.services.mealie.name];
   };
@@ -133,7 +128,7 @@ in {
 
       settings = lib.attrsets.mergeAttrsList [
         {
-          SECRETS_DIR = secretsDir;
+          SECRETS_DIR = "%d";
 
           DB_ENGINE = "postgres";
           POSTGRES_URL_OVERRIDE = "postgresql://:@mealie?host=/run/postgresql";
@@ -174,21 +169,23 @@ in {
       ];
     };
 
-    systemd.tmpfiles.settings."10-mealie"."/var/lib/mealie/secrets".d = {
-      user = config.systemd.services.mealie.serviceConfig.User;
-      group = config.systemd.services.mealie.serviceConfig.User;
-      mode = "0700";
-      age = "-";
+    sops.secrets = {
+      "mealie/openai_api_key" = mkSecret cfg.openai.apiKey; # "openai_api_key";
+      "mealie/oidc_client_secret" = mkSecret cfg.oidc.clientSecret; # "oidc_client_secret";
+      "mealie/smtp/host" = mkSecret cfg.smtp.host; # "smtp_host";
+      "mealie/smtp/port" = mkSecret cfg.smtp.port; # "smtp_port";
+      "mealie/smtp/username" = mkSecret cfg.smtp.username; # "smtp_user";
+      "mealie/smtp/password" = mkSecret cfg.smtp.password; # "smtp_password";
     };
 
-    sops.secrets = {
-      "mealie/openai_api_key" = mkSecret cfg.openai.apiKey "openai_api_key";
-      "mealie/oidc_client_secret" = mkSecret cfg.oidc.clientSecret "oidc_client_secret";
-      "mealie/smtp/host" = mkSecret cfg.smtp.host "smtp_host";
-      "mealie/smtp/port" = mkSecret cfg.smtp.port "smtp_port";
-      "mealie/smtp/username" = mkSecret cfg.smtp.username "smtp_user";
-      "mealie/smtp/password" = mkSecret cfg.smtp.password "smtp_password";
-    };
+    systemd.services.mealie.serviceConfig.LoadCredential = [
+      "openai_api_key:${config.sops.secrets."mealie/openai_api_key".path}"
+      "oidc_client_secret:${config.sops.secrets."mealie/oidc_client_secret".path}"
+      "smtp_host:${config.sops.secrets."mealie/smtp/host".path}"
+      "smtp_port:${config.sops.secrets."mealie/smtp/port".path}"
+      "smtp_user:${config.sops.secrets."mealie/smtp/username".path}"
+      "smtp_password:${config.sops.secrets."mealie/smtp/password".path}"
+    ];
 
     components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
       proxyTo = let
