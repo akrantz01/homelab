@@ -67,6 +67,7 @@ in {
           addresses = lib.lists.map (address: "${ip} -n ${namespace} address add ${address} dev wg0") cfg.addresses;
         in
           pkgs-stable.writers.writeBash "vpn-up" ''
+            set -ex
             ${ip} link add ${interface} type wireguard
             ${wg} set ${interface} \
               private-key ${config.sops.secrets."vpn/private_key".path} \
@@ -85,6 +86,7 @@ in {
           '';
 
         ExecStop = pkgs-stable.writers.writeBash "vpn-down" ''
+          set -ex
           ${ip} -n ${namespace} link del ${interface}
           ${ip} -n ${namespace} route del default dev ${interface}
           ${ip} -n ${namespace} -6 route del default dev ${interface}
