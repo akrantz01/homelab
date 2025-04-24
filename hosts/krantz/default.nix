@@ -19,7 +19,7 @@
       peer = {
         # ProtonVPN US-IL#257
         publicKey = "houxrsE+RottYWy4pSsRM8ZEReqN0cEzPGtYOzmjOF0=";
-        endpoint = "89.187.180.27:51820";
+        address = "89.187.180.27";
       };
     };
 
