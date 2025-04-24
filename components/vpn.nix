@@ -95,21 +95,6 @@ in {
 
             ${ip} link set ${interface} up
 
-            connection_verified=false
-            for ((i=1; i<=3; i++)); do
-              if ${ping} -c 1 -W 3 -I wg0 ${cfg.peer.address}; then
-                connection_verified=true
-                break
-              fi
-              sleep 1
-            done
-
-            if ! $connection_verified; then
-              echo "VPN connection failed after 3 attempts"
-              ${ip} link del ${interface}
-              exit 1
-            fi
-
             ${ip} link set ${interface} netns ${namespace}
 
             ${ip} -n ${namespace} route add default dev ${interface}
