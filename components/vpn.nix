@@ -22,15 +22,9 @@ in {
         description = "The public key of the peer";
       };
 
-      address = lib.mkOption {
+      endpoint = lib.mkOption {
         type = lib.types.str;
-        description = "The IP address of the peer";
-      };
-
-      port = lib.mkOption {
-        type = lib.types.int;
-        default = 51820;
-        description = "The port of the peer";
+        description = "The endpoint of the peer";
       };
     };
 
@@ -63,11 +57,7 @@ in {
       wantedBy = ["multi-user.target"];
 
       serviceConfig = let
-        endpoint = "${cfg.peer.address}:${builtins.toString cfg.peer.port}";
-
-        grep = "${pkgs-stable.gnugrep}/bin/grep";
         ip = "${pkgs-stable.iproute2}/bin/ip";
-        ping = "${pkgs-stable.iputils}/bin/ping";
         wg = "${pkgs-stable.wireguard-tools}/bin/wg";
       in {
         Type = "oneshot";
@@ -78,24 +68,18 @@ in {
         in
           pkgs-stable.writers.writeBash "vpn-up" ''
             set -ex
-
-            if ! ${ip} netns list | ${grep} -q ${namespace}; then
-              echo "VPN namespace ${namespace} not found"
-              exit 1
-            fi
-
             ${ip} link add ${interface} type wireguard
             ${wg} set ${interface} \
               private-key ${config.sops.secrets."vpn/private_key".path} \
               peer ${cfg.peer.publicKey} \
-                endpoint ${endpoint} \
+                endpoint ${cfg.peer.endpoint} \
                 allowed-ips 0.0.0.0/0,::/0
+
+            ${ip} link set ${interface} netns ${namespace}
 
             ${builtins.concatStringsSep "\n" addresses}
 
             ${ip} -n ${namespace} link set ${interface} up
-
-            ${ip} link set ${interface} netns ${namespace}
 
             ${ip} -n ${namespace} route add default dev ${interface}
             ${ip} -n ${namespace} -6 route add default dev ${interface}

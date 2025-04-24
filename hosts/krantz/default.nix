@@ -19,7 +19,7 @@
       peer = {
         # ProtonVPN US-NY#533
         publicKey = "Q+F33KqUr9obW0a7u9ZwNRrQlcwcoNdStZfTs321CTY=";
-        address = "146.70.202.98";
+        endpoint = "146.70.202.98:51820";
       };
     };
 
