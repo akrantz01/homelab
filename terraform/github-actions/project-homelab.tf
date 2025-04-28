@@ -15,8 +15,20 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
     data.aws_iam_policy.s3_full_access.arn,
     data.aws_iam_policy.ses_full_access.arn,
     data.aws_iam_policy.cloudfront_full_access.arn,
-    data.aws_iam_policy.ecrpublic_full_access.arn,
+    data.aws_iam_policy.ssm_full_access.arn,
+    data.aws_iam_policy.lambda_full_access.arn,
+    data.aws_iam_policy.scheduler_full_access.arn,
+    data.aws_iam_policy.events_full_access.arn,
+    data.aws_iam_policy.step_functions_full_access.arn,
+    data.aws_iam_policy.acm_full_access.arn,
+    data.aws_iam_policy.api_gateway_full_access.arn,
   ]
+}
+
+resource "aws_iam_role_policy" "homelab_kms_ssm" {
+  role   = aws_iam_role.homelab.id
+  name   = "KMSForSSM"
+  policy = data.aws_iam_policy_document.kms_ssm.json
 }
 
 data "aws_iam_policy_document" "homelab_trust_policy" {
@@ -44,6 +56,14 @@ data "aws_iam_policy_document" "homelab_trust_policy" {
   }
 }
 
+data "aws_iam_policy_document" "kms_ssm" {
+  statement {
+    effect    = "Allow"
+    actions   = ["kms:Decrypt", "kms:Encrypt"]
+    resources = ["*"]
+  }
+}
+
 data "aws_iam_policy" "dynamodb_full_access" {
   name = "AmazonDynamoDBFullAccess"
 }
@@ -68,6 +88,30 @@ data "aws_iam_policy" "cloudfront_full_access" {
   name = "CloudFrontFullAccess"
 }
 
-data "aws_iam_policy" "ecrpublic_full_access" {
-  name = "AmazonElasticContainerRegistryPublicFullAccess"
+data "aws_iam_policy" "ssm_full_access" {
+  name = "AmazonSSMFullAccess"
+}
+
+data "aws_iam_policy" "lambda_full_access" {
+  name = "AWSLambda_FullAccess"
+}
+
+data "aws_iam_policy" "scheduler_full_access" {
+  name = "AmazonEventBridgeSchedulerFullAccess"
+}
+
+data "aws_iam_policy" "events_full_access" {
+  name = "CloudWatchEventsFullAccess"
+}
+
+data "aws_iam_policy" "step_functions_full_access" {
+  name = "AWSStepFunctionsFullAccess"
+}
+
+data "aws_iam_policy" "acm_full_access" {
+  name = "AWSCertificateManagerFullAccess"
+}
+
+data "aws_iam_policy" "api_gateway_full_access" {
+  name = "AmazonAPIGatewayAdministrator"
 }

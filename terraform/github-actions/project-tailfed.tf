@@ -32,7 +32,10 @@ data "aws_iam_policy_document" "tailfed_trust_policy" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:akrantz01/tailfed:ref:refs/heads/*"]
+      values = [
+        "repo:akrantz01/tailfed:ref:refs/heads/main",
+        "repo:akrantz01/tailfed:ref:refs/tags/*",
+      ]
     }
   }
 }
