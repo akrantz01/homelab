@@ -19,7 +19,7 @@ check-format:
 
 # Run linters
 lint:
-  find . -mindepth 2 -type f -name "*.tf" -exec dirname {} \; | \
+  find . -mindepth 2 -type f -name "*.tf" ! -path "*.terraform*" -exec dirname {} \; | \
     uniq | \
     grep -vE "(providers|applications/template)" | \
     xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
