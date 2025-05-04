@@ -3,6 +3,7 @@ inputs @ {
   nixpkgs,
   nixpkgs-unstable,
   sops-nix,
+  tailfed,
   ...
 }: let
   inherit (nixpkgs) lib;
@@ -23,6 +24,7 @@ inputs @ {
 
           modules = [
             sops-nix.nixosModules.sops
+            tailfed.nixosModules.${system}.tailfed
 
             "${nixpkgs-unstable}/nixos/modules/services/web-apps/actual.nix"
 
