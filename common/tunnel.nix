@@ -13,5 +13,7 @@
     extraUpFlags = ["--ssh"];
   };
 
+  networking.firewall.trustedInterfaces = ["tailscale0"];
+
   sops.secrets."tailscale/key" = {};
 }
