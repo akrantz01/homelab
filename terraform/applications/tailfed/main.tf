@@ -38,7 +38,7 @@ module "tailfed" {
 
   release_version = "nightly"
 
-  tailscale_tailnet = var.tailscale_tailnet
+  tailscale_tailnet  = var.tailscale_tailnet
   tailscale_auth_key = aws_ssm_parameter.auth_key.arn
 
   tailscale_oauth = {
