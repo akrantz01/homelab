@@ -55,3 +55,11 @@ module "tailfed" {
     Secrets = data.aws_iam_policy_document.secrets_access.json
   }
 }
+
+resource "aws_iam_openid_connect_provider" "tailfed" {
+  depends_on = [module.tailfed]
+
+  url = "https://${local.domain}"
+
+  client_id_list = ["sts.amazonaws.com"]
+}
