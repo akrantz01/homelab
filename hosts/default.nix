@@ -2,7 +2,6 @@ inputs @ {
   self,
   nixpkgs,
   nixpkgs-unstable,
-  nixpkgs-sonarr,
   sops-nix,
   ...
 }: let
@@ -14,7 +13,6 @@ inputs @ {
 
   pkgs-stable = import nixpkgs {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
-  pkgs-sonarr = import nixpkgs-sonarr {inherit system;};
 
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
@@ -33,7 +31,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-sonarr self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
             }
           ];
         };

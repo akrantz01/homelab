@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs-unstable,
-  pkgs-sonarr,
   ...
 }: let
   cfg = config.components.pvr;
@@ -43,7 +42,7 @@ in {
 
     services.sonarr = {
       enable = true;
-      package = pkgs-sonarr.sonarr;
+      package = pkgs-unstable.sonarr;
       openFirewall = false;
     };
 
