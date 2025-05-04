@@ -38,13 +38,12 @@ module "tailfed" {
 
   release_version = "nightly"
 
-  tailscale = {
-    tailnet  = var.tailscale_tailnet
-    auth_key = aws_ssm_parameter.auth_key.arn
-    oauth = {
-      client_id     = aws_ssm_parameter.oauth_client_id.arn
-      client_secret = aws_ssm_parameter.oauth_client_secret.arn
-    }
+  tailscale_tailnet = var.tailscale_tailnet
+  tailscale_auth_key = aws_ssm_parameter.auth_key.arn
+
+  tailscale_oauth = {
+    client_id     = aws_ssm_parameter.oauth_client_id.arn
+    client_secret = aws_ssm_parameter.oauth_client_secret.arn
   }
 
   domain = {
