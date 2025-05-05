@@ -60,6 +60,10 @@
         from.address = "no-reply@krantz.dev";
       };
     };
+    aws = {
+      enable = true;
+      url = "https://tailfed.krantz.cloud";
+    };
     backblaze = {
       enable = true;
       buckets = {
