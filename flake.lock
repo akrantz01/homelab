@@ -101,15 +101,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1746410609,
-        "narHash": "sha256-nOWRbs+x4NQC/I7mBKHzyPIl+DPtURF1pR40vw2yUe4=",
+        "lastModified": 1746412295,
+        "narHash": "sha256-c1v6faGqtsoLYODXhteYfEMVyGMxagviV/zoBwkXn6M=",
         "owner": "akrantz01",
         "repo": "tailfed",
-        "rev": "2325948672fedd73b7fb74253e4c0b292a4bcd90",
+        "rev": "369436d19a3c0aa66524653e747a3fbe37ce7537",
         "type": "github"
       },
       "original": {
         "owner": "akrantz01",
+        "ref": "v1.2.0",
         "repo": "tailfed",
         "type": "github"
       }

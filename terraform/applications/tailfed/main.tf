@@ -29,7 +29,7 @@ data "aws_caller_identity" "current" {}
 
 module "tailfed" {
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/akrantz01/tailfed//terraform?ref=main"
+  source = "github.com/akrantz01/tailfed//terraform?ref=v1.2.0"
   providers = {
     aws.release = aws.us_east_1
   }

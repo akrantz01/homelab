@@ -10,7 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     tailfed = {
-      url = "github:akrantz01/tailfed";
+      url = "github:akrantz01/tailfed/v1.2.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
