@@ -101,11 +101,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746342381,
-        "narHash": "sha256-LU9aJQYx07iLgXsbHL9bkdcVQ9rhut2/p1bEFq51a5I=",
+        "lastModified": 1746410609,
+        "narHash": "sha256-nOWRbs+x4NQC/I7mBKHzyPIl+DPtURF1pR40vw2yUe4=",
         "owner": "akrantz01",
         "repo": "tailfed",
-        "rev": "6fa1ff80353649ee95f0366ed49a44373ce19c10",
+        "rev": "2325948672fedd73b7fb74253e4c0b292a4bcd90",
         "type": "github"
       },
       "original": {
