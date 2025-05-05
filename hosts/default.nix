@@ -1,6 +1,7 @@
 inputs @ {
   self,
   nixpkgs,
+  nixpkgs-mealie,
   nixpkgs-unstable,
   sops-nix,
   tailfed,
@@ -13,6 +14,7 @@ inputs @ {
   extra = import "${self}/extra" {inherit lib;};
 
   pkgs-stable = import nixpkgs {inherit system;};
+  pkgs-mealie = import nixpkgs-mealie {inherit system;};
   pkgs-unstable = import nixpkgs-unstable {inherit system;};
 
   makeSystems = hosts:
@@ -33,7 +35,7 @@ inputs @ {
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-mealie pkgs-unstable self settings;};
             }
           ];
         };

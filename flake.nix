@@ -5,6 +5,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # TODO: remove once https://github.com/mealie-recipes/mealie/pull/5184 is merged
+    nixpkgs-mealie.url = "github:NixOS/nixpkgs/e6031a08f659a178d0e4dcb9f3c8d065a0e6da4d";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
