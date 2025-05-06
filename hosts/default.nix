@@ -65,6 +65,9 @@ in
     }
     {
       hostname = "idp";
-      networking.dhcp = true;
+      networking = {
+        interface = "ens5";
+        dhcp = true;
+      };
     }
   ]
