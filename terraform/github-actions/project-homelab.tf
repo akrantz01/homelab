@@ -22,6 +22,7 @@ resource "aws_iam_role_policy_attachments_exclusive" "homelab" {
     data.aws_iam_policy.step_functions_full_access.arn,
     data.aws_iam_policy.acm_full_access.arn,
     data.aws_iam_policy.api_gateway_full_access.arn,
+    data.aws_iam_policy.ec2_full_access.arn,
   ]
 }
 
@@ -114,4 +115,8 @@ data "aws_iam_policy" "acm_full_access" {
 
 data "aws_iam_policy" "api_gateway_full_access" {
   name = "AmazonAPIGatewayAdministrator"
+}
+
+data "aws_iam_policy" "ec2_full_access" {
+  name = "AmazonEC2FullAccess"
 }
