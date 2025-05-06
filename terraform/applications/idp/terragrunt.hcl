@@ -12,4 +12,6 @@ dependency "github-actions" {
   skip_outputs = true
 }
 
-inputs = {}
+inputs = {
+  subnet_id = "subnet-d1268cab"
+}
