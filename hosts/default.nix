@@ -63,4 +63,8 @@ in
         ];
       };
     }
+    {
+      hostname = "idp";
+      networking.dhcp = true;
+    }
   ]

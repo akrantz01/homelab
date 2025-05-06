@@ -1,10 +1,10 @@
-{...}: {
+{lib, ...}: {
   services.openssh = {
     enable = true;
     openFirewall = false;
 
     settings = {
-      PermitRootLogin = "no";
+      PermitRootLogin = lib.mkForce "no";
 
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
