@@ -9,17 +9,16 @@ inputs @ {
 }: let
   inherit (nixpkgs) lib;
 
-  system = "x86_64-linux";
   settings = import "${self}/settings";
   extra = import "${self}/extra" {inherit lib;};
 
-  pkgs-stable = import nixpkgs {inherit system;};
-  pkgs-mealie = import nixpkgs-mealie {inherit system;};
-  pkgs-unstable = import nixpkgs-unstable {inherit system;};
-
   makeSystems = hosts:
     builtins.listToAttrs (builtins.map
-      (host: {
+      (host @ {system, ...}: let
+        pkgs-stable = import nixpkgs {inherit system;};
+        pkgs-mealie = import nixpkgs-mealie {inherit system;};
+        pkgs-unstable = import nixpkgs-unstable {inherit system;};
+      in {
         name = host.hostname;
         value = lib.nixosSystem {
           inherit system;
@@ -45,6 +44,7 @@ in
   makeSystems [
     {
       hostname = "krantz";
+      system = "x86_64-linux";
       networking = {
         interface = "enp35s0";
         dhcp = false;
@@ -65,6 +65,7 @@ in
     }
     {
       hostname = "idp";
+      system = "aarch64-linux";
       networking = {
         interface = "ens5";
         dhcp = true;
