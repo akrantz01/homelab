@@ -1,18 +1,4 @@
-{
-  config,
-  lib,
-  pkgs-stable,
-  ...
-}: let
-  githubSshKeys = username: hash: let
-    keysSource = pkgs-stable.fetchurl {
-      inherit hash;
-      url = "https://github.com/${username}.keys";
-    };
-    allKeys = lib.splitString "\n" (builtins.readFile keysSource);
-  in
-    builtins.filter (key: (builtins.stringLength key) > 0) allKeys;
-in {
+{config, ...}: {
   # Users must be managed through NixOS
   users.mutableUsers = false;
 
@@ -21,7 +7,6 @@ in {
     isNormalUser = true;
     description = "Alex Krantz";
     extraGroups = ["wheel"];
-    openssh.authorizedKeys.keys = githubSshKeys "akrantz01" "sha256-Ziu5Kn8Vg5u1bWcCtySa6eXCFgMzlupQskzzjxn2PQc=";
     hashedPasswordFile = config.sops.secrets."users/alex".path;
   };
 
