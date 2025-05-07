@@ -11,7 +11,12 @@ variable "host_key" {
   })
 }
 
-variable "subnet_id" {
-  description = "The subnet ID to launch the instance in."
+variable "public_subnets" {
+  description = "The available public subnet IDs."
+  type        = list(string)
+}
+
+variable "vpc_id" {
+  description = "The VPC ID. Must contain the public subnets."
   type        = string
 }

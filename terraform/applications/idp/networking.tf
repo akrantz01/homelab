@@ -1,17 +1,15 @@
-data "aws_vpc" "default" {
-  default = true
-  state   = "available"
+resource "random_integer" "subnet_index" {
+  min = 0
+  max = length(var.public_subnets) - 1
 }
 
-data "aws_subnet" "default" {
-  vpc_id = data.aws_vpc.default.id
-  id     = var.subnet_id
-  state  = "available"
+locals {
+  subnet_id = var.public_subnets[random_integer.subnet_index.result]
 }
 
 resource "aws_security_group" "idp" {
   name   = "idp"
-  vpc_id = data.aws_vpc.default.id
+  vpc_id = var.vpc_id
 }
 
 resource "aws_security_group_rule" "ssh" {

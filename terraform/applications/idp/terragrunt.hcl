@@ -17,8 +17,13 @@ dependency "github-actions" {
   skip_outputs = true
 }
 
+dependency "networking" {
+  config_path = "../../networking"
+}
+
 inputs = {
-  subnet_id = "subnet-d1268cab"
+  public_subnets = dependency.networking.outputs.public_subnets
+  vpc_id = dependency.networking.outputs.vpc_id
 
   flake    = "github:akrantz01/homelab#idp"
   host_key = local.secrets.host_key
