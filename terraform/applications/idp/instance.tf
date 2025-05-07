@@ -12,24 +12,6 @@ data "aws_ami" "nixos" {
   }
 }
 
-data "http" "ssh_keys" {
-  method = "GET"
-  url    = "https://github.com/akrantz01.keys"
-
-  request_headers = {
-    Accept = "text/plain"
-  }
-}
-
-locals {
-  key = coalesce(split("\n", data.http.ssh_keys.response_body)...)
-}
-
-resource "aws_key_pair" "github" {
-  key_name   = "github"
-  public_key = local.key
-}
-
 resource "aws_instance" "idp" {
   tags = {
     Name = "idp"
@@ -39,7 +21,6 @@ resource "aws_instance" "idp" {
   instance_type = "t4g.small"
 
   subnet_id              = local.subnet_id
-  key_name               = aws_key_pair.github.key_name
   vpc_security_group_ids = [aws_security_group.idp.id]
 
   associate_public_ip_address = true
