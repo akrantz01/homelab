@@ -23,7 +23,7 @@ dependency "networking" {
 
 inputs = {
   public_subnets = dependency.networking.outputs.public_subnets
-  vpc_id = dependency.networking.outputs.vpc_id
+  vpc_id         = dependency.networking.outputs.vpc_id
 
   flake    = "github:akrantz01/homelab#idp"
   host_key = local.secrets.host_key
