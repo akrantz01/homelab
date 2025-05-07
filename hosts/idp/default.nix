@@ -11,6 +11,8 @@
       enable = true;
       frequency = "*:0/10"; # every 10 minutes
     };
+
+    reverseProxy.enable = true;
   };
 
   # This value determines the NixOS release from which the default
