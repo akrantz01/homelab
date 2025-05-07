@@ -7,7 +7,10 @@
   time.timeZone = "America/Montreal";
 
   components = {
-    continuousDeployment.enable = true;
+    continuousDeployment = {
+      enable = true;
+      frequency = "*:0/10"; # every 10 minutes
+    };
   };
 
   # This value determines the NixOS release from which the default
