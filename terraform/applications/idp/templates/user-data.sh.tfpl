@@ -11,9 +11,9 @@ EOF
 
 systemctl restart sshd
 
-# nixos-rebuild switch \
-#   --option accept-flake-config true \
-#   --option tarball-ttl 0 \
-#   --refresh \
-#   --flake "${flake}" \
-#   --upgrade
+nixos-rebuild switch \
+  --option accept-flake-config true \
+  --option tarball-ttl 0 \
+  --refresh \
+  --flake "${flake}" \
+  --upgrade
