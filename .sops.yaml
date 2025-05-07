@@ -3,7 +3,7 @@ keys:
   - &personal age18f7dxgrjc2zza2gxc3aek4x4c7u5n8wmh5473m23fza0x56ruyhqeus0d9
   - &github arn:aws:kms:ca-central-1:416515258441:alias/sops
   - &krantz age14ug6lkhhf6svlqskahna8fwxh9rmkz6gkmvjhd55elaalwzp7gtq37k5rr
-  - &idp age14lxusst53pq0qrcwfntmpdpw632sztgkxmw93eqyta82u7tdt3zsxx7ens
+  - &idp age1gtcm2cqy74rh0tsn0jql00try0etqskllnrguhdhmlp6uyynhvhq3tjh42
 
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|yml|env)$

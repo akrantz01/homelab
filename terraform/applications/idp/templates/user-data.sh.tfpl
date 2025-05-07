@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+(umask 077; cat <<EOF > /etc/ssh/ssh_host_ed25519_key
+${host_key.private}
+EOF
+)
+
+cat <<EOF > /etc/ssh/ssh_host_ed25519_key.pub
+${host_key.public}
+EOF
+
+# nixos-rebuild switch \
+#   --option accept-flake-config true \
+#   --option tarball-ttl 0 \
+#   --refresh \
+#   --flake "${flake}" \
+#   --upgrade

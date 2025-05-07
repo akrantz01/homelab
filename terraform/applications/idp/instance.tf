@@ -46,7 +46,10 @@ resource "aws_instance" "idp" {
   subnet_id = data.aws_subnet.default.id
 
   user_data_replace_on_change = true
-  user_data                   = ""
+  user_data = templatefile("${path.module}/templates/user-data.sh.tfpl", {
+    flake    = var.flake
+    host_key = var.host_key
+  })
 
   ebs_optimized = true
   root_block_device {
