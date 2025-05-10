@@ -18,7 +18,7 @@ resource "aws_instance" "idp" {
   }
 
   ami           = data.aws_ami.nixos.id
-  instance_type = "t4g.small"
+  instance_type = "t4g.medium"
 
   monitoring = true
 
