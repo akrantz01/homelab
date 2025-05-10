@@ -264,6 +264,11 @@ in {
       };
     };
 
+    components.reverseProxy.hosts.${cfg.domain}.locations.${cfg.web.path} = {
+      proxyTo = "http://${cfg.web.listeners.http}";
+      proxyWebsockets = true;
+    };
+
     users = {
       users.authentik = {
         isSystemUser = true;
