@@ -20,6 +20,8 @@ resource "aws_instance" "idp" {
   ami           = data.aws_ami.nixos.id
   instance_type = "t4g.small"
 
+  monitoring = true
+
   subnet_id              = local.subnet_id
   vpc_security_group_ids = [aws_security_group.idp.id]
 
