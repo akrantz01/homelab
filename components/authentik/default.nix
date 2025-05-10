@@ -247,7 +247,6 @@ in {
           Type = "simple";
           User = "authentik";
           Group = "authentik";
-          DynamicUser = true;
           ExecStart = "${pkgs-unstable.authentik}/bin/ak server";
 
           Restart = "on-failure";
@@ -265,10 +264,21 @@ in {
       };
     };
 
+    users = {
+      users.authentik = {
+        isSystemUser = true;
+        group = config.users.groups.authentik.name;
+      };
+      groups.authentik = {};
+    };
+
     sops.secrets = let
       instance = key: {
         inherit key;
         inherit (cfg) sopsFile;
+
+        owner = config.users.users.authentik.name;
+        group = config.users.groups.authentik.name;
 
         restartUnits = with config.systemd.services; [authentik-web.name authentik-worker.name];
       };
