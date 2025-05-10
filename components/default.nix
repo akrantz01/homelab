@@ -3,6 +3,7 @@
     ./actualbudget
     ./atuin.nix
     ./authentication
+    ./authentik
     ./aws.nix
     ./backblaze.nix
     ./continuous-deployment.nix

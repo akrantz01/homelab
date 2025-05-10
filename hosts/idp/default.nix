@@ -14,6 +14,16 @@
 
     reverseProxy.enable = true;
     database.enable = true;
+
+    authentik = {
+      enable = true;
+      domain = "login.krantz.dev";
+
+      email = {
+        security = "tls";
+        from.name = "Login";
+      };
+    };
   };
 
   # This value determines the NixOS release from which the default
