@@ -268,6 +268,7 @@ in {
       users.authentik = {
         isSystemUser = true;
         group = config.users.groups.authentik.name;
+        extraGroups = [config.services.redis.servers.authentik.group];
       };
       groups.authentik = {};
     };
