@@ -191,7 +191,7 @@ in {
         description = "Authentik identity provider server";
         after = ["network.target" "postgresql.service" "redis.service"];
         wants = ["postgresql.service" "redis.service"];
-        # wantedBy = ["multi-user.target"];
+        wantedBy = ["multi-user.target"];
 
         environment = lib.attrsets.mergeAttrsList [
           {
