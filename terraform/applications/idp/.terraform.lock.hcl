@@ -1,6 +1,23 @@
 # This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
+provider "registry.opentofu.org/cloudflare/cloudflare" {
+  version     = "5.4.0"
+  constraints = "~> 5.4.0"
+  hashes = [
+    "h1:Rs5gaiRip5QqC3cV6BhTtvfAvOILxTmY40Ktty3DeYY=",
+    "zh:08b35ad7c1125bd0f34a0e719231389a679dc4a0247aa7c46374a55f13658a5a",
+    "zh:10c68c3a847b22c85db45d401febb9b34e0c0dadc38c4cc8f22b031cc9ff53de",
+    "zh:1750f58bd37db19f1d92a4232db359505993f1e2d8ba7d6732b1b59f098da902",
+    "zh:3929072b8dab83cc630d18a2ec04b339342d6dea7da7f51b733ffbd2543177b8",
+    "zh:9b297eeb027cd7e01f392d94a408070dcb801f09bf58a60a1a7f356bd78b40f5",
+    "zh:9d90bd226699737d00532927491e7ae0c30a5df407d39d0a29fa0bb2eedb5a7e",
+    "zh:a3b28a5e0114488b50ef0887e3fb8f8baa74058d1b33a57b1c8917e5be954ef1",
+    "zh:afd7388049fdbe3b0c21f3141ad623c970ab6c341c8fbab91041dc665c4331f7",
+    "zh:f809ab383cca0a5f83072981c64208cbd7fa67e986a86ee02dd2c82333221e32",
+  ]
+}
+
 provider "registry.opentofu.org/hashicorp/aws" {
   version     = "5.97.0"
   constraints = "~> 5.97.0"
@@ -16,24 +33,6 @@ provider "registry.opentofu.org/hashicorp/aws" {
     "zh:ec49b0ef15033912aa9919122163cd0e06bb3a7463380f4c1fd41704a9964170",
     "zh:f123de397ce8fb792d8181250e85a79b5446ac392a7470d7597b7d7319d4dbbf",
     "zh:fe1ea027408453dac877b8ef5d325d6fba82250960c90ad42fcb90da97588863",
-  ]
-}
-
-provider "registry.opentofu.org/hashicorp/http" {
-  version     = "3.5.0"
-  constraints = "~> 3.5.0"
-  hashes = [
-    "h1:yvwvVZ0vdbsTUMru+7Cr0On1FVgDJHAaC6TNvy/OWzM=",
-    "zh:0a2b33494eec6a91a183629cf217e073be063624c5d3f70870456ddb478308e9",
-    "zh:180f40124fa01b98b3d2f79128646b151818e09d6a1a9ca08e0b032a0b1e9cb1",
-    "zh:3e29e1de149dc10bf78620526c7cb8c62cd76087f5630dfaba0e93cda1f3aa7b",
-    "zh:4420950200cf86042ec940d0e2c9b7c89966bf556bf8038ba36217eae663bca5",
-    "zh:5d1f7d02109b2e2dca7ec626e5563ee765583792d0fd64081286f16f9433bd0d",
-    "zh:8500b138d338b1994c4206aa577b5c44e1d7260825babcf43245a7075bfa52a5",
-    "zh:b42165a6c4cfb22825938272d12b676e4a6946ac4e750f85df870c947685df2d",
-    "zh:b919bf3ee8e3b01051a0da3433b443a925e272893d3724ee8fc0f666ec7012c9",
-    "zh:d13b81ea6755cae785b3e11634936cdff2dc1ec009dc9610d8e3c7eb32f42e69",
-    "zh:f1c9d2eb1a6b618ae77ad86649679241bd8d6aacec06d0a68d86f748687f4eb3",
   ]
 }
 
