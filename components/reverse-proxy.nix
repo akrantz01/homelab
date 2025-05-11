@@ -71,6 +71,22 @@
       };
     };
   };
+
+  backendsType = lib.types.submodule {
+    options = {
+      servers = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "The servers to use for the backend";
+      };
+
+      keepAlive = lib.mkOption {
+        type = lib.types.int;
+        default = 10;
+        description = "The keep alive timeout for the backend";
+      };
+    };
+  };
 in {
   options.components.reverseProxy = {
     enable = lib.mkEnableOption "Enable the reverse proxy component";
@@ -86,6 +102,12 @@ in {
       type = lib.types.attrsOf virtualHostsType;
       default = {};
       description = "Virtual hosts to configure";
+    };
+
+    backends = lib.mkOption {
+      type = lib.types.attrsOf backendsType;
+      default = {};
+      description = "Backends to proxy virtual hosts to";
     };
   };
 
@@ -140,6 +162,15 @@ in {
         ${realIpsFromList cloudflareIpV6}
         real_ip_header CF-Connecting-IP;
       '';
+
+      upstreams =
+        lib.attrsets.mapAttrs (name: backend: {
+          servers = lib.attrsets.genAttrs backend.servers (server: {});
+          extraConfig = ''
+            keepalive ${builtins.toString backend.keepAlive};
+          '';
+        })
+        cfg.backends;
 
       virtualHosts =
         lib.attrsets.mapAttrs (name: host: {

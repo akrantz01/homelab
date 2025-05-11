@@ -264,9 +264,12 @@ in {
       };
     };
 
-    components.reverseProxy.hosts.${cfg.domain}.locations.${cfg.web.path} = {
-      proxyTo = "http://${cfg.web.listeners.http}";
-      proxyWebsockets = true;
+    components.reverseProxy = {
+      backends.authentik.servers = [cfg.web.listeners.http];
+      hosts.${cfg.domain}.locations.${cfg.web.path} = {
+        proxyTo = "http://authentik";
+        proxyWebsockets = true;
+      };
     };
 
     users = {
