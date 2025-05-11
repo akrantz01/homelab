@@ -9,6 +9,22 @@
 
   database = "authentik";
   redis = config.services.redis.servers.authentik.unixSocket;
+
+  commonEnvironment = {
+    AUTHENTIK_POSTGRESQL__HOST = "";
+    AUTHENTIK_POSTGRESQL__NAME = database;
+    AUTHENTIK_POSTGRESQL__USER = database;
+    AUTHENTIK_POSTGRESQL__SSL_MODE = "disable";
+    # TODO: enable connection pooling
+
+    AUTHENTIK_CACHE__URL = "unix://${redis}";
+    AUTHENTIK_BROKER__URL = "redis+socket://${redis}";
+    AUTHENTIK_RESULT_BACKEND__URL = "redis+socket://${redis}";
+    AUTHENTIK_CHANNEL__URL = "unix://${redis}";
+
+    AUTHENTIK_SECRET_KEY = "file://${config.sops.secrets."authentik/secret-key".path}";
+    AUTHENTIK_LOG_LEVEL = cfg.logLevel;
+  };
 in {
   options.components.authentik = {
     enable = lib.mkEnableOption "Enable the Authentik component";
@@ -194,36 +210,12 @@ in {
         wantedBy = ["multi-user.target"];
 
         environment = lib.attrsets.mergeAttrsList [
+          commonEnvironment
           {
             AUTHENTIK_LISTEN__HTTP = cfg.web.listeners.http;
             AUTHENTIK_LISTEN__HTTPS = cfg.web.listeners.https;
 
-            AUTHENTIK_POSTGRESQL__HOST = "";
-            AUTHENTIK_POSTGRESQL__NAME = database;
-            AUTHENTIK_POSTGRESQL__USER = database;
-            AUTHENTIK_POSTGRESQL__SSL_MODE = "disable";
-            # TODO: enable connection pooling
-
-            AUTHENTIK_CACHE__URL = "unix://${redis}";
-            AUTHENTIK_BROKER__URL = "redis+socket://${redis}";
-            AUTHENTIK_RESULT_BACKEND__URL = "redis+socket://${redis}";
-            AUTHENTIK_CHANNEL__URL = "unix://${redis}";
-
-            AUTHENTIK_SECRET_KEY = "file://${config.sops.secrets."authentik/secret-key".path}";
-            AUTHENTIK_LOG_LEVEL = cfg.logLevel;
             AUTHENTIK_COOKIE_DOMAIN = cfg.domain;
-
-            AUTHENTIK_EMAIL__HOST = "file://${config.sops.secrets."authentik/smtp/host".path}";
-            AUTHENTIK_EMAIL__PORT = "file://${config.sops.secrets."authentik/smtp/port".path}";
-            AUTHENTIK_EMAIL__USERNAME = "file://${config.sops.secrets."authentik/smtp/username".path}";
-            AUTHENTIK_EMAIL__PASSWORD = "file://${config.sops.secrets."authentik/smtp/password".path}";
-            AUTHENTIK_EMAIL__USE_TLS = lib.trivial.boolToString (cfg.email.security == "tls");
-            AUTHENTIK_EMAIL__USE_SSL = lib.trivial.boolToString (cfg.email.security == "starttls");
-            AUTHENTIK_EMAIL__TIMEOUT = builtins.toString cfg.email.timeout;
-            AUTHENTIK_EMAIL__FROM =
-              if cfg.email.from.name != null
-              then "${cfg.email.from.name} <${cfg.email.from.address}>"
-              else cfg.email.from.address;
 
             AUTHENTIK_SESSION_STORAGE = cfg.sessions.storage;
             AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE = cfg.sessions.unauthenticatedAge;
@@ -264,6 +256,46 @@ in {
 
       authentik-worker = {
         description = "Authentik identity provider worker";
+        after = ["network.target" "postgresql.service" "redis.service"];
+        wants = ["postgresql.service" "redis.service"];
+        wantedBy = ["multi-user.target"];
+
+        environment = lib.attrsets.mergeAttrsList [
+          commonEnvironment
+          {
+            ATUHENTIK_WORKER__CONCURRENCY = builtins.toString cfg.worker.concurrency;
+
+            AUTHENTIK_EMAIL__HOST = "file://${config.sops.secrets."authentik/smtp/host".path}";
+            AUTHENTIK_EMAIL__PORT = "file://${config.sops.secrets."authentik/smtp/port".path}";
+            AUTHENTIK_EMAIL__USERNAME = "file://${config.sops.secrets."authentik/smtp/username".path}";
+            AUTHENTIK_EMAIL__PASSWORD = "file://${config.sops.secrets."authentik/smtp/password".path}";
+            AUTHENTIK_EMAIL__USE_TLS = lib.trivial.boolToString (cfg.email.security == "tls");
+            AUTHENTIK_EMAIL__USE_SSL = lib.trivial.boolToString (cfg.email.security == "starttls");
+            AUTHENTIK_EMAIL__TIMEOUT = builtins.toString cfg.email.timeout;
+            AUTHENTIK_EMAIL__FROM =
+              if cfg.email.from.name != null
+              then "${cfg.email.from.name} <${cfg.email.from.address}>"
+              else cfg.email.from.address;
+          }
+        ];
+
+        serviceConfig = {
+          Type = "simple";
+          User = "authentik";
+          Group = "authentik";
+          ExecStart = "${pkgs-unstable.authentik}/bin/ak worker";
+
+          Restart = "on-failure";
+          RestartSec = "5s";
+
+          StateDirectory = "authentik";
+          RuntimeDirectory = "authentik";
+        };
+
+        unitConfig = {
+          StartLimitIntervalSec = 60;
+          StartLimitBurst = 5;
+        };
       };
     };
 
