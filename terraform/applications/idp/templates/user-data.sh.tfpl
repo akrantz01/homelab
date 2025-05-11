@@ -11,9 +11,11 @@ EOF
 
 systemctl restart sshd
 
-nixos-rebuild switch \
-  --option accept-flake-config true \
-  --option tarball-ttl 0 \
-  --refresh \
-  --flake "${flake}" \
-  --upgrade
+if [ ! -f /etc/homelab/initialized ]; then
+  nixos-rebuild switch \
+    --option accept-flake-config true \
+    --option tarball-ttl 0 \
+    --refresh \
+    --flake "${flake}" \
+    --upgrade
+fi

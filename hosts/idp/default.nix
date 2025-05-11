@@ -6,6 +6,8 @@
   ec2.efi = true;
   time.timeZone = "America/Montreal";
 
+  environment.etc."homelab/initialized".text = "";
+
   components = {
     continuousDeployment = {
       enable = true;
