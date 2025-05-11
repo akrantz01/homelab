@@ -251,6 +251,9 @@ in {
 
           Restart = "on-failure";
           RestartSec = "5s";
+
+          StateDirectory = "authentik";
+          RuntimeDirectory = "authentik";
         };
 
         unitConfig = {
