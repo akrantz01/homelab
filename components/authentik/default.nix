@@ -48,6 +48,17 @@ in {
       '';
     };
 
+    geoip = {
+      accountId = lib.mkOption {
+        type = lib.types.nullOr lib.types.int;
+        default = null;
+        example = 20001;
+        description = "Your MaxMind account ID.";
+      };
+
+      licenseKey = extra.mkSecretOption "license key for MaxMind" "geoip/license_key";
+    };
+
     media = {
       backend = lib.mkOption {
         type = lib.types.enum ["file" "s3"];
@@ -202,6 +213,15 @@ in {
     services.redis.servers.authentik.enable = true;
     components.database.databases = [database];
 
+    services.geoipupdate = lib.mkIf (cfg.geoip.accountId != null) {
+      enable = true;
+      settings = {
+        AccountID = cfg.geoip.accountId;
+        LicenseKey._secret = config.sops.secrets."geoip/license-key".path;
+        EditionIDs = ["GeoLite2-City" "GeoLite2-ASN"];
+      };
+    };
+
     systemd.services = {
       authentik-web = {
         description = "Authentik identity provider server";
@@ -224,6 +244,12 @@ in {
             AUTHENTIK_WEB__THREADS = builtins.toString cfg.web.threads;
             AUTHENTIK_WEB__PATH = cfg.web.path;
           }
+          (lib.attrsets.optionalAttrs (cfg.geoip.accountId != null) (let
+            directory = config.services.geoipupdate.settings.DatabaseDirectory;
+          in {
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP = "${directory}/GeoLite2-City.mmdb";
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN = "${directory}/GeoLite2-ASN.mmdb";
+          }))
           (lib.attrsets.optionalAttrs (cfg.media.backend == "file") {
             AUTHENTIK_MEDIA__BACKEND = "file";
             AUTHENTIK_MEDIA__FILE__PATH = cfg.media.path;
@@ -326,12 +352,16 @@ in {
 
         restartUnits = with config.systemd.services; [authentik-web.name authentik-worker.name];
       };
-    in {
-      "authentik/secret-key" = instance cfg.secretKey;
-      "authentik/smtp/host" = instance cfg.email.host;
-      "authentik/smtp/port" = instance cfg.email.port;
-      "authentik/smtp/username" = instance cfg.email.username;
-      "authentik/smtp/password" = instance cfg.email.password;
-    };
+    in
+      {
+        "authentik/secret-key" = instance cfg.secretKey;
+        "authentik/smtp/host" = instance cfg.email.host;
+        "authentik/smtp/port" = instance cfg.email.port;
+        "authentik/smtp/username" = instance cfg.email.username;
+        "authentik/smtp/password" = instance cfg.email.password;
+      }
+      // lib.attrsets.optionalAttrs (cfg.geoip.accountId != null) {
+        "geoip/license-key" = instance cfg.geoip.licenseKey;
+      };
   };
 }

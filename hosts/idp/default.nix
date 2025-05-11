@@ -21,6 +21,8 @@
       enable = true;
       domain = "login.krantz.dev";
 
+      geoip.accountId = 1167485;
+
       email = {
         security = "tls";
         from.name = "Login";
