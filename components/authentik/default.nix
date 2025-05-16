@@ -24,6 +24,18 @@
 
     AUTHENTIK_SECRET_KEY = "file://${config.sops.secrets."authentik/secret-key".path}";
     AUTHENTIK_LOG_LEVEL = cfg.logLevel;
+
+    AUTHENTIK_EMAIL__HOST = "file://${config.sops.secrets."authentik/smtp/host".path}";
+    AUTHENTIK_EMAIL__PORT = "file://${config.sops.secrets."authentik/smtp/port".path}";
+    AUTHENTIK_EMAIL__USERNAME = "file://${config.sops.secrets."authentik/smtp/username".path}";
+    AUTHENTIK_EMAIL__PASSWORD = "file://${config.sops.secrets."authentik/smtp/password".path}";
+    AUTHENTIK_EMAIL__USE_TLS = lib.trivial.boolToString (cfg.email.security == "tls");
+    AUTHENTIK_EMAIL__USE_SSL = lib.trivial.boolToString (cfg.email.security == "starttls");
+    AUTHENTIK_EMAIL__TIMEOUT = builtins.toString cfg.email.timeout;
+    AUTHENTIK_EMAIL__FROM =
+      if cfg.email.from.name != null
+      then "${cfg.email.from.name} <${cfg.email.from.address}>"
+      else cfg.email.from.address;
   };
 in {
   options.components.authentik = {
@@ -290,18 +302,6 @@ in {
           commonEnvironment
           {
             ATUHENTIK_WORKER__CONCURRENCY = builtins.toString cfg.worker.concurrency;
-
-            AUTHENTIK_EMAIL__HOST = "file://${config.sops.secrets."authentik/smtp/host".path}";
-            AUTHENTIK_EMAIL__PORT = "file://${config.sops.secrets."authentik/smtp/port".path}";
-            AUTHENTIK_EMAIL__USERNAME = "file://${config.sops.secrets."authentik/smtp/username".path}";
-            AUTHENTIK_EMAIL__PASSWORD = "file://${config.sops.secrets."authentik/smtp/password".path}";
-            AUTHENTIK_EMAIL__USE_TLS = lib.trivial.boolToString (cfg.email.security == "tls");
-            AUTHENTIK_EMAIL__USE_SSL = lib.trivial.boolToString (cfg.email.security == "starttls");
-            AUTHENTIK_EMAIL__TIMEOUT = builtins.toString cfg.email.timeout;
-            AUTHENTIK_EMAIL__FROM =
-              if cfg.email.from.name != null
-              then "${cfg.email.from.name} <${cfg.email.from.address}>"
-              else cfg.email.from.address;
           }
         ];
 
