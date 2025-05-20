@@ -50,4 +50,10 @@ resource "aws_instance" "idp" {
     http_protocol_ipv6 = "enabled"
     http_tokens        = "required"
   }
+
+  lifecycle {
+    ignore_changes = [
+      ami # Prevents accidental recreation of the instance when the AMI changes
+    ]
+  }
 }
