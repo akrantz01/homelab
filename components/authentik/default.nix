@@ -36,6 +36,7 @@
       if cfg.email.from.name != null
       then "${cfg.email.from.name} <${cfg.email.from.address}>"
       else cfg.email.from.address;
+    AUTHENTIK_EMAIL__TEMPLATE_DIR = ./emails;
   };
 in {
   options.components.authentik = {
