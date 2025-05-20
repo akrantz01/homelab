@@ -1,0 +1,11 @@
+{% autoescape off %}Finish creating your account
+
+You were invited to create an Authentik (https://goauthentik.io) account for
+krantz.dev (https://krantz.dev). Use the button below to finish creating your
+account.
+
+Create account: {{ url }}
+
+The above link is valid for {{ expires|naturaltime }}. If you did not request
+this email, please ignore it.
+{% endautoescape %}
