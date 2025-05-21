@@ -26,7 +26,7 @@
       email = {
         security = "tls";
         from = {
-          name = "Login";
+          name = "krantz.dev";
           address = "no-reply@krantz.dev";
         };
       };
