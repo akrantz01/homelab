@@ -89,7 +89,7 @@
       oidc = {
         enable = true;
         provider = "krantz.dev";
-        configurationUrl = "https://oauth.id.jumpcloud.com/.well-known/openid-configuration";
+        configurationUrl = "https://login.krantz.dev/application/o/recipes/.well-known/openid-configuration";
         clientId = "PoMS5Wm9tRrzILgTHEkrmYsHEyZmSsPYee2ImzVb";
       };
       smtp = {
