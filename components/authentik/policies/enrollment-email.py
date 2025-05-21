@@ -4,7 +4,6 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.invitation.models import Invitation
-from django.template.exceptions import TemplateSyntaxError
 
 event = request.context.get("event")
 if event is None or event.action != EventAction.MODEL_CREATED:
@@ -46,7 +45,7 @@ message = TemplateEmailMessage(
     template_name=email_stage.template,
     template_context={
         "expires": invitation.expires,
-        "name": name,
+        "name": name.split(" ")[0],
         "url": f"https://{brand.domain}/if/flow/default-invitation-enrollment/?itoken={invitation.invite_uuid}",
     },
 )
