@@ -103,7 +103,7 @@
 
       oauth2 = {
         provider = "oidc";
-        discoveryEndpoint = "https://oauth.id.jumpcloud.com/";
+        discoveryEndpoint = "https://login.krantz.dev/application/o/rss/";
       };
     };
     vaultwarden = {
