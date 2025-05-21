@@ -1,9 +1,8 @@
 {% load humanize %}
-{% autoescape off %}Finish creating your account
+{% autoescape off %}Hi {{ name }},
 
-You were invited to create an Authentik (https://goauthentik.io) account for
-krantz.dev (https://krantz.dev). Use the button below to finish creating your
-account.
+You were invited to create an account for {{ domain }} (https://{{ domain }}).
+Use the button below to finish creating your account.
 
 Create account: {{ url }}
 
