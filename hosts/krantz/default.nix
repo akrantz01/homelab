@@ -91,6 +91,9 @@
         provider = "krantz.dev";
         configurationUrl = "https://login.krantz.dev/application/o/recipes/.well-known/openid-configuration";
         clientId = "PoMS5Wm9tRrzILgTHEkrmYsHEyZmSsPYee2ImzVb";
+
+        # TODO: update once groups are established; same for groups.admin
+        groups.user = "authentik Users";
       };
       smtp = {
         enable = true;
