@@ -1,3 +1,4 @@
+{% load humanize %}
 {% autoescape off %}Finish creating your account
 
 You were invited to create an Authentik (https://goauthentik.io) account for
