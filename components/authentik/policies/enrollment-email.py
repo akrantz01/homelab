@@ -46,7 +46,7 @@ message = TemplateEmailMessage(
     template_context={
         "expires": invitation.expires,
         "name": name.split(" ")[0],
-        "url": f"https://{brand.domain}/if/flow/default-invitation-enrollment/?itoken={invitation.invite_uuid}",
+        "url": f"https://{brand.domain}/if/flow/{invitation.flow.slug}/?itoken={invitation.invite_uuid}",
     },
 )
 
