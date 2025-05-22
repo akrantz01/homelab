@@ -19,7 +19,7 @@ in {
       wantedBy = ["multi-user.target"];
 
       environment = {
-        AUTHENTIK_HOST = cfg.domain;
+        AUTHENTIK_HOST = "https://${cfg.domain}";
         AUTHENTIK_TOKEN = "file://${config.sops.secrets."authentik/proxy/token".path}";
       };
 
