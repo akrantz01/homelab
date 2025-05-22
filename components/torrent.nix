@@ -17,6 +17,8 @@ in {
       example = "torrent.example.com";
       description = "The domain to use for the torrenting UI";
     };
+
+    proxyAuth = lib.mkEnableOption "Enable proxy authentication";
   };
 
   config = lib.mkIf cfg.enable {
@@ -131,6 +133,10 @@ in {
       };
     };
 
-    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
+    components.reverseProxy.hosts.${cfg.domain} = {
+      forwardAuth = cfg.proxyAuth;
+
+      locations."/".proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
+    };
   };
 }

@@ -136,6 +136,7 @@
     torrent = {
       enable = true;
       domain = "torrent.krantz.cloud";
+      proxyAuth = true;
     };
     pvr = {
       enable = true;
