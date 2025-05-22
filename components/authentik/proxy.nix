@@ -10,6 +10,24 @@ in {
   options.components.authentik.proxy = {
     enable = lib.mkEnableOption "Enable the authentik proxy component";
     token = extra.mkSecretOption "authentik proxy token" "authentik/proxy/token";
+
+    listeners = {
+      http = lib.mkOption {
+        type = lib.types.str;
+        default = "[::1]:2880";
+        description = "The address to listen on for HTTP connections";
+      };
+      https = lib.mkOption {
+        type = lib.types.str;
+        default = "[::1]:2843";
+        description = "The address to listen on for HTTPS connections";
+      };
+      metrics = lib.mkOption {
+        type = lib.types.str;
+        default = "[::1]:2830";
+        description = "The address the metrics server should listen on";
+      };
+    };
   };
 
   config = lib.mkIf cfg.proxy.enable {
@@ -21,6 +39,10 @@ in {
       environment = {
         AUTHENTIK_HOST = "https://${cfg.domain}";
         AUTHENTIK_TOKEN = "file://${config.sops.secrets."authentik/proxy/token".path}";
+
+        AUTHENTIK_LISTEN__HTTP = cfg.proxy.listeners.http;
+        AUTHENTIK_LISTEN__HTTPS = cfg.proxy.listeners.https;
+        AUTHENTIK_LISTEN__METRICS = cfg.proxy.listeners.metrics;
       };
 
       serviceConfig = {
