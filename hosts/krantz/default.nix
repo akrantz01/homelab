@@ -119,7 +119,7 @@
       domain = "vault.krantz.dev";
       admin = {
         enable = true;
-        public = true;
+        authMethod = "proxy";
       };
       pushNotifications.enable = true;
       smtp = {

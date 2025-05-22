@@ -19,31 +19,6 @@
 
     restartUnits = [config.systemd.services.vaultwarden.name];
   };
-
-  adminEnv =
-    if cfg.admin.enable
-    then ''
-      ADMIN_TOKEN=${config.sops.placeholder."vaultwarden/admin_token"}
-    ''
-    else "";
-
-  pushNotificationEnv =
-    if cfg.pushNotifications.enable
-    then ''
-      PUSH_INSTALLATION_ID=${config.sops.placeholder."vaultwarden/push/installation_id"}
-      PUSH_INSTALLATION_KEY=${config.sops.placeholder."vaultwarden/push/installation_key"}
-    ''
-    else "";
-
-  smtpEnv =
-    if cfg.smtp.enable
-    then ''
-      SMTP_HOST=${config.sops.placeholder."vaultwarden/smtp/host"}
-      SMTP_PORT=${config.sops.placeholder."vaultwarden/smtp/port"}
-      SMTP_USERNAME=${config.sops.placeholder."vaultwarden/smtp/username"}
-      SMTP_PASSWORD=${config.sops.placeholder."vaultwarden/smtp/password"}
-    ''
-    else "";
 in {
   options.components.vaultwarden = {
     enable = lib.mkEnableOption "Enable the Vaultwarden component";
@@ -59,6 +34,12 @@ in {
       enable = lib.mkEnableOption "Enable the admin interface";
       token = extra.mkSecretOption "admin token" "vaultwarden/admin_token";
       public = lib.mkEnableOption "Disable authentication for the admin page. Only meant to be used with a separate auth layer";
+
+      authMethod = lib.mkOption {
+        type = lib.types.enum ["token" "proxy" "none"];
+        default = "token";
+        description = "The authentication method to use for the admin interface";
+      };
     };
 
     pushNotifications = {
@@ -141,7 +122,7 @@ in {
 
         INVITATIONS_ALLOWED = true;
 
-        DISABLE_ADMIN_TOKEN = cfg.admin.enable && cfg.admin.public;
+        DISABLE_ADMIN_TOKEN = cfg.admin.enable && (cfg.admin.authMethod == "proxy" || cfg.admin.authMethod == "none");
 
         SMTP_FROM = cfg.smtp.from.address;
         SMTP_FROM_NAME = cfg.smtp.from.name;
@@ -159,7 +140,7 @@ in {
       };
       "/admin" = {
         proxyTo = "http://[${listenAddress}]:${listenPort}";
-        proxyWebsockets = true;
+        forwardAuth = cfg.admin.enable && cfg.admin.authMethod == "proxy";
       };
     };
 
@@ -174,11 +155,21 @@ in {
     };
 
     sops.templates."vaultwarden.env" = {
-      content = ''
-        ${adminEnv}
-        ${pushNotificationEnv}
-        ${smtpEnv}
-      '';
+      content = lib.strings.concatStringsSep "\n" [
+        (lib.strings.optionalString (cfg.admin.enable && cfg.admin.authMethod == "token") ''
+          ADMIN_TOKEN=${config.sops.placeholder."vaultwarden/admin_token"}
+        '')
+        (lib.strings.optionalString cfg.pushNotifications.enable ''
+          PUSH_INSTALLATION_ID=${config.sops.placeholder."vaultwarden/push/installation_id"}
+          PUSH_INSTALLATION_KEY=${config.sops.placeholder."vaultwarden/push/installation_key"}
+        '')
+        (lib.strings.optionalString cfg.smtp.enable ''
+          SMTP_HOST=${config.sops.placeholder."vaultwarden/smtp/host"}
+          SMTP_PORT=${config.sops.placeholder."vaultwarden/smtp/port"}
+          SMTP_USERNAME=${config.sops.placeholder."vaultwarden/smtp/username"}
+          SMTP_PASSWORD=${config.sops.placeholder."vaultwarden/smtp/password"}
+        '')
+      ];
 
       owner = config.users.users.vaultwarden.name;
       group = config.users.users.vaultwarden.group;
