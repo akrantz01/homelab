@@ -6,14 +6,13 @@
 }: let
   cfg = config.components.pvr;
 
-  mkDomainOption = for:
-    lib.mkOption {
+  mkDomainOption = for: {
+    name = lib.mkOption {
       type = lib.types.str;
       default = "${lib.strings.toLower for}.${cfg.baseDomain}";
       description = "The domain to use for the ${for} UI";
     };
-  mkVirtualHost = port: {
-    locations."/".proxyTo = "http://[::1]:${toString port}";
+    proxyAuth = lib.mkEnableOption "Enable proxy authentication for ${for}";
   };
 in {
   options.components.pvr = {
@@ -71,12 +70,20 @@ in {
       };
     };
 
-    components.reverseProxy.hosts = {
-      ${cfg.domains.bazarr} = mkVirtualHost config.services.bazarr.listenPort;
-      ${cfg.domains.jellyseerr} = mkVirtualHost config.services.jellyseerr.port;
-      ${cfg.domains.radarr} = mkVirtualHost 7878;
-      ${cfg.domains.sonarr} = mkVirtualHost 8989;
-      ${cfg.domains.prowlarr} = mkVirtualHost 9696;
-    };
+    components.reverseProxy.hosts = let
+      mkVirtualHost = domain: port: {
+        ${domain.name} = {
+          locations."/".proxyTo = "http://[::1]:${toString port}";
+          forwardAuth = domain.proxyAuth;
+        };
+      };
+    in
+      lib.attrsets.mergeAttrsList [
+        (mkVirtualHost cfg.domains.bazarr config.services.bazarr.listenPort)
+        (mkVirtualHost cfg.domains.jellyseerr config.services.jellyseerr.port)
+        (mkVirtualHost cfg.domains.radarr 7878)
+        (mkVirtualHost cfg.domains.sonarr 8989)
+        (mkVirtualHost cfg.domains.prowlarr 9696)
+      ];
   };
 }

@@ -141,7 +141,13 @@
     pvr = {
       enable = true;
       baseDomain = "krantz.cloud";
-      domains.jellyseerr = "media.krantz.dev";
+      domains = {
+        jellyseerr.name = "media.krantz.dev";
+        bazarr.proxyAuth = true;
+        radarr.proxyAuth = true;
+        sonarr.proxyAuth = true;
+        prowlarr.proxyAuth = true;
+      };
     };
   };
 
