@@ -152,9 +152,15 @@ in {
       };
     };
 
-    components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
-      proxyTo = "http://[${listenAddress}]:${listenPort}";
-      proxyWebsockets = true;
+    components.reverseProxy.hosts.${cfg.domain}.locations = {
+      "/" = {
+        proxyTo = "http://[${listenAddress}]:${listenPort}";
+        proxyWebsockets = true;
+      };
+      "/admin" = {
+        proxyTo = "http://[${listenAddress}]:${listenPort}";
+        proxyWebsockets = true;
+      };
     };
 
     sops.secrets = {
