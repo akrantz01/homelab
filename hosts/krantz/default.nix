@@ -78,6 +78,11 @@
       };
     };
 
+    authentik = {
+      domain = "login.krantz.dev";
+      proxy.enable = true;
+    };
+
     atuin = {
       enable = true;
       domain = "shell.krantz.dev";
