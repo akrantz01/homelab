@@ -72,8 +72,8 @@ in {
 
     components.reverseProxy.hosts = let
       mkVirtualHost = domain: port: {
-        ${domain.name} = {
-          locations."/".proxyTo = "http://[::1]:${toString port}";
+        ${domain.name}.locations."/" = {
+          proxyTo = "http://[::1]:${toString port}";
           forwardAuth = domain.proxyAuth;
         };
       };

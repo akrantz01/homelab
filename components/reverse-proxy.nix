@@ -36,6 +36,8 @@
         description = "Adds a return directive, for e.g. redirections.";
       };
 
+      forwardAuth = lib.mkEnableOption "Require authentication via authentik";
+
       extraConfig = lib.mkOption {
         type = lib.types.lines;
         default = "";
@@ -63,8 +65,6 @@
         default = [];
         description = "The listen address for the virtual host";
       };
-
-      forwardAuth = lib.mkEnableOption "Require forward authentication from authentik";
 
       extraConfig = lib.mkOption {
         type = lib.types.lines;
@@ -138,8 +138,16 @@ in {
     assertions = [
       {
         assertion = let
-          virtualHosts = lib.attrsets.attrValues cfg.hosts;
-          forwardAuthEnabled = lib.lists.any (host: host.forwardAuth) virtualHosts;
+          forwardAuthEnabled =
+            lib.lists.any
+            (
+              host:
+                lib.lists.any
+                (location: location.forwardAuth)
+                (lib.attrsets.attrValues host.locations)
+            )
+            (lib.attrsets.attrValues cfg.hosts);
+
           hasProxyOutpost = config.components.authentik.proxy.enable;
         in
           (forwardAuthEnabled && hasProxyOutpost) || !forwardAuthEnabled;
@@ -208,7 +216,9 @@ in {
         cfg.backends;
 
       virtualHosts =
-        lib.attrsets.mapAttrs (name: host: {
+        lib.attrsets.mapAttrs (name: host: let
+          forwardAuth = lib.lists.any (location: location.forwardAuth) (lib.attrsets.attrValues host.locations);
+        in {
           forceSSL = true;
           enableACME = true;
           acmeRoot = null;
@@ -222,11 +232,11 @@ in {
 
                 extraConfig = lib.strings.concatStringsSep "\n" [
                   location.extraConfig
-                  (lib.strings.optionalString host.forwardAuth forwardAuthConfig)
+                  (lib.strings.optionalString location.forwardAuth forwardAuthConfig)
                 ];
               })
               host.locations)
-            (lib.attrsets.optionalAttrs host.forwardAuth {
+            (lib.attrsets.optionalAttrs forwardAuth {
               "/outpost.goauthentik.io" = {
                 proxyPass = "http://${config.components.authentik.proxy.listeners.http}";
                 recommendedProxySettings = false;

@@ -133,10 +133,9 @@ in {
       };
     };
 
-    components.reverseProxy.hosts.${cfg.domain} = {
+    components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
+      proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
       forwardAuth = cfg.proxyAuth;
-
-      locations."/".proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
     };
   };
 }
