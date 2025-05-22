@@ -228,7 +228,7 @@ in {
               host.locations)
             (lib.attrsets.optionalAttrs host.forwardAuth {
               "/outpost.goauthentik.io" = {
-                proxyPass = config.components.authentik.proxy.listeners.http;
+                proxyPass = "http://${config.components.authentik.proxy.listeners.http}";
                 recommendedProxySettings = false;
 
                 extraConfig = ''
