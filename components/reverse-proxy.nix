@@ -64,6 +64,8 @@
         description = "The listen address for the virtual host";
       };
 
+      forwardAuth = lib.mkEnableOption "Require forward authentication from authentik";
+
       extraConfig = lib.mkOption {
         type = lib.types.lines;
         default = "";
@@ -87,6 +89,27 @@
       };
     };
   };
+
+  forwardAuthConfig = ''
+    auth_request /outpost.goauthentik.io/auth/nginx;
+    error_page 401 = @goauthentik_proxy_signin;
+    auth_request_set $auth_cookie $upstream_http_set_cookie;
+    add_header Set-Cookie $auth_cookie;
+
+    auth_request_set $authentik_username $upstream_http_x_authentik_username;
+    auth_request_set $authentik_groups $upstream_http_x_authentik_groups;
+    auth_request_set $authentik_entitlements $upstream_http_x_authentik_entitlements;
+    auth_request_set $authentik_email $upstream_http_x_authentik_email;
+    auth_request_set $authentik_name $upstream_http_x_authentik_name;
+    auth_request_set $authentik_uid $upstream_http_x_authentik_uid;
+
+    proxy_set_header X-authentik-username $authentik_username;
+    proxy_set_header X-authentik-groups $authentik_groups;
+    proxy_set_header X-authentik-entitlements $authentik_entitlements;
+    proxy_set_header X-authentik-email $authentik_email;
+    proxy_set_header X-authentik-name $authentik_name;
+    proxy_set_header X-authentik-uid $authentik_uid;
+  '';
 in {
   options.components.reverseProxy = {
     enable = lib.mkEnableOption "Enable the reverse proxy component";
@@ -112,6 +135,18 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = let
+          virtualHosts = lib.attrsets.attrValues cfg.hosts;
+          forwardAuthEnabled = lib.lists.any (host: host.forwardAuth) virtualHosts;
+          hasProxyOutpost = config.components.authentik.proxy.enable;
+        in
+          (forwardAuthEnabled && hasProxyOutpost) || !forwardAuthEnabled;
+        message = "Forward authentication is only supported when the authentik proxy outpost is enabled";
+      }
+    ];
+
     security.acme = {
       acceptTerms = true;
 
@@ -180,12 +215,40 @@ in {
 
           inherit (host) listenAddresses extraConfig;
 
-          locations =
-            lib.attrsets.mapAttrs (path: location: {
-              inherit (location) proxyWebsockets recommendedProxySettings return extraConfig priority;
-              proxyPass = location.proxyTo;
+          locations = lib.attrsets.mergeAttrsList [
+            (lib.attrsets.mapAttrs (path: location: {
+                inherit (location) proxyWebsockets recommendedProxySettings return priority;
+                proxyPass = location.proxyTo;
+
+                extraConfig = lib.strings.concatStringsSep "\n" [
+                  location.extraConfig
+                  (lib.strings.optionalString host.forwardAuth forwardAuthConfig)
+                ];
+              })
+              host.locations)
+            (lib.attrsets.optionalAttrs host.forwardAuth {
+              "/outpost.goauthentik.io" = {
+                proxyPass = config.components.authentik.proxy.listeners.http;
+                recommendedProxySettings = false;
+
+                extraConfig = ''
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+
+                  add_header Set-Cookie $auth_cookie;
+                  auth_request_set $auth_cookie $upstream_http_set_cookie;
+
+                  proxy_pass_request_body off;
+                  proxy_set_header Content-Length "";
+                '';
+              };
+              "@goauthentik_proxy_signin".extraConfig = ''
+                internal;
+                add_header Set-Cookie $auth_cookie;
+                return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+              '';
             })
-            host.locations;
+          ];
         })
         cfg.hosts;
     };
