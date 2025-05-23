@@ -39,7 +39,7 @@
     AUTHENTIK_EMAIL__TEMPLATE_DIR = ./emails;
   };
 in {
-  imports = [./proxy.nix];
+  imports = [./ldap.nix ./proxy.nix];
 
   options.components.authentik = {
     enable = lib.mkEnableOption "Enable the Authentik component";

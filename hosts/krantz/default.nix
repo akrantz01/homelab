@@ -80,6 +80,7 @@
 
     authentik = {
       domain = "login.krantz.dev";
+      ldap.enable = true;
       proxy.enable = true;
     };
 
