@@ -328,6 +328,15 @@ in {
       };
     };
 
+    systemd.tmpfiles.settings = lib.mkIf (cfg.media.backend == "file") {
+      "10-authentik".${cfg.media.path}.d = {
+        age = "-";
+        mode = "0755";
+        user = config.users.users.authentik.name;
+        group = config.users.groups.authentik.name;
+      };
+    };
+
     components.reverseProxy = {
       backends.authentik.servers = [cfg.web.listeners.http];
       hosts.${cfg.domain}.locations.${cfg.web.path} = {
