@@ -30,6 +30,14 @@
           address = "no-reply@krantz.dev";
         };
       };
+
+      media = {
+        backend = "s3";
+        s3 = {
+          bucket = "login-krantz-dev-media-20250527043344039500000001";
+          region = "ca-central-1";
+        };
+      };
     };
   };
 
