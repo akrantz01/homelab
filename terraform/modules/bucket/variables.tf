@@ -27,3 +27,15 @@ variable "policy" {
   default     = null
   description = "The resource policy to apply to the bucket"
 }
+
+variable "cors" {
+  type = list(object({
+    allowed_origins = list(string)
+    allowed_methods = list(string)
+    allowed_headers = optional(list(string))
+    expose_headers  = optional(list(string))
+    max_age_seconds = optional(number)
+  }))
+  default     = []
+  description = "CORS configuration for the bucket"
+}
