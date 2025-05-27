@@ -1,7 +1,7 @@
 module "storage" {
   source = "../../modules/bucket"
 
-  prefix = "krantz-wiki"
+  name = "krantz-wiki"
 
   acl            = "private"
   public_objects = true

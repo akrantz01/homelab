@@ -8,7 +8,8 @@ terraform {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket_prefix = "${var.prefix}-"
+  bucket        = !var.prefix ? var.name : null
+  bucket_prefix = var.prefix ? "${var.name}-" : null
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket" {
@@ -29,8 +30,37 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
 }
 
 resource "aws_s3_bucket_acl" "bucket" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.bucket,
+    aws_s3_bucket_public_access_block.bucket
+  ]
+
   bucket = aws_s3_bucket.bucket.id
   acl    = var.acl
+}
+
+resource "aws_s3_bucket_policy" "bucket" {
+  count = var.policy != null ? 1 : 0
+
+  bucket = aws_s3_bucket.bucket.id
+  policy = var.policy
+}
+
+resource "aws_s3_bucket_cors_configuration" "bucket" {
+  count = length(var.cors) > 0 ? 1 : 0
+
+  bucket = aws_s3_bucket.bucket.id
+
+  dynamic "cors_rule" {
+    for_each = var.cors
+    content {
+      allowed_origins = cors_rule.value.allowed_origins
+      allowed_methods = cors_rule.value.allowed_methods
+      allowed_headers = try(cors_rule.value.allowed_headers, [])
+      expose_headers  = try(cors_rule.value.expose_headers, [])
+      max_age_seconds = try(cors_rule.value.max_age_seconds, null)
+    }
+  }
 }
 
 data "aws_iam_policy_document" "policy" {

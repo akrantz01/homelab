@@ -1,15 +1,17 @@
 module "bucket" {
   source = "../../modules/bucket"
 
-  prefix = "cms-krantz-dev"
+  name = "cms-krantz-dev"
 
   acl            = "private"
   public_objects = true
+
+  policy = data.aws_iam_policy_document.bucket_policy.json
 }
 
-resource "aws_s3_bucket_policy" "cms" {
-  bucket = module.bucket.name
-  policy = data.aws_iam_policy_document.bucket_policy.json
+moved {
+  from = aws_s3_bucket_policy.cms
+  to   = module.bucket.aws_s3_bucket_policy.bucket[0]
 }
 
 resource "aws_iam_policy" "bucket_readwrite_policy" {

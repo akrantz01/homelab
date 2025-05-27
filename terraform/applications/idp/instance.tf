@@ -27,6 +27,8 @@ resource "aws_instance" "idp" {
 
   associate_public_ip_address = true
 
+  iam_instance_profile = aws_iam_role.idp.name
+
   user_data_replace_on_change = true
   user_data = templatefile("${path.module}/templates/user-data.sh.tfpl", {
     flake    = var.flake
@@ -55,5 +57,32 @@ resource "aws_instance" "idp" {
     ignore_changes = [
       ami # Prevents accidental recreation of the instance when the AMI changes
     ]
+  }
+}
+
+resource "aws_iam_role" "idp" {
+  name        = "IdpInstance"
+  description = "The role assumed by the IDP instance."
+
+  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+}
+
+resource "aws_iam_role_policy" "idp" {
+  name = "MediaAccess"
+  role = aws_iam_role.idp.id
+
+  policy = module.media.policy
+}
+
+data "aws_iam_policy_document" "trust_policy" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
   }
 }
