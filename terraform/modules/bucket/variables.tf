@@ -1,6 +1,12 @@
-variable "prefix" {
+variable "name" {
   type        = string
-  description = "The prefix to generate the name with"
+  description = "The name of the bucket"
+}
+
+variable "prefix" {
+  type        = bool
+  description = "Whether to use the name as a prefix for the bucket"
+  default     = true
 }
 
 variable "acl" {
@@ -13,4 +19,11 @@ variable "public_objects" {
   type        = bool
   default     = false
   description = "Whether the objects can be public"
+}
+
+variable "policy" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "The resource policy to apply to the bucket"
 }

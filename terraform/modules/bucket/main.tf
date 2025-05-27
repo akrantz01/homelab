@@ -8,7 +8,8 @@ terraform {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket_prefix = "${var.prefix}-"
+  bucket        = !var.prefix ? var.name : null
+  bucket_prefix = var.prefix ? "${var.name}-" : null
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket" {
@@ -29,8 +30,20 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
 }
 
 resource "aws_s3_bucket_acl" "bucket" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.bucket,
+    aws_s3_bucket_public_access_block.bucket
+  ]
+
   bucket = aws_s3_bucket.bucket.id
   acl    = var.acl
+}
+
+resource "aws_s3_bucket_policy" "bucket" {
+  count = var.policy != null ? 1 : 0
+
+  bucket = aws_s3_bucket.bucket.id
+  policy = var.policy
 }
 
 data "aws_iam_policy_document" "policy" {
