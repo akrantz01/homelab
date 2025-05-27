@@ -27,7 +27,7 @@ resource "aws_instance" "idp" {
 
   associate_public_ip_address = true
 
-  iam_instance_profile = aws_iam_role.idp.name
+  iam_instance_profile = aws_iam_instance_profile.idp.name
 
   user_data_replace_on_change = true
   user_data = templatefile("${path.module}/templates/user-data.sh.tfpl", {
@@ -58,6 +58,11 @@ resource "aws_instance" "idp" {
       ami # Prevents accidental recreation of the instance when the AMI changes
     ]
   }
+}
+
+resource "aws_iam_instance_profile" "idp" {
+  name = "IdpInstanceProfile"
+  role = aws_iam_role.idp.name
 }
 
 resource "aws_iam_role" "idp" {
