@@ -9,11 +9,6 @@ module "bucket" {
   policy = data.aws_iam_policy_document.bucket_policy.json
 }
 
-moved {
-  from = aws_s3_bucket_policy.cms
-  to   = module.bucket.aws_s3_bucket_policy.bucket[0]
-}
-
 resource "aws_iam_policy" "bucket_readwrite_policy" {
   name = "AssetBucketReadWritePolicy"
   path = "/services/cms/"
