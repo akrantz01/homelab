@@ -31,19 +31,18 @@
     nixosConfigurations = import ./hosts inputs;
 
     devShells.${system}.default = pkgs.mkShell {
-      packages =
-        (with pkgs; [
-          alejandra
-          bashInteractive
-          copier
-          just
-          nix-diff
-          sops
-          terragrunt
-          tflint
-          yamllint
-        ])
-        ++ [pkgs-unstable.opentofu];
+      packages = with pkgs-unstable; [
+        alejandra
+        bashInteractive
+        copier
+        just
+        opentofu
+        nix-diff
+        sops
+        terragrunt
+        tflint
+        yamllint
+      ];
 
       shellHook = ''
         alias j=just
