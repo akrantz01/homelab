@@ -47,7 +47,7 @@ jobs:
         run: just terraform/plan
 
       - name: Generate Pull Request Comments
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         run: |
           for file in $(ls terraform/plans); do
             project="terraform/$(tr '_' '/' <<< "$file" | cut -d. -f1)"
