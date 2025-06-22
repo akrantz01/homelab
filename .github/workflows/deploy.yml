@@ -54,12 +54,12 @@ jobs:
           echo "The following changes will be applied once merged:" >> "$comment_file"
 
           for plan in $(ls terraform/plans); do
-            file="terraform/plans/$plan"
+            file="${{ github.workspace }}/terraform/plans/$plan"
             project="$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
 
             pushd "terraform/$project" > /dev/null
 
-            if tofu show -json "${{ github.workspace }}/$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' "$file.json" > /dev/null; then
+            if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
               echo "No changes for $project"
               popd > /dev/null
               continue
@@ -69,7 +69,7 @@ jobs:
             echo "" >> "$comment_file"
 
             echo "```" >> "$comment_file"
-            tofu show "${{ github.workspace }}/$file" >> "$comment_file"
+            tofu show "$file" >> "$comment_file"
             echo "```" >> "$comment_file"
 
             echo "</details>" >> "$comment_file"
