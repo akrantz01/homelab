@@ -61,9 +61,9 @@ jobs:
             pushd "terraform/$project" > /dev/null
 
             if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
-              echo "No changes for $project"
+              echo "  No changes found"
             else
-              echo "Found changes for $project"
+              echo "  Found changes"
 
               echo '<details><summary>$project</summary>' >> "$comment_file"
               echo '' >> "$comment_file"
