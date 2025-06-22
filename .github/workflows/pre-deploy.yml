@@ -1,0 +1,82 @@
+---
+"on": pull_request
+
+name: Pre-deploy
+
+env:
+  # renovate: datasource=github-releases packageName=opentofu/opentofu
+  OPENTOFU_VERSION: 1.9.1
+  # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
+  TERRAGRUNT_VERSION: v0.81.8
+
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: taiki-e/install-action@just
+
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+
+      - name: Install Terragrunt
+        run: |
+          wget -qO /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${{ env.TERRAGRUNT_VERSION }}/terragrunt_linux_amd64
+          sudo install -m 755 /tmp/terragrunt /usr/local/bin/terragrunt
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
+          aws-region: ca-central-1
+
+      - name: Plan
+        run: just terraform/plan
+
+      - name: Generate Pull Request Comments
+        # if: github.event_name == 'pull_request'
+        run: |
+          set -ex
+          comment_file="PLAN_COMMENT.md"
+          echo '### Plan' > "$comment_file"
+          echo 'The following changes will be applied once merged:' >> "$comment_file"
+
+          for plan in $(ls terraform/plans); do
+            file="${{ github.workspace }}/terraform/plans/$plan"
+            project="$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
+            echo "Processing $project..."
+
+            pushd "terraform/$project" > /dev/null
+
+            if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
+              echo "  No changes found"
+            else
+              echo "  Found changes"
+
+              echo '<details><summary>$project</summary>' >> "$comment_file"
+              echo '' >> "$comment_file"
+
+              echo '```' >> "$comment_file"
+              tofu show -no-color "$file" >> "$comment_file"
+              echo '```' >> "$comment_file"
+
+              echo '</details>' >> "$comment_file"
+            fi
+
+            popd > /dev/null
+          done
+
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "${{ github.event.pull_request.comments_url }}" \
+            -f "body=@$comment_file"
