@@ -55,26 +55,27 @@ jobs:
 
           for plan in $(ls terraform/plans); do
             file="${{ github.workspace }}/terraform/plans/$plan"
-            project="$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
+            project="$(tr '_' '/' <<< "$plan" |= cut -d. -f1)"
+            echo "Processing $project..."
 
-            pushd "terraform/$project"
+            pushd "terraform/$project" > /dev/null
 
             if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
-              echo 'No changes for $project'
-              popd
-              continue
+              echo "No changes for $project"
+            else
+              echo "Found changes for $project"
+
+              echo '<details><summary>$project</summary>' >> "$comment_file"
+              echo '' >> "$comment_file"
+
+              echo '```' >> "$comment_file"
+              tofu show -no-color "$file" >> "$comment_file"
+              echo '```' >> "$comment_file"
+
+              echo '</details>' >> "$comment_file"
             fi
 
-            echo '<details><summary>$project</summary>' >> "$comment_file"
-            echo '' >> "$comment_file"
-
-            echo '```' >> "$comment_file"
-            tofu show "$file" >> "$comment_file"
-            echo '```' >> "$comment_file"
-
-            echo '</details>' >> "$comment_file"
-
-            popd
+            popd > /dev/null
           done
 
           cat "$comment_file"
