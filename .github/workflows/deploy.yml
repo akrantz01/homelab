@@ -55,6 +55,13 @@ jobs:
             pushd "$project" > /dev/null
             tofu show -json "$file" > "$file.json"
             popd > /dev/null
+
+            if jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' "$file.json"; then
+              echo "No changes for $project"
+              continue
+            fi
+
+            echo "Changes detected for $project"
           done
 
   apply:
