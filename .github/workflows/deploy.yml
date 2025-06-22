@@ -55,7 +55,7 @@ jobs:
 
           for plan in $(ls terraform/plans); do
             file="${{ github.workspace }}/terraform/plans/$plan"
-            project="$(tr '_' '/' <<< "$plan" |= cut -d. -f1)"
+            project="$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
             echo "Processing $project..."
 
             pushd "terraform/$project" > /dev/null
