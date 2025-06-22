@@ -70,7 +70,7 @@ jobs:
               echo '' >> "$comment_file"
 
               echo '```' >> "$comment_file"
-              tofu show -no-color "$file" >> "$comment_file"
+              tofu show -no-color "$file"
               echo '```' >> "$comment_file"
 
               echo '</details>' >> "$comment_file"
