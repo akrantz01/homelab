@@ -1,5 +1,8 @@
 ---
-"on": push
+"on":
+  push:
+    branches:
+      - main
 
 name: Deploy
 
@@ -20,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
