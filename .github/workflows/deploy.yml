@@ -50,8 +50,8 @@ jobs:
         # if: github.event_name == 'pull_request'
         run: |
           comment_file="PLAN_COMMENT.md"
-          echo "### Plan" > "$comment_file"
-          echo "The following changes will be applied once merged:" >> "$comment_file"
+          echo '### Plan' > "$comment_file"
+          echo 'The following changes will be applied once merged:'' >> "$comment_file"
 
           for plan in $(ls terraform/plans); do
             file="${{ github.workspace }}/terraform/plans/$plan"
@@ -60,19 +60,19 @@ jobs:
             pushd "terraform/$project"
 
             if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
-              echo "No changes for $project"
+              echo 'No changes for $project'
               popd
               continue
             fi
 
-            echo "<details><summary>$project</summary>" >> "$comment_file"
-            echo "" >> "$comment_file"
+            echo '<details><summary>$project</summary>' >> "$comment_file"
+            echo '' >> "$comment_file"
 
-            echo "```" >> "$comment_file"
+            echo '```' >> "$comment_file"
             tofu show "$file" >> "$comment_file"
-            echo "```" >> "$comment_file"
+            echo '```' >> "$comment_file"
 
-            echo "</details>" >> "$comment_file"
+            echo '</details>'' >> "$comment_file"
 
             popd
           done
