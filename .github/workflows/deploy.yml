@@ -57,11 +57,11 @@ jobs:
             file="${{ github.workspace }}/terraform/plans/$plan"
             project="$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
 
-            pushd "terraform/$project" > /dev/null
+            pushd "terraform/$project"
 
             if tofu show -json "$file" | jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' > /dev/null; then
               echo "No changes for $project"
-              popd > /dev/null
+              popd
               continue
             fi
 
@@ -73,8 +73,8 @@ jobs:
             echo "```" >> "$comment_file"
 
             echo "</details>" >> "$comment_file"
-            
-            popd > /dev/null
+
+            popd
           done
 
           cat "$comment_file"
