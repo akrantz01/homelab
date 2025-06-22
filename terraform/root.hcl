@@ -25,6 +25,13 @@ terraform {
     commands  = get_terraform_commands_that_need_input()
     arguments = ["-input=false"]
   }
+
+  extra_arguments "plan" {
+    commands = ["plan"]
+    arguments = [
+      "-out=${get_repo_root()}/terraform/plans/${basename(path_relative_to_include())}.tfplan",
+    ]
+  }
 }
 
 terraform_binary = "tofu"
