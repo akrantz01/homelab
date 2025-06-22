@@ -49,9 +49,11 @@ jobs:
       - name: Generate Pull Request Comments
         # if: github.event_name == 'pull_request'
         run: |
-          for file in $(ls terraform/plans); do
-            project="terraform/$(tr '_' '/' <<< "$file" | cut -d. -f1)"
-            
+          base="terraform/plans"
+          for plan in $(ls "$base"); do
+            file="$base/$plan"
+            project="terraform/$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
+
             pushd "$project" > /dev/null
             tofu show -json "$file" > "$file.json"
             popd > /dev/null
