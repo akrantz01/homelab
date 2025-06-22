@@ -55,7 +55,7 @@ jobs:
             project="terraform/$(tr '_' '/' <<< "$plan" | cut -d. -f1)"
 
             pushd "$project" > /dev/null
-            tofu show -json "$file" > "$file.json"
+            tofu show -json "$file" > "${{ github.workspace }}/$file.json"
             popd > /dev/null
 
             if jq --exit-status '.resource_changes | map(.change.actions == ["no-op"]) | all' "$file.json"; then
