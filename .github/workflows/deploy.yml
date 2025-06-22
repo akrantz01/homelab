@@ -51,7 +51,7 @@ jobs:
         run: |
           comment_file="PLAN_COMMENT.md"
           echo '### Plan' > "$comment_file"
-          echo 'The following changes will be applied once merged:'' >> "$comment_file"
+          echo 'The following changes will be applied once merged:' >> "$comment_file"
 
           for plan in $(ls terraform/plans); do
             file="${{ github.workspace }}/terraform/plans/$plan"
@@ -72,7 +72,7 @@ jobs:
             tofu show "$file" >> "$comment_file"
             echo '```' >> "$comment_file"
 
-            echo '</details>'' >> "$comment_file"
+            echo '</details>' >> "$comment_file"
 
             popd
           done
