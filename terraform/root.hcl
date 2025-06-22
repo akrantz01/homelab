@@ -29,7 +29,7 @@ terraform {
   extra_arguments "plan" {
     commands = ["plan"]
     arguments = [
-      "-out=${get_repo_root()}/terraform/plans/${basename(path_relative_to_include())}.tfplan",
+      "-out=${get_repo_root()}/terraform/plans/${replace(path_relative_to_include(), "/", "_")}.tfplan",
     ]
   }
 }
