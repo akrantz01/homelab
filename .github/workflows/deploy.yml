@@ -49,6 +49,7 @@ jobs:
       - name: Generate Pull Request Comments
         # if: github.event_name == 'pull_request'
         run: |
+          set -ex
           comment_file="PLAN_COMMENT.md"
           echo '### Plan' > "$comment_file"
           echo 'The following changes will be applied once merged:' >> "$comment_file"
