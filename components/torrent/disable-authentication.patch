@@ -1,0 +1,40 @@
+diff --git a/deluge/ui/web/auth.py b/deluge/ui/web/auth.py
+index a0c3a918e..6cb48a3eb 100644
+--- a/deluge/ui/web/auth.py
++++ b/deluge/ui/web/auth.py
+@@ -211,9 +211,8 @@ def change_password(self, old_password, new_password):
+         :param new_password: the password to change to
+         :type new_password: string
+         """
+-        if not self.check_password(old_password):
+-            return False
+-        return self._change_password(new_password)
++        log.info('Changing password is disabled')
++        return False
+ 
+     @export(AUTH_LEVEL_NONE)
+     def check_session(self, session_id=None):
+@@ -246,9 +245,5 @@ def login(self, password):
+         :returns: a session id or False
+         :rtype: string or False
+         """
+-        if self.check_password(password):
+-            log.info('Login success (ClientIP %s)', __request__.getClientIP())
+-            return self._create_session(__request__)
+-        else:
+-            log.error('Login failed (ClientIP %s)', __request__.getClientIP())
+-            return False
++        log.info('Login (ClientIP %s)', __request__.getClientIP())
++        return self._create_session(__request__)
+diff --git a/deluge/ui/web/js/deluge-all/LoginWindow.js b/deluge/ui/web/js/deluge-all/LoginWindow.js
+index a055a6921..6747bd49a 100644
+--- a/deluge/ui/web/js/deluge-all/LoginWindow.js
++++ b/deluge/ui/web/js/deluge-all/LoginWindow.js
+@@ -129,6 +129,6 @@ Deluge.LoginWindow = Ext.extend(Ext.Window, {
+     },
+ 
+     onShow: function () {
+-        this.passwordField.focus(true, 300);
++        this.onLogin();
+     },
+ });

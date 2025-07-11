@@ -13,7 +13,7 @@
     ./pvr.nix
     ./reverse-proxy.nix
     ./streaming.nix
-    ./torrent.nix
+    ./torrent
     ./vaultwarden.nix
     ./vpn.nix
   ];

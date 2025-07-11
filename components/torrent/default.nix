@@ -8,6 +8,14 @@
   cfg = config.components.torrent;
 
   daemonPort = 58846;
+
+  deluge = config.services.deluge.package.overrideAttrs (oldAttrs: {
+    patches =
+      (oldAttrs.patches or [])
+      ++ [
+        ./disable-authentication.patch
+      ];
+  });
 in {
   options.components.torrent = {
     enable = lib.mkEnableOption "Enable the torrenting component";
@@ -53,7 +61,7 @@ in {
         PrivateNetwork = true;
 
         ExecStart = lib.mkForce ''
-          ${config.services.deluge.package}/bin/deluged \
+          ${deluge}/bin/deluged \
             --do-not-daemonize \
             --config ${config.services.deluge.dataDir}/.config/deluge \
             --loglevel info
@@ -64,7 +72,7 @@ in {
     systemd.services.delugeweb = {
       serviceConfig = {
         ExecStart = lib.mkForce ''
-          ${config.services.deluge.package}/bin/deluge-web \
+          ${deluge}/bin/deluge-web \
             --do-not-daemonize \
             --config ${config.services.deluge.dataDir}/.config/deluge \
             --port ${toString config.services.deluge.web.port} \
