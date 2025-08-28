@@ -16,7 +16,14 @@
     restartUnits = [config.systemd.services.mealie.name];
   };
 
-  mealie = pkgs-unstable.mealie.overrideAttrs (oldAttrs: {
+  mealie = pkgs-unstable.mealie.overridePythonAttrs (oldAttrs: {
+    # TODO: remove once https://github.com/NixOS/nixpkgs/pull/437155 closes
+    nativeCheckInputs =
+      (oldAttrs.nativeCheckInputs or [])
+      ++ [
+        pkgs-unstable.python3Packages.pytest-asyncio
+      ];
+
     patches =
       (oldAttrs.patches or [])
       ++ [
