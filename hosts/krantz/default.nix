@@ -152,6 +152,18 @@
     };
   };
 
+  # Required due to Bloom.host DDoS mitigation
+  networking.nftables.tables.mangle = {
+    enable = true;
+    family = "inet";
+    content = ''
+      chain postrouting {
+        type filter hook postrouting priority mangle; policy accept;
+        meta l4proto tcp tcp flags syn / syn,rst tcp option maxseg size set 1436;
+      }
+    '';
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
