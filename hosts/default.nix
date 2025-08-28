@@ -1,7 +1,6 @@
 inputs @ {
   self,
   nixpkgs,
-  nixpkgs-mealie,
   nixpkgs-unstable,
   sops-nix,
   tailfed,
@@ -16,7 +15,6 @@ inputs @ {
     builtins.listToAttrs (builtins.map
       (host @ {system, ...}: let
         pkgs-stable = import nixpkgs {inherit system;};
-        pkgs-mealie = import nixpkgs-mealie {inherit system;};
         pkgs-unstable = import nixpkgs-unstable {inherit system;};
       in {
         name = host.hostname;
@@ -27,14 +25,12 @@ inputs @ {
             sops-nix.nixosModules.sops
             tailfed.nixosModules.${system}.tailfed
 
-            "${nixpkgs-unstable}/nixos/modules/services/web-apps/actual.nix"
-
             "${self}/hosts/${host.hostname}"
             "${self}/common"
             "${self}/components"
             "${self}/secrets"
             {
-              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-mealie pkgs-unstable self settings;};
+              _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
             }
           ];
         };
@@ -65,7 +61,7 @@ in
     }
     {
       hostname = "idp";
-      system = "aarch64-linux";
+      system = "x86_64-linux";
       networking = {
         interface = "ens5";
         dhcp = true;

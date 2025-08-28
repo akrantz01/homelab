@@ -2,7 +2,6 @@
   lib,
   config,
   extra,
-  pkgs-mealie,
   pkgs-unstable,
   ...
 }: let
@@ -17,7 +16,7 @@
     restartUnits = [config.systemd.services.mealie.name];
   };
 
-  mealie = pkgs-mealie.mealie.overrideAttrs (oldAttrs: {
+  mealie = pkgs-unstable.mealie.overrideAttrs (oldAttrs: {
     patches =
       (oldAttrs.patches or [])
       ++ [
