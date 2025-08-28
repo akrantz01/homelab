@@ -61,7 +61,7 @@ in
     }
     {
       hostname = "idp";
-      system = "x86_64-linux";
+      system = "aarch64-linux";
       networking = {
         interface = "ens5";
         dhcp = true;
