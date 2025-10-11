@@ -5,6 +5,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -19,6 +27,7 @@
     self,
     nixpkgs,
     nixpkgs-unstable,
+    nixos-anywhere,
     ...
   }: let
     system = "x86_64-linux";
@@ -35,6 +44,9 @@
         just
         opentofu
         nix-diff
+        nixos-anywhere.packages.${system}.default
+        nixos-rebuild
+        ssh-to-age
         sops
         terragrunt
         tflint
