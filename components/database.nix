@@ -152,7 +152,7 @@ in {
             age = "-";
             mode = "0750";
             user = config.users.users.pgbackrest.name;
-            group = config.users.users.pgbackrest.group;
+            group = config.users.users.postgres.group;
           };
         })
         tmpDirs);
