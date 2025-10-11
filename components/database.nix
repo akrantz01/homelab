@@ -72,7 +72,7 @@ in {
         log-timestamp = true;
 
         process-max = 4;
-        archive-async = true;
+        archive-async = false;
         spool-path = spoolPath;
 
         compress-type = "zst";
