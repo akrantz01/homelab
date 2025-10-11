@@ -1,47 +1,50 @@
-{modulesPath, ...}: {
+{lib, ...}: {
   imports = [
-    "${modulesPath}/virtualisation/amazon-image.nix"
+    ./disk-config.nix
+    ./hardware-configuration.nix
   ];
 
-  ec2.efi = true;
   time.timeZone = "America/Montreal";
 
-  environment.etc."homelab/initialized".text = "";
+  # TODO: remove once tailscale is working
+  services.openssh.openFirewall = lib.mkForce true;
+  users.users.alex.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+OPkkj+awp5kNpBYMuAfUtDOp4Fn3NbDg6wDD4yb/q alex@thinkpad-z13"];
 
-  components = {
-    reverseProxy.enable = true;
-    database = {
-      enable = true;
-      backups = {
-        enable = true;
-        bucket = "krantz-cloud-backups";
-        region = "us-east-005";
-      };
-    };
+  # TODO: re-enable components
+  # components = {
+  #   reverseProxy.enable = true;
+  #   database = {
+  #     enable = true;
+  #     backups = {
+  #       enable = true;
+  #       bucket = "krantz-cloud-backups";
+  #       region = "us-east-005";
+  #     };
+  #   };
 
-    authentik = {
-      enable = true;
-      domain = "login.krantz.dev";
+  #   authentik = {
+  #     enable = true;
+  #     domain = "login.krantz.dev";
 
-      geoip.accountId = 1167485;
+  #     geoip.accountId = 1167485;
 
-      email = {
-        security = "tls";
-        from = {
-          name = "krantz.dev";
-          address = "no-reply@krantz.dev";
-        };
-      };
+  #     email = {
+  #       security = "tls";
+  #       from = {
+  #         name = "krantz.dev";
+  #         address = "no-reply@krantz.dev";
+  #       };
+  #     };
 
-      media = {
-        backend = "s3";
-        s3 = {
-          bucket = "login-krantz-dev-media-20250527043344039500000001";
-          region = "ca-central-1";
-        };
-      };
-    };
-  };
+  #     media = {
+  #       backend = "s3";
+  #       s3 = {
+  #         bucket = "login-krantz-dev-media-20250527043344039500000001";
+  #         region = "ca-central-1";
+  #       };
+  #     };
+  #   };
+  # };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -49,5 +52,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }
