@@ -9,11 +9,6 @@
   environment.etc."homelab/initialized".text = "";
 
   components = {
-    continuousDeployment = {
-      enable = true;
-      frequency = "*:0/10"; # every 10 minutes
-    };
-
     reverseProxy.enable = true;
     database = {
       enable = true;
