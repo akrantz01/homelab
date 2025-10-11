@@ -1,14 +1,10 @@
-{lib, ...}: {
+{
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
 
   time.timeZone = "America/Montreal";
-
-  # TODO: remove once tailscale is working
-  services.openssh.openFirewall = lib.mkForce true;
-  users.users.alex.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+OPkkj+awp5kNpBYMuAfUtDOp4Fn3NbDg6wDD4yb/q alex@thinkpad-z13"];
 
   # TODO: re-enable components
   # components = {
