@@ -6,41 +6,42 @@
 
   time.timeZone = "America/Montreal";
 
-  # TODO: re-enable components
-  # components = {
-  #   reverseProxy.enable = true;
-  #   database = {
-  #     enable = true;
-  #     backups = {
-  #       enable = true;
-  #       bucket = "krantz-cloud-backups";
-  #       region = "us-east-005";
-  #     };
-  #   };
+  components = {
+    continuousDeployment.enable = true;
 
-  #   authentik = {
-  #     enable = true;
-  #     domain = "login.krantz.dev";
+    reverseProxy.enable = true;
+    # database = {
+    #   enable = true;
+    #   backups = {
+    #     enable = true;
+    #     bucket = "krantz-cloud-backups";
+    #     region = "us-east-005";
+    #   };
+    # };
 
-  #     geoip.accountId = 1167485;
+    # authentik = {
+    #   enable = true;
+    #   domain = "login.krantz.dev";
 
-  #     email = {
-  #       security = "tls";
-  #       from = {
-  #         name = "krantz.dev";
-  #         address = "no-reply@krantz.dev";
-  #       };
-  #     };
+    #   geoip.accountId = 1167485;
 
-  #     media = {
-  #       backend = "s3";
-  #       s3 = {
-  #         bucket = "login-krantz-dev-media-20250527043344039500000001";
-  #         region = "ca-central-1";
-  #       };
-  #     };
-  #   };
-  # };
+    #   email = {
+    #     security = "tls";
+    #     from = {
+    #       name = "krantz.dev";
+    #       address = "no-reply@krantz.dev";
+    #     };
+    #   };
+
+    #   media = {
+    #     backend = "s3";
+    #     s3 = {
+    #       bucket = "login-krantz-dev-media-20250527043344039500000001";
+    #       region = "ca-central-1";
+    #     };
+    #   };
+    # };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
