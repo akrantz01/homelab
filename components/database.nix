@@ -64,6 +64,10 @@ in {
       enable = true;
 
       settings = {
+        log-level-console = "info";
+        log-level-file = "info";
+        log-timestamp = true;
+
         process-max = 4;
         archive-async = true;
         spool-path = spoolPath;
