@@ -29,7 +29,11 @@
     };
     database = {
       enable = true;
-      backups.enable = true;
+      backups = {
+        enable = true;
+        bucket = "krantz-cloud-backups";
+        region = "us-east-005";
+      };
     };
     authentication = {
       # Disabled in favor of Cloudflare Zero Trust

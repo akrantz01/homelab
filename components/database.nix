@@ -1,13 +1,26 @@
 {
   config,
+  extra,
   lib,
+  host,
   pkgs-stable,
   ...
 }: let
   cfg = config.components.database;
+
+  services = lib.flatten (
+    lib.mapAttrsToList (
+      stanza: {jobs, ...}:
+        lib.map (job: "pgbackrest-${stanza}-${job}") (lib.attrNames jobs)
+    )
+    config.services.pgbackrest.stanzas
+  );
+
+  spoolPath = "/var/spool/pgbackrest";
 in {
   options.components.database = {
     enable = lib.mkEnableOption "Enable the database component";
+    sopsFile = extra.mkSecretSourceOption config;
 
     databases = lib.mkOption {
       default = [];
@@ -17,10 +30,15 @@ in {
 
     backups = {
       enable = lib.mkEnableOption "Enable database backups";
-      location = lib.mkOption {
+
+      bucket = lib.mkOption {
         type = lib.types.str;
-        default = "/mnt/backups/postgres";
-        description = "Location to store database backups";
+        description = "The backblaze b2 bucket to upload to";
+      };
+
+      region = lib.mkOption {
+        type = lib.types.str;
+        description = "The region where the bucket was created";
       };
     };
   };
@@ -42,12 +60,97 @@ in {
         cfg.databases;
     };
 
-    services.postgresqlBackup = {
-      enable = cfg.backups.enable;
-      location = cfg.backups.location;
+    services.pgbackrest = lib.mkIf cfg.backups.enable {
+      enable = true;
 
-      backupAll = true;
-      compression = "zstd";
+      settings = {
+        process-max = 4;
+        archive-async = true;
+        spool-path = spoolPath;
+
+        compress-type = "zst";
+
+        start-fast = true;
+      };
+
+      repos.b2 = {
+        type = "s3";
+        path = "/postgres/${host.hostname}";
+        s3-bucket = cfg.backups.bucket;
+        s3-endpoint = "s3.${cfg.backups.region}.backblazeb2.com";
+        s3-region = cfg.backups.region;
+        s3-uri-style = "path";
+
+        cipher-type = "none";
+
+        retention-full = 3;
+        retention-diff = 7;
+        retention-archive = 3;
+        retention-archive-type = "full";
+        retention-history = 7;
+
+        bundle = true;
+        block = true;
+      };
+
+      stanzas.default.jobs = {
+        full = {
+          schedule = "Sun 02:00";
+          type = "full";
+        };
+
+        diff = {
+          schedule = "daily";
+          type = "diff";
+        };
+      };
+    };
+
+    sops.secrets = let
+      mkSecret = key: {
+        inherit key;
+        inherit (cfg) sopsFile;
+
+        owner = config.users.users.pgbackrest.name;
+        group = config.users.users.pgbackrest.group;
+
+        reloadUnits = lib.map (service: config.systemd.services.${service}.name) services;
+      };
+    in
+      lib.mkIf cfg.backups.enable {
+        "pgbackrest/backblaze-id" = mkSecret "backblaze/id";
+        "pgbackrest/backblaze-key" = mkSecret "backblaze/key";
+      };
+
+    sops.templates."pgbackrest.env" = lib.mkIf cfg.backups.enable {
+      content = ''
+        PGBACKREST_REPO1_S3_KEY=${config.sops.placeholder."pgbackrest/backblaze-id"}
+        PGBACKREST_REPO1_S3_KEY_SECRET=${config.sops.placeholder."pgbackrest/backblaze-key"}
+      '';
+
+      owner = config.users.users.pgbackrest.name;
+      group = config.users.users.pgbackrest.group;
+
+      reloadUnits = lib.map (service: config.systemd.services.${service}.name) services;
+    };
+
+    systemd = lib.mkIf cfg.backups.enable {
+      services = (
+        lib.listToAttrs (
+          lib.map (service: {
+            name = service;
+            value.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
+          })
+          services
+        )
+      );
+
+      tmpfiles.settings."10-pgbackrest".${spoolPath}.d = {
+        age = "-";
+        mode = "0750";
+        user = config.users.users.pgbackrest.name;
+        group = config.users.users.pgbackrest.group;
+      };
     };
   };
 }
