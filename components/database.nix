@@ -17,6 +17,8 @@
   );
 
   spoolPath = "/var/spool/pgbackrest";
+  logPath = "/var/log/pgbackrest";
+  tmpDirs = [spoolPath logPath];
 in {
   options.components.database = {
     enable = lib.mkEnableOption "Enable the database component";
@@ -66,6 +68,7 @@ in {
       settings = {
         log-level-console = "info";
         log-level-file = "info";
+        log-path = logPath;
         log-timestamp = true;
 
         process-max = 4;
@@ -143,12 +146,16 @@ in {
           postgresql.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
         };
 
-      tmpfiles.settings."10-pgbackrest".${spoolPath}.d = {
-        age = "-";
-        mode = "0750";
-        user = config.users.users.pgbackrest.name;
-        group = config.users.users.pgbackrest.group;
-      };
+      tmpfiles.settings."10-pgbackrest" = lib.listToAttrs (lib.map (path: {
+          name = path;
+          value.d = {
+            age = "-";
+            mode = "0750";
+            user = config.users.users.pgbackrest.name;
+            group = config.users.users.pgbackrest.group;
+          };
+        })
+        tmpDirs);
     };
   };
 }
