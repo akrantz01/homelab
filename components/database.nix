@@ -110,22 +110,34 @@ in {
       };
     };
 
-    sops.secrets = lib.mkIf cfg.backups.enable {
-      "pgbackrest/backblaze-id".key = "backblaze/id";
-      "pgbackrest/backblaze-key".key = "backblaze/key";
-    };
+    sops = let
+      ownership = {
+        owner = config.users.users.pgbackrest.name;
+        group = config.users.users.postgres.group;
+        mode = "0440";
+      };
+    in {
+      secrets = let
+        instance = key: ({
+            inherit key;
+            inherit (cfg) sopsFile;
+          }
+          // ownership);
+      in
+        lib.mkIf cfg.backups.enable {
+          "pgbackrest/backblaze-id" = instance "backblaze/id";
+          "pgbackrest/backblaze-key" = instance "backblaze/key";
+        };
 
-    sops.templates."pgbackrest.env" = lib.mkIf cfg.backups.enable {
-      content = ''
-        PGBACKREST_REPO1_S3_KEY=${config.sops.placeholder."pgbackrest/backblaze-id"}
-        PGBACKREST_REPO1_S3_KEY_SECRET=${config.sops.placeholder."pgbackrest/backblaze-key"}
-      '';
+      templates."pgbackrest.env" = lib.mkIf cfg.backups.enable ({
+          content = ''
+            PGBACKREST_REPO1_S3_KEY=${config.sops.placeholder."pgbackrest/backblaze-id"}
+            PGBACKREST_REPO1_S3_KEY_SECRET=${config.sops.placeholder."pgbackrest/backblaze-key"}
+          '';
 
-      owner = config.users.users.pgbackrest.name;
-      group = config.users.users.postgres.group;
-      mode = "0440";
-
-      reloadUnits = [config.systemd.services.postgresql.name] ++ lib.map (service: config.systemd.services.${service}.name) services;
+          reloadUnits = [config.systemd.services.postgresql.name] ++ lib.map (service: config.systemd.services.${service}.name) services;
+        }
+        // ownership);
     };
 
     systemd = lib.mkIf cfg.backups.enable {
