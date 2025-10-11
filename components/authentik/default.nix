@@ -2,13 +2,15 @@
   config,
   extra,
   lib,
-  pkgs-unstable,
+  pkgs-authentik,
   ...
 }: let
   cfg = config.components.authentik;
 
   database = "authentik";
   redis = config.services.redis.servers.authentik.unixSocket;
+
+  pkg = pkgs-authentik.authentik;
 
   commonEnvironment = lib.attrsets.mergeAttrsList [
     {
@@ -281,7 +283,7 @@ in {
           Type = "simple";
           User = "authentik";
           Group = "authentik";
-          ExecStart = "${pkgs-unstable.authentik}/bin/ak server";
+          ExecStart = "${pkg}/bin/ak server";
 
           Restart = "on-failure";
           RestartSec = "5s";
@@ -312,7 +314,7 @@ in {
           Type = "simple";
           User = "authentik";
           Group = "authentik";
-          ExecStart = "${pkgs-unstable.authentik}/bin/ak worker";
+          ExecStart = "${pkg}/bin/ak worker";
 
           Restart = "on-failure";
           RestartSec = "5s";
