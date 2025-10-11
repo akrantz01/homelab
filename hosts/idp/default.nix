@@ -15,7 +15,14 @@
     };
 
     reverseProxy.enable = true;
-    database.enable = true;
+    database = {
+      enable = true;
+      backups = {
+        enable = true;
+        bucket = "krantz-cloud-backups";
+        region = "us-east-005";
+      };
+    };
 
     authentik = {
       enable = true;
