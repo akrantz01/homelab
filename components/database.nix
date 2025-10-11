@@ -106,21 +106,10 @@ in {
       };
     };
 
-    sops.secrets = let
-      mkSecret = key: {
-        inherit key;
-        inherit (cfg) sopsFile;
-
-        owner = config.users.users.pgbackrest.name;
-        group = config.users.users.pgbackrest.group;
-
-        reloadUnits = lib.map (service: config.systemd.services.${service}.name) services;
-      };
-    in
-      lib.mkIf cfg.backups.enable {
-        "pgbackrest/backblaze-id" = mkSecret "backblaze/id";
-        "pgbackrest/backblaze-key" = mkSecret "backblaze/key";
-      };
+    sops.secrets = lib.mkIf cfg.backups.enable {
+      "pgbackrest/backblaze-id".key = "backblaze/id";
+      "pgbackrest/backblaze-key".key = "backblaze/key";
+    };
 
     sops.templates."pgbackrest.env" = lib.mkIf cfg.backups.enable {
       content = ''
@@ -129,21 +118,26 @@ in {
       '';
 
       owner = config.users.users.pgbackrest.name;
-      group = config.users.users.pgbackrest.group;
+      group = config.users.users.postgres.group;
+      mode = "0440";
 
-      reloadUnits = lib.map (service: config.systemd.services.${service}.name) services;
+      reloadUnits = [config.systemd.services.postgresql.name] ++ lib.map (service: config.systemd.services.${service}.name) services;
     };
 
     systemd = lib.mkIf cfg.backups.enable {
-      services = (
-        lib.listToAttrs (
-          lib.map (service: {
-            name = service;
-            value.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
-          })
-          services
+      services =
+        (
+          lib.listToAttrs (
+            lib.map (service: {
+              name = service;
+              value.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
+            })
+            services
+          )
         )
-      );
+        // {
+          postgresql.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
+        };
 
       tmpfiles.settings."10-pgbackrest".${spoolPath}.d = {
         age = "-";
