@@ -150,7 +150,7 @@ in {
           name = path;
           value.d = {
             age = "-";
-            mode = "0750";
+            mode = "0770";
             user = config.users.users.pgbackrest.name;
             group = config.users.users.postgres.group;
           };
