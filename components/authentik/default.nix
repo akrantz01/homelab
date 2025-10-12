@@ -55,6 +55,9 @@
       AUTHENTIK_STORAGE__MEDIA__BACKEND = "s3";
       AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME = cfg.media.s3.bucket;
       AUTHENTIK_STORAGE__MEDIA__S3__REGION = cfg.media.s3.region;
+      AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT = lib.mkIf (cfg.media.s3.endpoint != null) cfg.media.s3.endpoint;
+      AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY = lib.mkIf (cfg.media.s3.accessKey != null) "file://${config.sops.secrets."authentik/media/s3/access-key".path}";
+      AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY = lib.mkIf (cfg.media.s3.secretKey != null) "file://${config.sops.secrets."authentik/media/s3/secret-key".path}";
     })
   ];
 in {
@@ -112,6 +115,15 @@ in {
       };
 
       s3 = {
+        endpoint = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          example = "https://s3.ca-central-1.amazonaws.com";
+          description = ''
+            The provider's S3 endpoint URL. Only used if the media backend is set to `s3`.
+          '';
+          default = null;
+        };
+
         bucket = lib.mkOption {
           type = lib.types.str;
           example = "authentik";
@@ -125,6 +137,23 @@ in {
           example = "us-east-1";
           description = ''
             The S3 region where the bucket was created. Only used if the media backend is set to `s3`.
+          '';
+        };
+
+        accessKey = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          example = "authentik/s3/access-key";
+          default = null;
+          description = ''
+            The key used to lookup the provider's access key ID secret in the SOPS file. Only used if the media backend is set to `s3`.
+          '';
+        };
+        secretKey = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          example = "authentik/s3/secret-key";
+          default = null;
+          description = ''
+            The key used to lookup the provider's secret access key secret in the SOPS file. Only used if the media backend is set to `s3`.
           '';
         };
       };
@@ -366,16 +395,15 @@ in {
 
         restartUnits = with config.systemd.services; [authentik-web.name authentik-worker.name];
       };
-    in
-      {
-        "authentik/secret-key" = instance cfg.secretKey;
-        "authentik/smtp/host" = instance cfg.email.host;
-        "authentik/smtp/port" = instance cfg.email.port;
-        "authentik/smtp/username" = instance cfg.email.username;
-        "authentik/smtp/password" = instance cfg.email.password;
-      }
-      // lib.attrsets.optionalAttrs (cfg.geoip.accountId != null) {
-        "geoip/license-key" = instance cfg.geoip.licenseKey;
-      };
+    in {
+      "authentik/secret-key" = instance cfg.secretKey;
+      "authentik/smtp/host" = instance cfg.email.host;
+      "authentik/smtp/port" = instance cfg.email.port;
+      "authentik/smtp/username" = instance cfg.email.username;
+      "authentik/smtp/password" = instance cfg.email.password;
+      "authentik/media/s3/access-key" = lib.mkIf (cfg.media.s3.accessKey != null) (instance cfg.media.s3.accessKey);
+      "authentik/media/s3/secret-key" = lib.mkIf (cfg.media.s3.secretKey != null) (instance cfg.media.s3.secretKey);
+      "geoip/license-key" = lib.mkIf (cfg.geoip.accountId != null) (instance cfg.geoip.licenseKey);
+    };
   };
 }
