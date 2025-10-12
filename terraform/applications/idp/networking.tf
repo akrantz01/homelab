@@ -48,26 +48,26 @@ resource "aws_security_group_rule" "egress" {
   ipv6_cidr_blocks = ["::/0"]
 }
 
-resource "cloudflare_dns_record" "http" {
-  zone_id = data.cloudflare_zone.domain.zone_id
-  name    = local.domain
-  type    = "A"
-  content = aws_instance.idp.public_ip
+# resource "cloudflare_dns_record" "http" {
+#   zone_id = data.cloudflare_zone.domain.zone_id
+#   name    = local.domain
+#   type    = "A"
+#   content = aws_instance.idp.public_ip
 
-  ttl     = 1
-  proxied = true
-}
+#   ttl     = 1
+#   proxied = true
+# }
 
-resource "cloudflare_dns_record" "https" {
-  count = aws_instance.idp.ipv6_address_count
+# resource "cloudflare_dns_record" "https" {
+#   count = aws_instance.idp.ipv6_address_count
 
-  zone_id = data.cloudflare_zone.domain.zone_id
-  name    = local.domain
-  type    = "AAAA"
-  content = aws_instance.idp.ipv6_addresses[count.index]
+#   zone_id = data.cloudflare_zone.domain.zone_id
+#   name    = local.domain
+#   type    = "AAAA"
+#   content = aws_instance.idp.ipv6_addresses[count.index]
 
-  ttl     = 1
-  proxied = true
-}
+#   ttl     = 1
+#   proxied = true
+# }
 
 data "cloudflare_ip_ranges" "public" {}
