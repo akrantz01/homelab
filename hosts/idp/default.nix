@@ -19,28 +19,31 @@
       };
     };
 
-    # authentik = {
-    #   enable = true;
-    #   domain = "login.krantz.dev";
+    authentik = {
+      enable = true;
+      domain = "login.krantz.dev";
 
-    #   geoip.accountId = 1167485;
+      geoip.accountId = 1167485;
 
-    #   email = {
-    #     security = "tls";
-    #     from = {
-    #       name = "krantz.dev";
-    #       address = "no-reply@krantz.dev";
-    #     };
-    #   };
+      email = {
+        security = "tls";
+        from = {
+          name = "krantz.dev";
+          address = "no-reply@krantz.dev";
+        };
+      };
 
-    #   media = {
-    #     backend = "s3";
-    #     s3 = {
-    #       bucket = "login-krantz-dev-media-20250527043344039500000001";
-    #       region = "ca-central-1";
-    #     };
-    #   };
-    # };
+      media = {
+        backend = "s3";
+        s3 = {
+          endpoint = "https://s3.us-east-005.backblazeb2.com";
+          bucket = "login-krantz-dev";
+          region = "us-east-005";
+          accessKey = "backblaze/id";
+          secretKey = "backblaze/key";
+        };
+      };
+    };
   };
 
   # This value determines the NixOS release from which the default
