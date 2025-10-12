@@ -123,6 +123,7 @@ in {
       serviceConfig = {
         User = user;
         Group = group;
+        DynamicUser = lib.mkForce false;
         ExecStart = lib.mkForce "${pkgs-unstable.n8n}/bin/n8n";
       };
     };
