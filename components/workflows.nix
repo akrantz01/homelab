@@ -64,6 +64,8 @@ in {
 
     systemd.services.n8n = {
       environment = {
+        N8N_CONFIG_FILES = lib.mkForce null;
+
         N8N_LISTEN_ADDRESS = "::1";
         N8N_PORT = "5678";
         N8N_PROTOCOL = "http";
@@ -87,6 +89,7 @@ in {
 
         GENERIC_TIMEZONE = config.time.timeZone;
         N8N_ENCRYPTION_KEY_FILE = config.sops.secrets."workflows/encryption-key".path;
+        N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS = "true";
 
         N8N_DEFAULT_BINARY_DATA_MODE = "filesystem";
         N8N_COMMUNITY_PACKAGES_ENABLED = "true";
@@ -99,8 +102,10 @@ in {
         EXECUTIONS_TIMEOUT_MAX = "3600";
         N8N_CONCURRENCY_PRODUCTION_LIMIT = "-1";
 
-        # TODO: evaluate adding runners support
+        # TODO: evaluate using external runners
         # https://docs.n8n.io/hosting/configuration/environment-variables/task-runners/
+        N8N_RUNNERS_ENABLED = "true";
+        N8N_RUNNERS_MODE = "internal";
 
         N8N_BLOCK_ENV_ACCESS_IN_NODE = "true";
         N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES = "true";
