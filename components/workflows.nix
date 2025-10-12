@@ -141,7 +141,10 @@ in {
     };
     users.groups.n8n = {};
 
-    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = "http://[${listen.host}]:${listen.port}";
+    components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
+      proxyTo = "http://[${listen.host}]:${listen.port}";
+      proxyWebsockets = true;
+    };
 
     sops.secrets = let
       owner = user;
