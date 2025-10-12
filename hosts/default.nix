@@ -17,8 +17,12 @@ inputs @ {
       (host @ {system, ...}: let
         usesDisko = host.disko or false;
 
-        pkgs-stable = import nixpkgs {inherit system;};
-        pkgs-unstable = import nixpkgs-unstable {inherit system;};
+        options = {
+          inherit system;
+          config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["n8n"];
+        };
+        pkgs-stable = import nixpkgs options;
+        pkgs-unstable = import nixpkgs-unstable options;
       in {
         name = host.hostname;
         value = lib.nixosSystem {

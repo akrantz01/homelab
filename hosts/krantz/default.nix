@@ -99,6 +99,14 @@
         from.address = "no-reply@krantz.dev";
       };
     };
+    workflows = {
+      enable = true;
+      domain = "workflows.krantz.cloud";
+      email = {
+        security = "tls";
+        from.address = "no-reply@krantz.dev";
+      };
+    };
 
     streaming = {
       enable = true;
