@@ -31,8 +31,11 @@
       enable = true;
       backups = {
         enable = true;
+        endpoint = "s3.us-east-005.backblazeb2.com";
         bucket = "krantz-cloud-backups";
         region = "us-east-005";
+        accessKey = "backblaze/id";
+        secretKey = "backblaze/key";
       };
     };
     authentication = {

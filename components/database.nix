@@ -16,6 +16,8 @@
     config.services.pgbackrest.stanzas
   );
 
+  hasBackupKeys = cfg.backups.enable && cfg.backups.accessKey != null;
+
   logPath = "/var/log/pgbackrest";
 in {
   options.components.database = {
@@ -39,6 +41,32 @@ in {
       region = lib.mkOption {
         type = lib.types.str;
         description = "The region where the bucket was created";
+      };
+
+      endpoint = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        example = "s3.ca-central-1.amazonaws.com";
+        description = ''
+          The provider's S3 endpoint URL.
+        '';
+        default = null;
+      };
+
+      accessKey = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        example = "database/backup/access-key";
+        default = null;
+        description = ''
+          The key used to lookup the provider's access key ID secret in the SOPS file.
+        '';
+      };
+      secretKey = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        example = "database/backup/secret-key";
+        default = null;
+        description = ''
+          The key used to lookup the provider's secret access key secret in the SOPS file.
+        '';
       };
     };
   };
@@ -81,9 +109,13 @@ in {
         type = "s3";
         path = "/postgres/${host.hostname}";
         s3-bucket = cfg.backups.bucket;
-        s3-endpoint = "s3.${cfg.backups.region}.backblazeb2.com";
+        s3-endpoint = lib.mkIf (cfg.backups.endpoint != null) cfg.backups.endpoint;
         s3-region = cfg.backups.region;
         s3-uri-style = "path";
+        s3-key-type =
+          if hasBackupKeys
+          then "shared"
+          else "auto";
 
         cipher-type = "none";
 
@@ -116,33 +148,33 @@ in {
         group = config.users.users.postgres.group;
         mode = "0440";
       };
-    in {
-      secrets = let
-        instance = key: ({
-            inherit key;
-            inherit (cfg) sopsFile;
-          }
-          // ownership);
-      in
-        lib.mkIf cfg.backups.enable {
-          "pgbackrest/backblaze-id" = instance "backblaze/id";
-          "pgbackrest/backblaze-key" = instance "backblaze/key";
+    in
+      lib.mkIf hasBackupKeys {
+        secrets = let
+          instance = key: ({
+              inherit key;
+              inherit (cfg) sopsFile;
+            }
+            // ownership);
+        in {
+          "pgbackrest/backblaze-id" = instance cfg.backups.accessKey;
+          "pgbackrest/backblaze-key" = instance cfg.backups.secretKey;
         };
 
-      templates."pgbackrest.env" = lib.mkIf cfg.backups.enable ({
-          content = ''
-            PGBACKREST_REPO1_S3_KEY=${config.sops.placeholder."pgbackrest/backblaze-id"}
-            PGBACKREST_REPO1_S3_KEY_SECRET=${config.sops.placeholder."pgbackrest/backblaze-key"}
-          '';
+        templates."pgbackrest.env" =
+          {
+            content = ''
+              PGBACKREST_REPO1_S3_KEY=${config.sops.placeholder."pgbackrest/backblaze-id"}
+              PGBACKREST_REPO1_S3_KEY_SECRET=${config.sops.placeholder."pgbackrest/backblaze-key"}
+            '';
 
-          reloadUnits = [config.systemd.services.postgresql.name] ++ lib.map (service: config.systemd.services.${service}.name) services;
-        }
-        // ownership);
-    };
+            reloadUnits = [config.systemd.services.postgresql.name] ++ lib.map (service: config.systemd.services.${service}.name) services;
+          }
+          // ownership;
+      };
 
     systemd = lib.mkIf cfg.backups.enable {
-      services =
-        (
+      services = lib.mkIf hasBackupKeys ((
           lib.listToAttrs (
             lib.map (service: {
               name = service;
@@ -153,7 +185,7 @@ in {
         )
         // {
           postgresql.serviceConfig.EnvironmentFile = config.sops.templates."pgbackrest.env".path;
-        };
+        });
 
       tmpfiles.settings."10-pgbackrest".${logPath}.d = {
         age = "-";
