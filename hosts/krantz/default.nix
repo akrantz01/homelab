@@ -1,8 +1,4 @@
 {
-  extra,
-  host,
-  ...
-}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -36,35 +32,6 @@
         region = "us-east-005";
         accessKey = "backblaze/id";
         secretKey = "backblaze/key";
-      };
-    };
-    authentication = {
-      # Disabled in favor of Cloudflare Zero Trust
-      enable = false;
-      domain = "login.krantz.dev";
-
-      passwordResetUrl = "https://console.jumpcloud.com/login?template=resetUserPassword";
-
-      sopsFile = extra.currentHostSecrets host "authentication.yaml";
-      secrets = {
-        jwt = "secrets/jwt";
-        session = "secrets/session";
-        storage = "secrets/storage";
-      };
-
-      ldap = {
-        implementation = "custom";
-        address = "ldap/address";
-        baseDN = "ldap/base_dn";
-        user = "ldap/bind/user";
-        password = "ldap/bind/password";
-      };
-
-      smtp = {
-        address = "notifier/address";
-        username = "notifier/username";
-        password = "notifier/password";
-        from.address = "no-reply@krantz.dev";
       };
     };
     aws = {

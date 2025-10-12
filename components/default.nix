@@ -1,8 +1,6 @@
 {...}: {
   imports = [
-    ./actualbudget
     ./atuin.nix
-    ./authentication
     ./authentik
     ./aws.nix
     ./backblaze.nix
