@@ -8,6 +8,11 @@
   cfg = config.components.workflows;
   user = config.users.users.n8n.name;
   group = config.users.groups.n8n.name;
+
+  listen = {
+    host = "::1";
+    port = "5678";
+  };
 in {
   options.components.workflows = {
     enable = lib.mkEnableOption "Enable the workflows component";
@@ -66,8 +71,8 @@ in {
       environment = {
         N8N_CONFIG_FILES = lib.mkForce null;
 
-        N8N_LISTEN_ADDRESS = "::1";
-        N8N_PORT = "5678";
+        N8N_LISTEN_ADDRESS = listen.host;
+        N8N_PORT = listen.port;
         N8N_PROTOCOL = "http";
         N8N_PROXY_HOPS = "1";
 
@@ -135,6 +140,8 @@ in {
       isSystemUser = true;
     };
     users.groups.n8n = {};
+
+    components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = "http://[${listen.host}]:${listen.port}";
 
     sops.secrets = let
       owner = user;
