@@ -336,7 +336,7 @@ in {
         environment =
           commonEnvironment
           // {
-            AUTHENTIK_WORKER__CONCURRENCY = builtins.toString cfg.worker.concurrency;
+            AUTHENTIK_WORKER__THREADS = builtins.toString cfg.worker.concurrency;
           };
 
         serviceConfig = {
