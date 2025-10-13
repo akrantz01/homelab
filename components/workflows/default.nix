@@ -82,6 +82,7 @@ in {
     systemd.services.n8n = {
       environment = {
         N8N_CONFIG_FILES = lib.mkForce null;
+        EXTERNAL_HOOK_FILES = ./hooks.js;
 
         N8N_LISTEN_ADDRESS = listen.host;
         N8N_PORT = listen.port;
