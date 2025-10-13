@@ -2,6 +2,7 @@
   config,
   extra,
   lib,
+  pkgs-stable,
   pkgs-unstable,
   ...
 }: let
@@ -13,6 +14,14 @@
     host = "::1";
     port = "5678";
   };
+
+  n8n = pkgs-unstable.n8n;
+
+  hooksFile = let
+    libPath = "${n8n}/lib/n8n/packages/cli/dist";
+    sed = "${pkgs-stable.gnused}/bin/sed";
+  in
+    pkgs-stable.runCommand "n8n-hooks.js" {src = ./hooks.js;} "${sed} 's|N8N_LIB_PATH|${libPath}|g' $src > $out";
 in {
   options.components.workflows = {
     enable = lib.mkEnableOption "Enable the workflows component";
@@ -82,7 +91,7 @@ in {
     systemd.services.n8n = {
       environment = {
         N8N_CONFIG_FILES = lib.mkForce null;
-        EXTERNAL_HOOK_FILES = ./hooks.js;
+        EXTERNAL_HOOK_FILES = hooksFile;
 
         N8N_LISTEN_ADDRESS = listen.host;
         N8N_PORT = listen.port;
@@ -147,7 +156,7 @@ in {
         User = user;
         Group = group;
         DynamicUser = lib.mkForce false;
-        ExecStart = lib.mkForce "${pkgs-unstable.n8n}/bin/n8n";
+        ExecStart = lib.mkForce "${n8n}/bin/n8n";
       };
     };
 

@@ -1,12 +1,9 @@
 const { readFileSync } = require("fs");
 const { dirname, resolve } = require("path");
 
-const createRequire = (pkg) => {
-  const dir = dirname(require.resolve(pkg));
-  return (path) => require(resolve(dir, path));
-};
+const relativeRequire = (pkg) => (path) => require(resolve(pkg, path));
 
-const n8n = createRequire("n8n");
+const n8n = relativeRequire("N8N_LIB_PATH");
 const { AuthService } = n8n("auth/auth.service");
 const { OIDC_NONCE_COOKIE_NAME, OIDC_STATE_COOKIE_NAME } = n8n("constants");
 const { OidcService } = n8n("sso.ee/oidc/oidc.service.ee");
