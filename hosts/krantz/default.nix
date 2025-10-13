@@ -106,6 +106,10 @@
         security = "tls";
         from.address = "no-reply@krantz.dev";
       };
+      oidc = {
+        enabled = true;
+        discoveryEndpoint = "https://login.krantz.dev/application/o/workflows/";
+      };
     };
 
     streaming = {
