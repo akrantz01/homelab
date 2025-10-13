@@ -55,6 +55,18 @@ in {
         };
       };
     };
+
+    oidc = {
+      enabled = lib.mkEnableOption "Enable authentication via OIDC";
+
+      discoveryEndpoint = lib.mkOption {
+        type = lib.types.str;
+        description = "The OIDC configuration URL";
+      };
+
+      clientId = extra.mkSecretOption "the OIDC client ID" "workflows/oidc/client-id";
+      clientSecret = extra.mkSecretOption "the OIDC client secret" "workflows/oidc/client-secret";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -123,6 +135,11 @@ in {
         N8N_SMTP_SENDER = "${cfg.email.from.name} <${cfg.email.from.address}>";
         N8N_SMTP_SSL = lib.trivial.boolToString (cfg.email.security == "tls");
         N8N_SMTP_STARTTLS = lib.trivial.boolToString (cfg.email.security == "starttls");
+
+        SSO_OIDC_ENABLED = lib.trivial.boolToString cfg.oidc.enabled;
+        SSO_OIDC_DISCOVERY_ENDPOINT = lib.mkIf cfg.oidc.enabled cfg.oidc.discoveryEndpoint;
+        SSO_OIDC_CLIENT_ID_FILE = lib.mkIf cfg.oidc.enabled config.sops.secrets."workflows/oidc/client-id".path;
+        SSO_OIDC_CLIENT_SECRET_FILE = lib.mkIf cfg.oidc.enabled config.sops.secrets."workflows/oidc/client-secret".path;
       };
 
       serviceConfig = {
@@ -160,6 +177,8 @@ in {
       "workflows/smtp/port" = instance cfg.email.port;
       "workflows/smtp/username" = instance cfg.email.username;
       "workflows/smtp/password" = instance cfg.email.password;
+      "workflows/oidc/client-id" = lib.mkIf cfg.oidc.enabled (instance cfg.oidc.clientId);
+      "workflows/oidc/client-secret" = lib.mkIf cfg.oidc.enabled (instance cfg.oidc.clientSecret);
     };
   };
 }

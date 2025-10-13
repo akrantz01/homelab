@@ -14,6 +14,6 @@
     ./torrent
     ./vaultwarden.nix
     ./vpn.nix
-    ./workflows.nix
+    ./workflows
   ];
 }
