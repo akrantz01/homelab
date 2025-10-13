@@ -14,7 +14,7 @@ jobs:
     outputs:
       templates: ${{ steps.generator.outputs.templates }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - run: |
           templates=$(/bin/ls templates | jq -Rcs 'split("\n")[:-1]')
@@ -29,7 +29,7 @@ jobs:
       matrix:
         template: ${{ fromJSON(needs.generate-matrix.outputs.templates) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: hashicorp/setup-terraform@v3
 
       - run: terraform init
@@ -51,7 +51,7 @@ jobs:
       fail-fast: true
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Coder CLI
         run: curl -L https://coder.com/install.sh | sh
