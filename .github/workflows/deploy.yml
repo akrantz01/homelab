@@ -1,5 +1,8 @@
 ---
-"on": push
+"on":
+  push:
+    branches:
+      - main
 
 name: Deploy
 
@@ -15,39 +18,25 @@ env:
   WORKING_DIRECTORY: terraform
 
 jobs:
-  plan:
-    name: Plan
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-    if: github.ref != 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
-          aws-region: ca-central-1
-
-      - uses: gruntwork-io/terragrunt-action@v2
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION }}
-          tg_version: ${{ env.TERRAGRUNT_VERSION }}
-          tg_dir: ${{ env.WORKING_DIRECTORY }}
-          tg_command: run-all plan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   apply:
     name: Apply
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
+
+      - uses: taiki-e/install-action@just
+
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+
+      - name: Install Terragrunt
+        run: |
+          wget -qO /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${{ env.TERRAGRUNT_VERSION }}/terragrunt_linux_amd64
+          sudo install -m 755 /tmp/terragrunt /usr/local/bin/terragrunt
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -55,9 +44,5 @@ jobs:
           role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
           aws-region: ca-central-1
 
-      - uses: gruntwork-io/terragrunt-action@v2
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION }}
-          tg_version: ${{ env.TERRAGRUNT_VERSION }}
-          tg_dir: ${{ env.WORKING_DIRECTORY }}
-          tg_command: run-all apply
+      - name: Apply
+        run: just terraform/apply
