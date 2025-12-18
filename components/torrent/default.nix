@@ -103,7 +103,7 @@ in {
       };
     };
 
-    systemd.timers.natpmp = {
+    systemd.timers.torrent-port-forward = {
       enable = true;
       description = "NAT-PMP/PCP port forwarding for torrenting";
       after = ["network.target" "torrent-proxy.service"];
@@ -122,7 +122,7 @@ in {
       wantedBy = ["timers.target"];
     };
 
-    systemd.services.natpmp = {
+    systemd.services.torrent-port-forward = {
       enable = true;
       after = ["network.target" "torrent-proxy.service" "vpn.service"];
       wants = ["torrent-proxy.service"];
@@ -130,12 +130,14 @@ in {
 
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
 
+      path = [
+        pkgs-unstable.libnatpmp
+        pkgs-unstable.deluge-2_x
+      ];
+
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = [
-          "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 udp"
-          "${pkgs-unstable.libnatpmp}/bin/natpmpc -g 10.2.0.1 -a 1 0 tcp"
-        ];
+        ExecStart = let src = ./forward-port.sh; in "${pkgs-stable.runtimeShell} ${src}";
 
         PrivateNetwork = true;
       };
