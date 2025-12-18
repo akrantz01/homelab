@@ -133,6 +133,7 @@ in {
       path = [
         pkgs-unstable.libnatpmp
         pkgs-unstable.deluge-2_x
+        pkgs-stable.gawk
       ];
 
       serviceConfig = {
