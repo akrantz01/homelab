@@ -216,9 +216,13 @@ in {
 
       path = [
         pkgs-unstable.libnatpmp
-        pkgs-unstable.deluge-2_x
+        pkgs-stable.curl
         pkgs-stable.gawk
       ];
+
+      environment = {
+        QBITTORRENT_API_PORT = toString config.services.qbittorrent.webuiPort;
+      };
 
       serviceConfig = {
         Type = "oneshot";

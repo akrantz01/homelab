@@ -8,12 +8,7 @@ if [[ -n "${DEBUG:-}" ]]; then
 fi
 
 GATEWAY="${GATEWAY:-10.2.0.1}"
-DELUGE_USER="${DELUGE_USER:-localclient}"
-DELUGE_DATA_DIR="${DELUGE_DATA_DIR:-/var/lib/deluge}"
-
-if [[ -z "${DELUGE_PASSWORD:-}" ]]; then
-  DELUGE_PASSWORD="$(grep "^${DELUGE_USER}" "$DELUGE_DATA_DIR/.config/deluge/auth" | head -n 1 | awk -F':' '{ print $2 }')"
-fi
+QBITTORRENT_API_PORT="${QBITTORRENT_API_PORT:-8080}"
 
 udp_port="$(natpmpc -g "$GATEWAY" -a 1 0 udp | awk '/Mapped public port/ { print $4 }')"
 tcp_port="$(natpmpc -g "$GATEWAY" -a 1 0 udp | awk '/Mapped public port/ { print $4 }')"
@@ -24,7 +19,10 @@ if [[ "$udp_port" != "$tcp_port" ]]; then
   exit 1
 fi
 
-deluge-console \
-  -U "$DELUGE_USER" \
-  -P "$DELUGE_PASSWORD" \
-  "config --set random_port false; config --set listen_ports (${udp_port}, ${udp_port})"
+echo "Acquired port: $udp_port"
+
+curl --silent --fail --request POST \
+    --data-urlencode "json={\"listen_port\": ${udp_port}}" \
+    "http://127.0.0.1:${QBITTORRENT_API_PORT}/api/v2/app/setPreferences"
+
+echo "Sucessfully updated qBittorrent listen port"
