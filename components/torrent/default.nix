@@ -41,6 +41,56 @@ in {
       }
     ];
 
+    services.qbittorrent = {
+      enable = true;
+      package = pkgs-unstable.qbittorrent-nox;
+
+      webuiPort = 7288;
+      openFirewall = false;
+
+      serverConfig = {
+        LegalNotice.Accepted = true;
+
+        Preferences = {
+          General.Locale = "en";
+          WebUI = {
+            Address = "127.0.0.1";
+            LocalHostAuth = false;
+            ServerDomains = cfg.domain;
+          };
+        };
+
+        Network.PortForwardingEnabled = false;
+      };
+    };
+
+    systemd.services.qbittorrent = {
+      bindsTo = ["vpn.service"];
+      after = ["vpn.service"];
+      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
+      serviceConfig.PrivateNetwork = lib.mkForce true;
+    };
+
+    systemd.sockets.qbittorrent-ui-proxy = {
+      enable = true;
+      wantedBy = ["sockets.target"];
+      listenStreams = ["127.0.0.1:${toString config.services.qbittorrent.webuiPort}"];
+    };
+    systemd.services.qbittorrent-ui-proxy = {
+      enable = true;
+      description = "qBittorrent Web UI proxy";
+      after = ["qbittorrent.service" "qbittorrent-ui-proxy.socket"];
+      requires = ["qbittorrent.service"];
+
+      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
+      serviceConfig = {
+        Type = "notify";
+        ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString config.services.qbittorrent.webuiPort}";
+        PrivateTmp = true;
+        PrivateNetwork = true;
+      };
+    };
+
     services.deluge = {
       enable = true;
       package = pkgs-unstable.deluge-2_x;
