@@ -7,6 +7,8 @@
 }: let
   cfg = config.components.torrent;
 
+  concatPath = left: right: (lib.strings.removeSuffix "/" left) + "/" + (lib.strings.removePrefix "/" right);
+
   daemonPort = 58846;
 
   deluge = config.services.deluge.package.overrideAttrs (oldAttrs: {
@@ -27,6 +29,19 @@ in {
     };
 
     proxyAuth = lib.mkEnableOption "Enable proxy authentication";
+
+    paths = {
+      incomplete = lib.mkOption {
+        type = with lib.types; nullOr str;
+        description = "Where to store incomplete downloads";
+        default = null;
+      };
+      complete = lib.mkOption {
+        type = with lib.types; nullOr str;
+        description = "Where to store complete downloads";
+        default = null;
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -52,7 +67,10 @@ in {
         LegalNotice.Accepted = true;
 
         Preferences = {
-          General.Locale = "en";
+          General = {
+            Locale = "en";
+            StatusbarExternalIPDisplayed = true;
+          };
           WebUI = {
             Address = "127.0.0.1";
             LocalHostAuth = !cfg.proxyAuth;
@@ -61,6 +79,22 @@ in {
         };
 
         Network.PortForwardingEnabled = false;
+
+        Session = {
+          GlobalMaxInactiveSeedingMinutes = 1800;
+          GlobalMaxRatio = 1;
+          ShareLimitAction = "Remove";
+
+          DefaultSavePath =
+            if cfg.paths.complete != null
+            then cfg.paths.complete
+            else (concatPath config.services.qbittorrent.profileDir "complete");
+          TempPathEnabled = cfg.paths.incomplete != null;
+          TempPath =
+            if cfg.paths.incomplete != null
+            then cfg.paths.incomplete
+            else (concatPath config.services.qbittorrent.profileDir "complete");
+        };
       };
     };
 

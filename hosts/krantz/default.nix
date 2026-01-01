@@ -121,6 +121,10 @@
       enable = true;
       domain = "torrent.krantz.cloud";
       proxyAuth = true;
+      paths = {
+        complete = "/mnt/torrents/complete";
+        incomplete = "/mnt/torrents/incomplete";
+      };
     };
     pvr = {
       enable = true;
