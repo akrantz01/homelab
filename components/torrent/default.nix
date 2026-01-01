@@ -55,7 +55,7 @@ in {
           General.Locale = "en";
           WebUI = {
             Address = "127.0.0.1";
-            LocalHostAuth = false;
+            LocalHostAuth = !cfg.proxyAuth;
             ServerDomains = cfg.domain;
           };
         };
@@ -195,7 +195,7 @@ in {
     };
 
     components.reverseProxy.hosts.${cfg.domain}.locations."/" = {
-      proxyTo = "http://127.0.0.1:${toString config.services.deluge.web.port}";
+      proxyTo = "http://127.0.0.1:${toString config.services.qbittorrent.webuiPort}";
       forwardAuth = cfg.proxyAuth;
     };
   };
