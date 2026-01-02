@@ -121,8 +121,8 @@ in {
     systemd.timers.torrent-port-forward = {
       enable = true;
       description = "NAT-PMP/PCP port forwarding for torrenting";
-      after = ["network.target" "torrent-proxy.service"];
-      requires = ["torrent-proxy.service"];
+      after = ["network.target" "qbittorrent-ui-proxy.service"];
+      requires = ["qbittorrent-ui-proxy.service"];
 
       timerConfig = {
         OnBootSec = "45s";
@@ -139,8 +139,8 @@ in {
 
     systemd.services.torrent-port-forward = {
       enable = true;
-      after = ["network.target" "torrent-proxy.service" "vpn.service"];
-      wants = ["torrent-proxy.service"];
+      after = ["network.target" "qbittorrent-ui-proxy.service" "vpn.service"];
+      wants = ["qbittorrent-ui-proxy.service"];
       bindsTo = ["vpn.service"];
 
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
