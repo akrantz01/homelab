@@ -8,16 +8,6 @@
   cfg = config.components.torrent;
 
   concatPath = left: right: (lib.strings.removeSuffix "/" left) + "/" + (lib.strings.removePrefix "/" right);
-
-  daemonPort = 58846;
-
-  deluge = config.services.deluge.package.overrideAttrs (oldAttrs: {
-    patches =
-      (oldAttrs.patches or [])
-      ++ [
-        ./disable-authentication.patch
-      ];
-  });
 in {
   options.components.torrent = {
     enable = lib.mkEnableOption "Enable the torrenting component";
@@ -123,68 +113,6 @@ in {
       serviceConfig = {
         Type = "notify";
         ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString config.services.qbittorrent.webuiPort}";
-        PrivateTmp = true;
-        PrivateNetwork = true;
-      };
-    };
-
-    services.deluge = {
-      enable = true;
-      package = pkgs-unstable.deluge-2_x;
-
-      openFirewall = false;
-
-      web = {
-        enable = true;
-        openFirewall = false;
-      };
-    };
-
-    systemd.services.deluged = {
-      bindsTo = ["vpn.service"];
-      after = ["vpn.service"];
-      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-      serviceConfig = {
-        PrivateNetwork = true;
-
-        ExecStart = lib.mkForce ''
-          ${deluge}/bin/deluged \
-            --do-not-daemonize \
-            --config ${config.services.deluge.dataDir}/.config/deluge \
-            --loglevel info
-        '';
-      };
-    };
-
-    systemd.services.delugeweb = {
-      serviceConfig = {
-        ExecStart = lib.mkForce ''
-          ${deluge}/bin/deluge-web \
-            --do-not-daemonize \
-            --config ${config.services.deluge.dataDir}/.config/deluge \
-            --port ${toString config.services.deluge.web.port} \
-            --interface 127.0.0.1
-        '';
-      };
-    };
-
-    systemd.sockets.torrent-proxy = {
-      enable = true;
-      wantedBy = ["sockets.target"];
-      listenStreams = ["127.0.0.1:${toString daemonPort}"];
-    };
-    systemd.services.torrent-proxy = {
-      enable = true;
-      description = "Torrent API proxy";
-      after = ["deluged.service" "torrent-proxy.socket"];
-      requires = ["deluged.service"];
-
-      unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-      serviceConfig = {
-        Type = "notify";
-
-        ExecStart = "${pkgs-stable.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:${toString daemonPort}";
-
         PrivateTmp = true;
         PrivateNetwork = true;
       };
