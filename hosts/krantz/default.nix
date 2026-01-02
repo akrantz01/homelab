@@ -10,7 +10,7 @@
     continuousDeployment.enable = true;
     vpn = {
       enable = true;
-      addresses = ["10.2.0.2"];
+      addresses = ["10.2.0.2" "2a07:b944::2:2"];
       dns = ["1.1.1.1" "1.0.0.1"];
       peer = {
         # ProtonVPN US-NY#533
