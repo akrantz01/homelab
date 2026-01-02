@@ -11,7 +11,7 @@ GATEWAY="${GATEWAY:-10.2.0.1}"
 QBITTORRENT_API_PORT="${QBITTORRENT_API_PORT:-8080}"
 
 udp_port="$(natpmpc -g "$GATEWAY" -a 1 0 udp | awk '/Mapped public port/ { print $4 }')"
-tcp_port="$(natpmpc -g "$GATEWAY" -a 1 0 udp | awk '/Mapped public port/ { print $4 }')"
+tcp_port="$(natpmpc -g "$GATEWAY" -a 1 0 tcp | awk '/Mapped public port/ { print $4 }')"
 if [[ "$udp_port" != "$tcp_port" ]]; then
   echo "Mismatch ports!"
   echo "  UDP: $udp_port"
