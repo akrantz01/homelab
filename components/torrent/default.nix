@@ -102,7 +102,10 @@ in {
       bindsTo = ["vpn.service"];
       after = ["vpn.service"];
       unitConfig.JoinsNamespaceOf = "netns@vpn.service";
-      serviceConfig.PrivateNetwork = lib.mkForce true;
+      serviceConfig = {
+        BindReadOnlyPaths = "/etc/netns/vpn/resolv.conf:/etc/resolv.conf";
+        PrivateNetwork = lib.mkForce true;
+      };
     };
 
     systemd.sockets.qbittorrent-ui-proxy = {
