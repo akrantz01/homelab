@@ -133,6 +133,7 @@ in {
 
           DISABLE_SIGNUPS = lib.boolToString (!cfg.oauth.enable);
           DISABLE_NEW_RELEASE_CHECK = "true";
+          EMAIL_VERIFICATION_REQUIRED = "true";
 
           NEXTAUTH_URL = "https://${cfg.domain}";
         }
