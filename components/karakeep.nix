@@ -177,7 +177,7 @@ in {
           "karakeep/openai_key" = instance cfg.ai.apiKey;
         })
         (lib.optionalAttrs cfg.oauth.enable {
-          "karakeep/oauth/client_id" = instance cfg.oauth.clietnId;
+          "karakeep/oauth/client_id" = instance cfg.oauth.clientId;
           "karakeep/oauth/client_secret" = instance cfg.oauth.clientSecret;
         })
         (lib.optionalAttrs cfg.smtp.enable {
