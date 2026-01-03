@@ -7,6 +7,7 @@
     ./continuous-deployment.nix
     ./database.nix
     ./mealie
+    ./meilisearch.nix
     ./miniflux.nix
     ./pvr.nix
     ./reverse-proxy.nix

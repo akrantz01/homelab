@@ -48,6 +48,7 @@
         };
       };
     };
+    meilisearch.enable = true;
 
     authentik = {
       domain = "login.krantz.dev";
