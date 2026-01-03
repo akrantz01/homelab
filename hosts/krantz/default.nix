@@ -60,6 +60,21 @@
       enable = true;
       domain = "shell.krantz.dev";
     };
+    karakeep = {
+      enable = true;
+      domain = "links.krantz.dev";
+
+      ai.autoTagging = true;
+      oauth = {
+        enable = true;
+        name = "krantz.dev";
+        discoveryEndpoint = "https://login.krantz.dev/application/o/karakeep/.well-known/openid-configuration";
+      };
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
+    };
     mealie = {
       enable = true;
       domain = "recipes.krantz.dev";

@@ -6,6 +6,7 @@
     ./backblaze.nix
     ./continuous-deployment.nix
     ./database.nix
+    ./karakeep.nix
     ./mealie
     ./meilisearch.nix
     ./miniflux.nix
