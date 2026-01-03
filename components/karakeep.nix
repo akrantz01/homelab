@@ -191,6 +191,9 @@ in {
 
     sops.templates."karakeep.env" = {
       content = lib.concatStringsSep "\n" [
+        ''
+          MEILI_MASTER_KEY=${config.sops.placeholder."meilisearch/master_key"}
+        ''
         (lib.optionalString aiEnabled ''
           OPENAI_API_KEY=${config.sops.placeholder."karakeep/openai_key"}
         '')
