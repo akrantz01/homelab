@@ -131,7 +131,7 @@ in {
           PORT = toString port;
           LOG_LEVEL = "notice";
 
-          DISABLE_SIGNUPS = "true";
+          DISABLE_SIGNUPS = lib.boolToString (!cfg.oauth.enable);
           DISABLE_NEW_RELEASE_CHECK = "true";
 
           NEXTAUTH_URL = "https://${cfg.domain}";
