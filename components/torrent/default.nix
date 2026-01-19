@@ -70,6 +70,8 @@ in {
 
         Network.PortForwardingEnabled = false;
 
+        BitTorrent.Session.IgnoreSlowTorrentsForQueueing = true;
+
         Session = {
           GlobalMaxInactiveSeedingMinutes = 1800;
           GlobalMaxRatio = 1;
@@ -84,8 +86,6 @@ in {
             if cfg.paths.incomplete != null
             then cfg.paths.incomplete
             else (concatPath config.services.qbittorrent.profileDir "complete");
-
-          IgnoreSlowTorrentsForQueueing = true;
         };
       };
     };
