@@ -84,6 +84,8 @@ in {
             if cfg.paths.incomplete != null
             then cfg.paths.incomplete
             else (concatPath config.services.qbittorrent.profileDir "complete");
+
+          IgnoreSlowTorrentsForQueueing = true;
         };
       };
     };
