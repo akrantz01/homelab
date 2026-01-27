@@ -7,7 +7,7 @@
   time.timeZone = "America/New_York";
 
   components = {
-    continuousDeployment.enable = true;
+    continuousDeployment.enable = false;
     vpn = {
       enable = true;
       addresses = ["10.2.0.2" "2a07:b944::2:2"];
