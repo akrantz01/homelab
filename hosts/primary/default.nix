@@ -34,10 +34,10 @@
         secretKey = "backblaze/backups/key";
       };
     };
-    #   aws = {
-    #     enable = true;
-    #     url = "https://tailfed.krantz.cloud";
-    #   };
+    aws = {
+      enable = true;
+      url = "https://tailfed.krantz.cloud";
+    };
     #   backblaze = {
     #     enable = true;
     #     buckets.watch-krantz-dev = {
