@@ -14,7 +14,7 @@
       dns = ["1.1.1.1" "1.0.0.1"];
       peer = {
         # ProtonVPN CA#167
-        publicKey = "EBXclfeNmhYke+o12lTl0UFl5a37LM2vvP4ed8iNQko=";
+        publicKey = "nLx6LJgXWOtnlKV65ruYMGjiw4DERImZGCpN3lolm1I=";
         endpoint = "176.113.74.82:51820";
       };
     };
