@@ -33,6 +33,12 @@ in {
     backups = {
       enable = lib.mkEnableOption "Enable database backups";
 
+      restoreFrom = lib.mkOption {
+        type = with lib.types; nullOr str;
+        default = null;
+        description = "The name of an existing stanza to configure for restoration";
+      };
+
       bucket = lib.mkOption {
         type = lib.types.str;
         description = "The backblaze b2 bucket to upload to";
@@ -79,6 +85,13 @@ in {
       enableJIT = true;
       enableTCPIP = false;
 
+      settings = lib.mkIf cfg.backups.enable {
+        archive_mode =
+          if cfg.backups.restoreFrom != null && cfg.backups.restoreFrom != host.hostname
+          then "off"
+          else "on";
+      };
+
       ensureDatabases = cfg.databases;
       ensureUsers =
         builtins.map (db: {
@@ -107,7 +120,12 @@ in {
 
       repos.b2 = {
         type = "s3";
-        path = "/postgres/${host.hostname}";
+        path = let
+          name =
+            if cfg.backups.restoreFrom != null
+            then cfg.backups.restoreFrom
+            else host.hostname;
+        in "/postgres/${name}";
         s3-bucket = cfg.backups.bucket;
         s3-endpoint = lib.mkIf (cfg.backups.endpoint != null) cfg.backups.endpoint;
         s3-region = cfg.backups.region;
@@ -129,7 +147,7 @@ in {
         block = true;
       };
 
-      stanzas.default.jobs = {
+      stanzas.default.jobs = lib.optionalAttrs (cfg.backups.restoreFrom == null) {
         full = {
           schedule = "Sun 02:00";
           type = "full";
