@@ -24,7 +24,7 @@
   };
 
   outputs = inputs @ {
-    self,
+    disko,
     nixpkgs,
     nixpkgs-unstable,
     nixos-anywhere,
@@ -41,6 +41,7 @@
         alejandra
         bashInteractive
         copier
+        disko.packages.${system}.default
         just
         opentofu
         nix-diff
