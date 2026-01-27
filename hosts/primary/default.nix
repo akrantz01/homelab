@@ -19,10 +19,10 @@
     #     };
     #   };
 
-    #   reverseProxy = {
-    #     enable = true;
-    #     defaultListenAddresses = ["149.56.241.57" "[2607:5300:61:1039::57:1]"];
-    #   };
+    reverseProxy = {
+      enable = true;
+      defaultListenAddresses = ["149.56.241.57" "[2607:5300:61:1039::57:1]"];
+    };
     #   database = {
     #     enable = true;
     #     backups = {
