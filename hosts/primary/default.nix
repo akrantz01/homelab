@@ -50,11 +50,11 @@
     #   };
     meilisearch.enable = true;
 
-    #   authentik = {
-    #     domain = "login.krantz.dev";
-    #     ldap.enable = true;
-    #     proxy.enable = true;
-    #   };
+    authentik = {
+      domain = "login.krantz.dev";
+      ldap.enable = true;
+      proxy.enable = true;
+    };
 
     #   atuin = {
     #     enable = true;
