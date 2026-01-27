@@ -23,17 +23,17 @@
       enable = true;
       defaultListenAddresses = ["149.56.241.57" "[2607:5300:61:1039::57:1]"];
     };
-    #   database = {
-    #     enable = true;
-    #     backups = {
-    #       enable = true;
-    #       endpoint = "s3.us-east-005.backblazeb2.com";
-    #       bucket = "krantz-cloud-backups";
-    #       region = "us-east-005";
-    #       accessKey = "backblaze/id";
-    #       secretKey = "backblaze/key";
-    #     };
-    #   };
+    database = {
+      enable = true;
+      backups = {
+        enable = true;
+        endpoint = "s3.us-east-005.backblazeb2.com";
+        bucket = "krantz-cloud-backups";
+        region = "us-east-005";
+        accessKey = "backblaze/backups/id";
+        secretKey = "backblaze/backups/key";
+      };
+    };
     #   aws = {
     #     enable = true;
     #     url = "https://tailfed.krantz.cloud";
