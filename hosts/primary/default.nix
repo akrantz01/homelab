@@ -8,16 +8,16 @@
 
   components = {
     continuousDeployment.enable = true;
-    #   vpn = {
-    #     enable = true;
-    #     addresses = ["10.2.0.2" "2a07:b944::2:2"];
-    #     dns = ["1.1.1.1" "1.0.0.1"];
-    #     peer = {
-    #       # ProtonVPN US-NY#533
-    #       publicKey = "Q+F33KqUr9obW0a7u9ZwNRrQlcwcoNdStZfTs321CTY=";
-    #       endpoint = "146.70.202.98:51820";
-    #     };
-    #   };
+    vpn = {
+      enable = true;
+      addresses = ["10.2.0.2" "2a07:b944::2:2"];
+      dns = ["1.1.1.1" "1.0.0.1"];
+      peer = {
+        # ProtonVPN CA#167
+        publicKey = "EBXclfeNmhYke+o12lTl0UFl5a37LM2vvP4ed8iNQko=";
+        endpoint = "176.113.74.82:51820";
+      };
+    };
 
     reverseProxy = {
       enable = true;
