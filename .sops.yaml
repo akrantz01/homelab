@@ -3,6 +3,7 @@ keys:
   - &personal age18f7dxgrjc2zza2gxc3aek4x4c7u5n8wmh5473m23fza0x56ruyhqeus0d9
   - &github arn:aws:kms:ca-central-1:416515258441:alias/sops
   - &krantz age14ug6lkhhf6svlqskahna8fwxh9rmkz6gkmvjhd55elaalwzp7gtq37k5rr
+  - &primary age1tsd79y9nt2z376sjavjvdg92ayk7u9x2ywh4vzm5g6tadgmwzcmqy6n6s8
   - &idp age14j2l4aay0pn9rdajja4fv3kr0qt58vfk5nvn2jafgpxs826p3yqs3dpek5
 
 creation_rules:
@@ -23,6 +24,12 @@ creation_rules:
       - age:
           - *personal
           - *krantz
+
+  - path_regex: secrets/nix/primary/[^/]+\.(yaml|yml|env)$
+    key_groups:
+      - age:
+          - *personal
+          - *primary
 
   - path_regex: secrets/nix/idp/[^/]+\.(yaml|yml|env)$
     key_groups:

@@ -68,6 +68,24 @@ in (makeSystems [
     };
   }
   {
+    hostname = "primary";
+    system = "x86_64-linux";
+    disko = true;
+    networking = {
+      interface = "enp6s0";
+      dhcp = "ipv4";
+
+      addresses = [
+        "51.79.11.112/24"
+        "2607:5300:61:1039::57:1/128"
+        "2607:5300:61:1039::112:1/128"
+      ];
+      routes = [
+        "2607:5300:61:10ff:ff:ff:ff:ff"
+      ];
+    };
+  }
+  {
     hostname = "idp";
     system = "x86_64-linux";
     disko = true;
