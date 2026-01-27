@@ -1,9 +1,15 @@
 {
   host,
-  lib,
   pkgs-stable,
   ...
 }: {
+  assertions = [
+    {
+      assertion = host.networking.dhcp == "yes" || host.networking.dhcp == "ipv4" || host.networking.dhcp == "ipv6" || host.networking.dhcp == "no";
+      message = "networking.dhcp must be one of: yes, ipv4, ipv6, no";
+    }
+  ];
+
   # Set the system hostname
   networking.hostName = host.hostname;
 
@@ -23,24 +29,23 @@
   services.resolved.dnsovertls = "true";
 
   # Configure the WAN interface
-  systemd.network.networks."10-wan" = let
-    dhcp =
-      if host.networking.dhcp
-      then "yes"
-      else "no";
-  in {
+  systemd.network.networks."10-wan" = {
     name = host.networking.interface;
 
-    DHCP = dhcp;
-    networkConfig.IPv6AcceptRA = dhcp;
+    DHCP = host.networking.dhcp;
+    networkConfig.IPv6AcceptRA =
+      if host.networking ? ipv6AcceptRa
+      then host.networking.ipv6AcceptRa
+      else (host.networking.dhcp == "yes" || host.networking.dhcp == "ipv6");
 
-    addresses = lib.mkIf (!host.networking.dhcp) (builtins.map (addr: {Address = addr;}) host.networking.addresses);
-    routes = lib.mkIf (!host.networking.dhcp) (builtins.map
+    addresses = builtins.map (addr: {Address = addr;}) (host.networking.addresses or []);
+    routes =
+      builtins.map
       (route: {
         Gateway = route;
-        GatewayOnLink = lib.mkIf (lib.strings.hasInfix ":" route) true;
+        GatewayOnLink = true;
       })
-      host.networking.routes);
+      (host.networking.routes or []);
 
     dns = [
       "1.1.1.1#cloudflare-dns.com"

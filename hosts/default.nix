@@ -51,7 +51,7 @@ in (makeSystems [
     system = "x86_64-linux";
     networking = {
       interface = "enp35s0";
-      dhcp = false;
+      dhcp = "no";
 
       addresses = [
         "23.139.82.37/24"
@@ -73,7 +73,7 @@ in (makeSystems [
     disko = true;
     networking = {
       interface = "ens3";
-      dhcp = true;
+      dhcp = "yes";
     };
   }
 ])
