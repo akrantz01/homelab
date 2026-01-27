@@ -73,7 +73,10 @@ in (makeSystems [
     disko = true;
     networking = {
       interface = "ens3";
-      dhcp = "yes";
+      dhcp = "ipv4";
+
+      addresses = ["2607:5300:205:200::3f0e/128"];
+      routes = ["2607:5300:205:200::1"];
     };
   }
 ])
