@@ -38,16 +38,21 @@
       enable = true;
       url = "https://tailfed.krantz.cloud";
     };
-    #   backblaze = {
-    #     enable = true;
-    #     buckets.watch-krantz-dev = {
-    #       chunked = true;
-    #       paths = {
-    #         "/srv/movies" = "movies";
-    #         "/srv/tv" = "tv";
-    #       };
-    #     };
-    #   };
+    backblaze = {
+      enable = true;
+      credentials.watch = {
+        id = "backblaze/watch/id";
+        key = "backblaze/watch/key";
+      };
+      buckets.watch-krantz-dev = {
+        credential = "watch";
+        chunked = true;
+        paths = {
+          "/srv/movies" = "movies";
+          "/srv/tv" = "tv";
+        };
+      };
+    };
     meilisearch.enable = true;
 
     authentik = {

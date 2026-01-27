@@ -40,7 +40,9 @@
     };
     backblaze = {
       enable = true;
+      credentials.default = {};
       buckets.watch-krantz-dev = {
+        credential = "default";
         chunked = true;
         paths = {
           "/mnt/movies" = "movies";

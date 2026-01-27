@@ -9,7 +9,13 @@
 
   bucketType = lib.types.submodule {
     options = {
+      credential = lib.mkOption {
+        type = lib.types.str;
+        description = "The credential to use";
+      };
+
       chunked = lib.mkEnableOption "Split large files into smaller chunks (1GB)";
+
       paths = lib.mkOption {
         type = lib.types.attrsOf lib.types.str;
         default = {};
@@ -18,25 +24,12 @@
     };
   };
 
-  backend.b2 = {
-    type = "b2";
-    hard_delete = true;
-    account = config.sops.placeholder."backblaze/id";
-    key = config.sops.placeholder."backblaze/key";
+  credentialType = lib.types.submodule {
+    options = {
+      id = extra.mkSecretOption "Backblaze account/application key ID" "backblaze/id";
+      key = extra.mkSecretOption "Backblaze account/application key" "backblaze/key";
+    };
   };
-
-  bucketConfigs = lib.mapAttrs (bucket: settings:
-    {remote = "b2:${bucket}";}
-    // (
-      if settings.chunked
-      then {
-        type = "chunker";
-        chunk_size = "1Gi";
-        hash_type = "sha1";
-      }
-      else {type = "alias";}
-    ))
-  cfg.buckets;
 
   flattenedMounts = lib.lists.flatten (
     lib.lists.map (
@@ -61,6 +54,12 @@ in {
     enable = lib.mkEnableOption "Enable the Backblaze B2 mount component";
     sopsFile = extra.mkSecretSourceOption config;
 
+    credentials = lib.mkOption {
+      type = lib.types.attrsOf credentialType;
+      default = {};
+      description = "The credentials to use for a bucket";
+    };
+
     id = extra.mkSecretOption "Backblaze account/application key ID" "backblaze/id";
     key = extra.mkSecretOption "Backblaze account/application key" "backblaze/key";
 
@@ -72,12 +71,30 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = lib.lists.all (mount: lib.strings.hasPrefix "/" mount.destination) flattenedMounts;
-        message = "All mount destinations must be absolute paths";
-      }
-    ];
+    assertions =
+      [
+        {
+          assertion = lib.lists.all (mount: lib.strings.hasPrefix "/" mount.destination) flattenedMounts;
+          message = "All mount destinations must be absolute paths";
+        }
+        # {
+        #   assertion = let
+        #     defined = lib.attrNames cfg.credentials;
+        #     used = lib.map (bucket: bucket.credential) (lib.attrValues cfg.buckets);
+        #   in
+        #     lib.lists.all (name: builtins.elem name defined) used;
+        #   message = "At least one credential does not exist";
+        # }
+      ]
+      ++ (let
+        defined = lib.attrNames cfg.credentials;
+      in
+        lib.map (bucket: let
+          credential = bucket.value.credential;
+        in {
+          assertion = builtins.elem credential defined;
+          message = "Missing credential '${credential}' for Backblaze bucket '${bucket.name}";
+        }) (lib.attrsToList cfg.buckets));
 
     environment.systemPackages = with pkgs-unstable; [rclone];
 
@@ -136,20 +153,43 @@ in {
         };
       });
 
-    sops.secrets."backblaze/id" = {
-      inherit restartUnits;
-      inherit (cfg) sopsFile;
-      key = cfg.id;
-    };
-    sops.secrets."backblaze/key" = {
-      inherit restartUnits;
-      inherit (cfg) sopsFile;
-      key = cfg.key;
-    };
+    sops.secrets = builtins.listToAttrs (
+      lib.concatMap (cred: [
+        (lib.nameValuePair "backblaze/${cred.name}/id" {
+          inherit (cfg) sopsFile;
+          inherit restartUnits;
+          key = cred.value.id;
+        })
+        (lib.nameValuePair "backblaze/${cred.name}/key" {
+          inherit (cfg) sopsFile;
+          inherit restartUnits;
+          key = cred.value.key;
+        })
+      ]) (lib.attrsToList cfg.credentials)
+    );
 
     sops.templates."backblaze/rclone.conf".content = lib.generators.toINI {} (lib.attrsets.mergeAttrsList [
-      backend
-      bucketConfigs
+      (lib.mapAttrs' (name: credentials:
+        lib.nameValuePair ("b2-" + name) {
+          type = "b2";
+          hard_delete = true;
+          account = config.sops.placeholder."backblaze/${name}/id";
+          key = config.sops.placeholder."backblaze/${name}/key";
+        })
+      cfg.credentials)
+
+      (lib.mapAttrs (bucket: settings:
+        {remote = "b2-${settings.credential}:${bucket}";}
+        // (
+          if settings.chunked
+          then {
+            type = "chunker";
+            chunk_size = "1Gi";
+            hash_type = "sha1";
+          }
+          else {type = "alias";}
+        ))
+      cfg.buckets)
     ]);
   };
 }
