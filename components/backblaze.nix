@@ -77,14 +77,6 @@ in {
           assertion = lib.lists.all (mount: lib.strings.hasPrefix "/" mount.destination) flattenedMounts;
           message = "All mount destinations must be absolute paths";
         }
-        # {
-        #   assertion = let
-        #     defined = lib.attrNames cfg.credentials;
-        #     used = lib.map (bucket: bucket.credential) (lib.attrValues cfg.buckets);
-        #   in
-        #     lib.lists.all (name: builtins.elem name defined) used;
-        #   message = "At least one credential does not exist";
-        # }
       ]
       ++ (let
         defined = lib.attrNames cfg.credentials;
