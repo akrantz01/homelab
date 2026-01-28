@@ -130,6 +130,7 @@ in {
         {
           PORT = toString port;
           LOG_LEVEL = "notice";
+          DB_WAL_MODE = "true";
 
           DISABLE_SIGNUPS = lib.boolToString (!cfg.oauth.enable);
           DISABLE_NEW_RELEASE_CHECK = "true";
