@@ -139,15 +139,15 @@
     #     domain = "watch.krantz.dev";
     #     listenAddresses = ["51.79.11.112" "[2607:5300:61:1039::112:1]"];
     #   };
-    #   torrent = {
-    #     enable = true;
-    #     domain = "torrent.krantz.cloud";
-    #     proxyAuth = true;
-    #     paths = {
-    #       complete = "/srv/torrents/complete";
-    #       incomplete = "/srv/torrents/incomplete";
-    #     };
-    #   };
+    torrent = {
+      enable = true;
+      domain = "torrent.krantz.cloud";
+      proxyAuth = true;
+      paths = {
+        complete = "/srv/torrents/complete";
+        incomplete = "/srv/torrents/incomplete";
+      };
+    };
     #   pvr = {
     #     enable = true;
     #     baseDomain = "krantz.cloud";
