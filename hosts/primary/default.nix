@@ -80,24 +80,24 @@
     #       from.address = "no-reply@krantz.dev";
     #     };
     #   };
-    #   mealie = {
-    #     enable = true;
-    #     domain = "recipes.krantz.dev";
+    mealie = {
+      enable = true;
+      domain = "recipes.krantz.dev";
 
-    #     oidc = {
-    #       enable = true;
-    #       provider = "krantz.dev";
-    #       configurationUrl = "https://login.krantz.dev/application/o/recipes/.well-known/openid-configuration";
-    #       clientId = "PoMS5Wm9tRrzILgTHEkrmYsHEyZmSsPYee2ImzVb";
+      oidc = {
+        enable = true;
+        provider = "krantz.dev";
+        configurationUrl = "https://login.krantz.dev/application/o/recipes/.well-known/openid-configuration";
+        clientId = "PoMS5Wm9tRrzILgTHEkrmYsHEyZmSsPYee2ImzVb";
 
-    #       # TODO: update once groups are established; same for groups.admin
-    #       groups.user = "authentik Users";
-    #     };
-    #     smtp = {
-    #       enable = true;
-    #       from.address = "no-reply@krantz.dev";
-    #     };
-    #   };
+        # TODO: update once groups are established; same for groups.admin
+        groups.user = "authentik Users";
+      };
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
+    };
     miniflux = {
       enable = true;
       domain = "rss.krantz.dev";
@@ -159,6 +159,8 @@
       };
     };
   };
+
+  systemd.services.mealie.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
