@@ -61,10 +61,10 @@
       proxy.enable = true;
     };
 
-    #   atuin = {
-    #     enable = true;
-    #     domain = "shell.krantz.dev";
-    #   };
+    atuin = {
+      enable = true;
+      domain = "shell.krantz.dev";
+    };
     #   karakeep = {
     #     enable = true;
     #     domain = "links.krantz.dev";
@@ -98,15 +98,15 @@
     #       from.address = "no-reply@krantz.dev";
     #     };
     #   };
-    #   miniflux = {
-    #     enable = true;
-    #     domain = "rss.krantz.dev";
+    miniflux = {
+      enable = true;
+      domain = "rss.krantz.dev";
 
-    #     oauth2 = {
-    #       provider = "oidc";
-    #       discoveryEndpoint = "https://login.krantz.dev/application/o/rss/";
-    #     };
-    #   };
+      oauth2 = {
+        provider = "oidc";
+        discoveryEndpoint = "https://login.krantz.dev/application/o/rss/";
+      };
+    };
     vaultwarden = {
       enable = true;
       domain = "vault.krantz.dev";
