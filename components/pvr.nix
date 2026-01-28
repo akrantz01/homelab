@@ -33,6 +33,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    components.database.databases = ["jellyseerr"];
+
     services.radarr = {
       enable = true;
       package = pkgs-unstable.radarr;
@@ -61,9 +63,17 @@ in {
       enable = true;
       package = pkgs-unstable.jellyseerr;
       openFirewall = false;
+      configDir = "/var/lib/jellyseerr/config";
     };
     systemd.services.jellyseerr = {
-      environment.CONFIG_DIRECTORY = "/var/lib/jellyseerr/config";
+      environment = {
+        DB_TYPE = "postgres";
+        DB_SOCKET_PATH = "/run/postgresql";
+        DB_NAME = "jellyseerr";
+        DB_USER = "jellyseerr";
+        DB_LOG_QUERIES = "false";
+      };
+
       serviceConfig = {
         WorkingDirectory = lib.mkForce "/";
         BindPaths = lib.mkForce [];
