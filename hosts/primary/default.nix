@@ -120,18 +120,18 @@
         from.address = "no-reply@krantz.dev";
       };
     };
-    #   workflows = {
-    #     enable = true;
-    #     domain = "workflows.krantz.cloud";
-    #     email = {
-    #       security = "tls";
-    #       from.address = "no-reply@krantz.dev";
-    #     };
-    #     oidc = {
-    #       enabled = true;
-    #       discoveryEndpoint = "https://login.krantz.dev/application/o/workflows/";
-    #     };
-    #   };
+    workflows = {
+      enable = true;
+      domain = "workflows.krantz.cloud";
+      email = {
+        security = "tls";
+        from.address = "no-reply@krantz.dev";
+      };
+      oidc = {
+        enabled = true;
+        discoveryEndpoint = "https://login.krantz.dev/application/o/workflows/";
+      };
+    };
 
     streaming = {
       enable = true;
