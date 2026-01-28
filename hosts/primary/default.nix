@@ -148,17 +148,17 @@
         incomplete = "/srv/torrents/incomplete";
       };
     };
-    #   pvr = {
-    #     enable = true;
-    #     baseDomain = "krantz.cloud";
-    #     domains = {
-    #       jellyseerr.name = "media.krantz.dev";
-    #       bazarr.proxyAuth = true;
-    #       radarr.proxyAuth = true;
-    #       sonarr.proxyAuth = true;
-    #       prowlarr.proxyAuth = true;
-    #     };
-    #   };
+    pvr = {
+      enable = true;
+      baseDomain = "krantz.cloud";
+      domains = {
+        jellyseerr.name = "media.krantz.dev";
+        bazarr.proxyAuth = true;
+        radarr.proxyAuth = true;
+        sonarr.proxyAuth = true;
+        prowlarr.proxyAuth = true;
+      };
+    };
   };
 
   # This value determines the NixOS release from which the default
