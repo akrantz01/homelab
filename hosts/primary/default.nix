@@ -107,19 +107,19 @@
     #       discoveryEndpoint = "https://login.krantz.dev/application/o/rss/";
     #     };
     #   };
-    #   vaultwarden = {
-    #     enable = true;
-    #     domain = "vault.krantz.dev";
-    #     admin = {
-    #       enable = true;
-    #       authMethod = "proxy";
-    #     };
-    #     pushNotifications.enable = true;
-    #     smtp = {
-    #       enable = true;
-    #       from.address = "no-reply@krantz.dev";
-    #     };
-    #   };
+    vaultwarden = {
+      enable = true;
+      domain = "vault.krantz.dev";
+      admin = {
+        enable = true;
+        authMethod = "proxy";
+      };
+      pushNotifications.enable = true;
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
+    };
     #   workflows = {
     #     enable = true;
     #     domain = "workflows.krantz.cloud";
@@ -159,6 +159,8 @@
       };
     };
   };
+
+  systemd.services.vaultwarden.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
