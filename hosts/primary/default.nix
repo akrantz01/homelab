@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -65,21 +65,21 @@
       enable = true;
       domain = "shell.krantz.dev";
     };
-    #   karakeep = {
-    #     enable = true;
-    #     domain = "links.krantz.dev";
+    karakeep = {
+      enable = true;
+      domain = "links.krantz.dev";
 
-    #     ai.autoTagging = true;
-    #     oauth = {
-    #       enable = true;
-    #       name = "krantz.dev";
-    #       discoveryEndpoint = "https://login.krantz.dev/application/o/karakeep/.well-known/openid-configuration";
-    #     };
-    #     smtp = {
-    #       enable = true;
-    #       from.address = "no-reply@krantz.dev";
-    #     };
-    #   };
+      ai.autoTagging = true;
+      oauth = {
+        enable = true;
+        name = "krantz.dev";
+        discoveryEndpoint = "https://login.krantz.dev/application/o/karakeep/.well-known/openid-configuration";
+      };
+      smtp = {
+        enable = true;
+        from.address = "no-reply@krantz.dev";
+      };
+    };
     mealie = {
       enable = true;
       domain = "recipes.krantz.dev";
@@ -160,7 +160,11 @@
     };
   };
 
-  systemd.services.mealie.enable = false;
+  systemd.services = builtins.listToAttrs (
+    lib.map
+    (service: lib.nameValuePair service {enable = false;})
+    ["karakeep-init" "karakeep-web" "karakeep-workers" "mealie"]
+  );
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
