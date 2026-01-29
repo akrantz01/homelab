@@ -6,11 +6,11 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     disko = {
-      url = "github:nix-community/disko";
+      url = "github:nix-community/disko/v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixos-anywhere = {
-      url = "github:nix-community/nixos-anywhere";
+      url = "github:nix-community/nixos-anywhere/1.13.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     sops-nix = {
