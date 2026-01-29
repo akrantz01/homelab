@@ -186,7 +186,6 @@ in {
       recommendedOptimisation = true;
       recommendedBrotliSettings = true;
       recommendedGzipSettings = true;
-      recommendedZstdSettings = true;
 
       commonHttpConfig = let
         realIpsFromList = lib.strings.concatMapStringsSep "\n" (src: "set_real_ip_from ${src};");

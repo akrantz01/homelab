@@ -62,7 +62,7 @@
     description = "%I network namespace";
     before = ["network.target"];
 
-    path = with pkgs-stable; [iproute2 utillinux];
+    path = with pkgs-stable; [iproute2 util-linux];
 
     serviceConfig = {
       Type = "oneshot";

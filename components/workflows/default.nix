@@ -85,14 +85,7 @@ in {
       enable = true;
       openFirewall = false;
 
-      webhookUrl = "https://${cfg.domain}";
-    };
-
-    systemd.services.n8n = {
       environment = {
-        N8N_CONFIG_FILES = lib.mkForce null;
-        EXTERNAL_HOOK_FILES = hooksFile;
-
         N8N_LISTEN_ADDRESS = listen.host;
         N8N_PORT = listen.port;
         N8N_PROTOCOL = "http";
@@ -150,6 +143,15 @@ in {
         SSO_OIDC_DISCOVERY_ENDPOINT = lib.mkIf cfg.oidc.enabled cfg.oidc.discoveryEndpoint;
         SSO_OIDC_CLIENT_ID_FILE = lib.mkIf cfg.oidc.enabled config.sops.secrets."workflows/oidc/client-id".path;
         SSO_OIDC_CLIENT_SECRET_FILE = lib.mkIf cfg.oidc.enabled config.sops.secrets."workflows/oidc/client-secret".path;
+
+        WEBHOOK_URL = "https://${cfg.domain}";
+      };
+    };
+
+    systemd.services.n8n = {
+      environment = {
+        N8N_CONFIG_FILES = lib.mkForce null;
+        EXTERNAL_HOOK_FILES = hooksFile;
       };
 
       serviceConfig = {
