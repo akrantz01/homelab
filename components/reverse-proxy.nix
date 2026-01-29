@@ -176,7 +176,7 @@ in {
       enable = true;
       enableReload = true;
 
-      package = pkgs-unstable.nginxQuic;
+      package = pkgs-unstable.nginxMainline;
       additionalModules = with pkgs-unstable.nginxModules; [moreheaders];
 
       inherit (cfg) defaultListenAddresses;
