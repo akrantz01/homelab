@@ -281,8 +281,8 @@ in {
     systemd.services = {
       authentik-web = {
         description = "Authentik identity provider server";
-        after = ["network.target" "postgresql.service" "redis.service"];
-        wants = ["postgresql.service" "redis.service"];
+        after = ["network.target" "postgresql.service"];
+        wants = ["postgresql.service"];
         wantedBy = ["multi-user.target"];
 
         environment =
@@ -322,8 +322,8 @@ in {
 
       authentik-worker = {
         description = "Authentik identity provider worker";
-        after = ["network.target" "postgresql.service" "redis.service"];
-        wants = ["postgresql.service" "redis.service"];
+        after = ["network.target" "postgresql.service"];
+        wants = ["postgresql.service"];
         wantedBy = ["multi-user.target"];
 
         environment =
@@ -373,7 +373,6 @@ in {
       users.authentik = {
         isSystemUser = true;
         group = config.users.groups.authentik.name;
-        extraGroups = [config.services.redis.servers.authentik.group];
       };
       groups.authentik = {};
     };
