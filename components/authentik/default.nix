@@ -2,7 +2,7 @@
   config,
   extra,
   lib,
-  pkgs-unstable,
+  pkgs-authentik,
   ...
 }: let
   cfg = config.components.authentik;
@@ -10,7 +10,7 @@
   database = "authentik";
   redis = config.services.redis.servers.authentik.unixSocket;
 
-  pkg = pkgs-unstable.authentik;
+  pkg = pkgs-authentik.authentik;
 
   commonEnvironment = lib.attrsets.mergeAttrsList [
     {
