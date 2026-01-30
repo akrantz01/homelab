@@ -24,6 +24,10 @@ in {
     enable = lib.mkEnableOption "Enable the database component";
     sopsFile = extra.mkSecretSourceOption config;
 
+    package = lib.mkPackageOption pkgs-stable "postgresql" {
+      default = ["postgresql_16"];
+    };
+
     databases = lib.mkOption {
       default = [];
       type = lib.types.listOf lib.types.str;
@@ -80,7 +84,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.postgresql = {
       enable = true;
-      package = pkgs-stable.postgresql_16;
+      package = cfg.package;
 
       enableJIT = true;
       enableTCPIP = false;
