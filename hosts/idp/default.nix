@@ -1,4 +1,8 @@
 {
+  lib,
+  pkgs-stable,
+  ...
+}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -48,6 +52,8 @@
       };
     };
   };
+
+  systemd.services = builtins.listToAttrs (lib.map (service: lib.nameValuePair service {enable = false;}) ["authentik-web" "authentik-worker"]);
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
