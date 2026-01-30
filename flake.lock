@@ -189,11 +189,11 @@
     },
     "nixpkgs-authentik": {
       "locked": {
-        "lastModified": 1769737556,
-        "narHash": "sha256-29mdmIMpEI1mADRAGavmcgn8Sh8MIO37e/Wa73LvIqs=",
+        "lastModified": 1769740103,
+        "narHash": "sha256-JUMZuqZ2rbzrXdluo4ToyUHoMoURko4Q+G4EJOupUOI=",
         "owner": "akrantz01",
         "repo": "nixpkgs",
-        "rev": "07db85e333a7d73e4a3c4a4f7f26a961f81f00d2",
+        "rev": "31f2d65ee032bddfbba6c3aef2dcbb425fe5ec15",
         "type": "github"
       },
       "original": {
