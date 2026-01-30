@@ -189,16 +189,16 @@
     },
     "nixpkgs-authentik": {
       "locked": {
-        "lastModified": 1769739304,
-        "narHash": "sha256-JUMZuqZ2rbzrXdluo4ToyUHoMoURko4Q+G4EJOupUOI=",
+        "lastModified": 1769737556,
+        "narHash": "sha256-29mdmIMpEI1mADRAGavmcgn8Sh8MIO37e/Wa73LvIqs=",
         "owner": "akrantz01",
         "repo": "nixpkgs",
-        "rev": "a729ecd42103ffd01a5738ddbe04f3643e1a6a8b",
+        "rev": "07db85e333a7d73e4a3c4a4f7f26a961f81f00d2",
         "type": "github"
       },
       "original": {
         "owner": "akrantz01",
-        "ref": "authentik/2025.12.1-validation",
+        "ref": "authentik/2025.12.1",
         "repo": "nixpkgs",
         "type": "github"
       }
