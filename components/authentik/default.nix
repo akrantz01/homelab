@@ -8,7 +8,6 @@
   cfg = config.components.authentik;
 
   database = "authentik";
-  redis = config.services.redis.servers.authentik.unixSocket;
 
   pkg = pkgs-authentik.authentik;
 
@@ -19,11 +18,6 @@
       AUTHENTIK_POSTGRESQL__USER = database;
       AUTHENTIK_POSTGRESQL__SSL_MODE = "disable";
       # TODO: enable connection pooling
-
-      AUTHENTIK_CACHE__URL = "unix://${redis}";
-      AUTHENTIK_BROKER__URL = "redis+socket://${redis}";
-      AUTHENTIK_RESULT_BACKEND__URL = "redis+socket://${redis}";
-      AUTHENTIK_CHANNEL__URL = "unix://${redis}";
 
       AUTHENTIK_SECRET_KEY = "file://${config.sops.secrets."authentik/secret-key".path}";
       AUTHENTIK_LOG_LEVEL = cfg.logLevel;
@@ -273,7 +267,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    services.redis.servers.authentik.enable = true;
     components.database.databases = [database];
 
     services.geoipupdate = lib.mkIf (cfg.geoip.accountId != null) {
