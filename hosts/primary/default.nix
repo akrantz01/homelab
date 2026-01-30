@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -159,6 +159,8 @@
       };
     };
   };
+
+  systemd.services = builtins.listToAttrs (lib.map (service: lib.nameValuePair service {enable = false;}) ["atuin" "mealie" "miniflux" "n8n" "vaultwarden"]);
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
