@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs-stable,
-  ...
-}: {
+{pkgs-stable, ...}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
