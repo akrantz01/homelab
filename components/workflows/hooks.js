@@ -85,6 +85,7 @@ module.exports = {
           clientSecret,
           loginEnabled: true,
           prompt: "login",
+          authenticationContextClassReference: [],
         });
 
         app.router.get(loginPath, async (_req, res) => {
@@ -110,7 +111,8 @@ module.exports = {
 
             res.redirect(url.toString());
           } catch (e) {
-            console.error("OIDC login error:", e.message);
+            console.error("OIDC login error:");
+            console.error(e);
             return badRequest(res, "failed to initiate oidc login");
           }
         });
@@ -137,7 +139,8 @@ module.exports = {
 
             res.redirect("/");
           } catch (e) {
-            console.error("OIDC callback error:", error.message);
+            console.error("OIDC callback error:");
+            console.error(e);
             res.clearCookie(OIDC_STATE_COOKIE_NAME);
             res.clearCookie(OIDC_NONCE_COOKIE_NAME);
             return badRequest(res, "oidc authentication failure");
