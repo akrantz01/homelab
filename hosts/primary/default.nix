@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  lib,
+  pkgs-stable,
+  ...
+}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -25,6 +29,7 @@
     };
     database = {
       enable = true;
+      package = pkgs-stable.postgresql_18;
       backups = {
         enable = true;
         endpoint = "s3.us-east-005.backblazeb2.com";
