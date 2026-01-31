@@ -130,10 +130,11 @@ in {
           PDS_BLOBSTORE_S3_ENDPOINT = lib.mkIf (s3.endpoint != null) s3.endpoint;
           PDS_BLOBSTORE_S3_FORCE_PATH_STYLE = lib.boolToString s3.forcePathStyle;
         }))
-        (lib.optionalAttrs cfg.smtp.enable {
-          PDS_EMAIL_FROM_ADDRESS = "\"${cfg.smtp.from.name}\" <${cfg.smtp.from.address}>";
-        })
       ];
+    };
+
+    systemd.services.bluesky-pds.environment = lib.mkIf cfg.smtp.enable {
+      PDS_EMAIL_FROM_ADDRESS = ''"${cfg.smtp.from.name}" <${cfg.smtp.from.address}>'';
     };
 
     components.reverseProxy.hosts.${cfg.domain} = {
