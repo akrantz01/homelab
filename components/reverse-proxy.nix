@@ -66,6 +66,12 @@
         description = "The listen address for the virtual host";
       };
 
+      aliases = lib.mkOption {
+        type = with lib.types; listOf str;
+        default = [];
+        description = "Additional server names to serve for";
+      };
+
       extraConfig = lib.mkOption {
         type = lib.types.lines;
         default = "";
@@ -224,6 +230,8 @@ in {
 
           inherit (host) listenAddresses extraConfig;
 
+          serverAliases = host.aliases;
+
           locations = lib.attrsets.mergeAttrsList [
             (lib.attrsets.mapAttrs (path: location: {
                 inherit (location) proxyWebsockets recommendedProxySettings return priority;
@@ -261,5 +269,7 @@ in {
         })
         cfg.hosts;
     };
+
+    security.acme.certs = {};
   };
 }
