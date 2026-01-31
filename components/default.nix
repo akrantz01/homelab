@@ -1,5 +1,6 @@
 {...}: {
   imports = [
+    ./atproto-pds.nix
     ./atuin.nix
     ./authentik
     ./aws.nix

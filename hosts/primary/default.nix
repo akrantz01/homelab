@@ -62,6 +62,21 @@
       proxy.enable = true;
     };
 
+    atproto = {
+      enable = true;
+      domain = "krantz.social";
+      blobstore = {
+        location = "s3";
+        s3 = {
+          endpoint = "https://s3.us-east-005.backblazeb2.com";
+          bucket = "krantz-social";
+          region = "us-east-005";
+          accessKey = "backblaze/pds/id";
+          secretKey = "backblaze/pds/key";
+        };
+      };
+      smtp.enable = true;
+    };
     atuin = {
       enable = true;
       domain = "shell.krantz.dev";
