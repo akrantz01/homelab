@@ -7,7 +7,7 @@
 
     # TODO: remove once PR merged and nixos-unstable updated
     # https://github.com/NixOS/nixpkgs/pull/485210
-    nixpkgs-authentik.url = "github:akrantz01/nixpkgs/authentik/2025.12.1";
+    nixpkgs-authentik.url = "github:akrantz01/nixpkgs/authentik/2025.12.1-validation";
 
     disko = {
       url = "github:nix-community/disko/v1.13.0";
