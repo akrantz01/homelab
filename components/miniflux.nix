@@ -70,6 +70,7 @@ in {
       config = {
         BASE_URL = "https://${cfg.domain}";
         HTTPS = 1;
+        BATCH_SIZE = 15;
 
         DISABLE_LOCAL_AUTH = 1;
 
