@@ -70,6 +70,11 @@ in {
       config = {
         BASE_URL = "https://${cfg.domain}";
         HTTPS = 1;
+        BATCH_SIZE = 15;
+        POLLING_FREQUENCY = 60;
+        POLLING_SCHEDULER = "entry_frequency";
+        SCHEDULER_ENTRY_FREQUENCY_MIN_INTERVAL = 60;
+        SCHEDULER_ENTRY_FREQUENCY_MAX_INTERVAL = 1440;
 
         DISABLE_LOCAL_AUTH = 1;
 
