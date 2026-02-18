@@ -2,7 +2,9 @@
   "nodes": {
     "disko": {
       "inputs": {
-        "nixpkgs": ["nixpkgs-unstable"]
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
       },
       "locked": {
         "lastModified": 1768920986,
@@ -21,7 +23,10 @@
     },
     "disko_2": {
       "inputs": {
-        "nixpkgs": ["nixos-anywhere", "nixpkgs"]
+        "nixpkgs": [
+          "nixos-anywhere",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1749200714,
@@ -40,7 +45,10 @@
     },
     "flake-parts": {
       "inputs": {
-        "nixpkgs-lib": ["nixos-anywhere", "nixpkgs"]
+        "nixpkgs-lib": [
+          "nixos-anywhere",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1748821116,
@@ -76,7 +84,10 @@
     },
     "nix-vm-test": {
       "inputs": {
-        "nixpkgs": ["nixos-anywhere", "nixpkgs"]
+        "nixpkgs": [
+          "nixos-anywhere",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1748765518,
@@ -99,7 +110,9 @@
         "nix-vm-test": "nix-vm-test",
         "nixos-images": "nixos-images",
         "nixos-stable": "nixos-stable",
-        "nixpkgs": ["nixpkgs-unstable"],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
@@ -119,8 +132,14 @@
     },
     "nixos-images": {
       "inputs": {
-        "nixos-stable": ["nixos-anywhere", "nixos-stable"],
-        "nixos-unstable": ["nixos-anywhere", "nixpkgs"]
+        "nixos-stable": [
+          "nixos-anywhere",
+          "nixos-stable"
+        ],
+        "nixos-unstable": [
+          "nixos-anywhere",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1749086071,
@@ -170,16 +189,16 @@
     },
     "nixpkgs-authentik": {
       "locked": {
-        "lastModified": 1769740103,
-        "narHash": "sha256-JUMZuqZ2rbzrXdluo4ToyUHoMoURko4Q+G4EJOupUOI=",
-        "owner": "akrantz01",
+        "lastModified": 1771166884,
+        "narHash": "sha256-Ci5FyOXLyYhMzeROLCUSXhEOeVpTIzJw/m/KoW/rl60=",
+        "owner": "B4dM4n",
         "repo": "nixpkgs",
-        "rev": "31f2d65ee032bddfbba6c3aef2dcbb425fe5ec15",
+        "rev": "b053f0477aef699e31e3dc5bc12ef04c5f9c5c2c",
         "type": "github"
       },
       "original": {
-        "owner": "akrantz01",
-        "ref": "authentik/2025.12.1",
+        "owner": "B4dM4n",
+        "ref": "authentik-update",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -213,7 +232,9 @@
     },
     "sops-nix": {
       "inputs": {
-        "nixpkgs": ["nixpkgs-unstable"]
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
       },
       "locked": {
         "lastModified": 1769469829,
@@ -247,7 +268,9 @@
     "tailfed": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": ["nixpkgs-unstable"]
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
       },
       "locked": {
         "lastModified": 1746412295,
@@ -266,7 +289,10 @@
     },
     "treefmt-nix": {
       "inputs": {
-        "nixpkgs": ["nixos-anywhere", "nixpkgs"]
+        "nixpkgs": [
+          "nixos-anywhere",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1749194973,

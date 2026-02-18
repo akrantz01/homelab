@@ -292,8 +292,6 @@ in {
             AUTHENTIK_LISTEN__HTTPS = cfg.web.listeners.https;
 
             AUTHENTIK_COOKIE_DOMAIN = cfg.domain;
-
-            AUTHENTIK_SESSION_STORAGE = cfg.sessions.storage;
             AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE = cfg.sessions.unauthenticatedAge;
 
             AUTHENTIK_WEB__WORKERS = builtins.toString cfg.web.workers;
