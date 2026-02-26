@@ -297,5 +297,6 @@ in {
       reloadServices = ["nginx.service"];
     };
     systemd.services.acme-order-renew-fallback.enable = false;
+    systemd.timers.acme-renew-fallback.enable = false;
   };
 }
