@@ -221,7 +221,23 @@ in {
         cfg.backends;
 
       virtualHosts =
-        lib.attrsets.mapAttrs (name: host: let
+        {
+          "_fallback" = {
+            default = true;
+            serverName = "_";
+
+            listenAddresses = lib.uniqueStrings (
+              cfg.defaultListenAddresses
+              ++ lib.flatten (lib.map (host: host.listenAddresses) (lib.attrValues cfg.hosts))
+            );
+
+            forceSSL = true;
+            useACMEHost = "fallback";
+
+            locations."/".return = "301 https://krantz.dev";
+          };
+        }
+        // lib.attrsets.mapAttrs (name: host: let
           forwardAuth = lib.lists.any (location: location.forwardAuth) (lib.attrsets.attrValues host.locations);
         in {
           forceSSL = true;
@@ -270,6 +286,16 @@ in {
         cfg.hosts;
     };
 
-    security.acme.certs = {};
+    security.acme.certs.fallback = {
+      profile = "shortlived";
+      domain = "fallback";
+
+      webroot = "/var/lib/acme/acme-challenge";
+      dnsProvider = null;
+
+      group = "nginx";
+      reloadServices = ["nginx.service"];
+    };
+    systemd.services.acme-order-renew-fallback.enable = false;
   };
 }
