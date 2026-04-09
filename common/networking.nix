@@ -54,6 +54,18 @@
       "2606:4700:4700::1001#cloudflare-dns.com"
     ];
 
+    # Prevent DHCP-provided DNS servers and search domains from being passed to
+    # systemd-resolved. Without this, DHCP (e.g. OVH) pushes its own resolvers
+    # into the pool where they can become the active server on Cloudflare failures.
+    dhcpV4Config = {
+      UseDNS = false;
+      UseDomains = false;
+    };
+    dhcpV6Config = {
+      UseDNS = false;
+      UseDomains = false;
+    };
+
     # Make the routes on this interface a dependency for network-online.target.
     linkConfig.RequiredForOnline = "routable";
   };
