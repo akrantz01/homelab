@@ -2,7 +2,18 @@
   host,
   pkgs-stable,
   ...
-}: {
+}: let
+  dnsServers = [
+    "1.1.1.1#cloudflare-dns.com"
+    "2606:4700:4700::1111#cloudflare-dns.com"
+    "9.9.9.9#dns.quad9.net"
+    "2620:fe::fe#dns.quad9.net"
+    "1.0.0.1#cloudflare-dns.com"
+    "2606:4700:4700::1001#cloudflare-dns.com"
+    "149.112.112.112#dns.quad9.net"
+    "2620:fe::9#dns.quad9.net"
+  ];
+in {
   assertions = [
     {
       assertion = host.networking.dhcp == "yes" || host.networking.dhcp == "ipv4" || host.networking.dhcp == "ipv6" || host.networking.dhcp == "no";
@@ -26,7 +37,8 @@
   # System resolver security
   services.resolved.llmnr = "false";
   services.resolved.dnssec = "false";
-  services.resolved.dnsovertls = "true";
+  services.resolved.dnsovertls = "opportunistic";
+  services.resolved.fallbackDns = dnsServers;
 
   # Configure the WAN interface
   systemd.network.networks."10-wan" = {
@@ -47,12 +59,16 @@
       })
       (host.networking.routes or []);
 
-    dns = [
-      "1.1.1.1#cloudflare-dns.com"
-      "2606:4700:4700::1111#cloudflare-dns.com"
-      "1.0.0.1#cloudflare-dns.com"
-      "2606:4700:4700::1001#cloudflare-dns.com"
-    ];
+    dns = dnsServers;
+
+    dhcpV4Config = {
+      UseDNS = false;
+      UseDomains = false;
+    };
+    dhcpV6Config = {
+      UseDNS = false;
+      UseDomains = false;
+    };
 
     # Make the routes on this interface a dependency for network-online.target.
     linkConfig.RequiredForOnline = "routable";
