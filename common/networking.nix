@@ -26,7 +26,18 @@
   # System resolver security
   services.resolved.llmnr = "false";
   services.resolved.dnssec = "false";
-  services.resolved.dnsovertls = "true";
+  # "opportunistic": try DoT first, fall back to plaintext if the TLS
+  # connection fails. "enforce" would prevent any plaintext fallback but
+  # risks total DNS failure if Cloudflare's DoT endpoint is unreachable.
+  services.resolved.dnsovertls = "opportunistic";
+  # Lock fallback resolvers to Cloudflare only; the compiled-in systemd
+  # defaults include Google and Quad9 which we don't want.
+  services.resolved.fallbackDns = [
+    "1.1.1.1#cloudflare-dns.com"
+    "2606:4700:4700::1111#cloudflare-dns.com"
+    "1.0.0.1#cloudflare-dns.com"
+    "2606:4700:4700::1001#cloudflare-dns.com"
+  ];
 
   # Configure the WAN interface
   systemd.network.networks."10-wan" = {
