@@ -21,22 +21,26 @@ in {
     }
   ];
 
+  # Set the system hostname
   networking.hostName = host.hostname;
 
   # Uncomment to enable debug logging
   #systemd.services."systemd-networkd".environment.SYSTEMD_LOG_LEVEL = "debug";
 
+  # Prefer systemd-networkd for networking for better reliability
   systemd.network.enable = true;
   networking = {
     useDHCP = false;
     networkmanager.enable = false;
   };
 
+  # System resolver security
   services.resolved.llmnr = "false";
   services.resolved.dnssec = "false";
   services.resolved.dnsovertls = "opportunistic";
   services.resolved.fallbackDns = dnsServers;
 
+  # Configure the WAN interface
   systemd.network.networks."10-wan" = {
     name = host.networking.interface;
 
@@ -66,6 +70,7 @@ in {
       UseDomains = false;
     };
 
+    # Make the routes on this interface a dependency for network-online.target.
     linkConfig.RequiredForOnline = "routable";
   };
 
