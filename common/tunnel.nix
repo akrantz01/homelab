@@ -1,10 +1,13 @@
 {
   config,
+  host,
   pkgs-unstable,
   ...
-}: {
+}: let
+  firstBoot = host.firstBoot or false;
+in {
   services.tailscale = {
-    enable = true;
+    enable = !firstBoot;
     package = pkgs-unstable.tailscale;
 
     openFirewall = true;

@@ -1,7 +1,13 @@
-{lib, ...}: {
+{
+  host,
+  lib,
+  ...
+}: let
+  firstBoot = host.firstBoot or false;
+in {
   services.openssh = {
     enable = true;
-    openFirewall = false;
+    openFirewall = firstBoot;
 
     settings = {
       PermitRootLogin = lib.mkForce "no";

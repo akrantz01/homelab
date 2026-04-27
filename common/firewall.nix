@@ -1,4 +1,4 @@
-{...}: {
+{
   # Enable the firewall using nftables
   networking.firewall.enable = true;
   networking.nftables.enable = true;
