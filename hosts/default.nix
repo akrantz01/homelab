@@ -49,27 +49,6 @@ inputs @ {
       hosts);
 in (makeSystems [
   {
-    hostname = "krantz";
-    system = "x86_64-linux";
-    networking = {
-      interface = "enp35s0";
-      dhcp = "no";
-
-      addresses = [
-        "23.139.82.37/24"
-        "23.139.82.253/24"
-        "2602:fb89:1:25::37:1/128"
-        "2602:fb89:1:25::253:1/128"
-        "fe80::aaa1:59ff:fec0:7e0c/64"
-      ];
-
-      routes = [
-        "23.139.82.1"
-        "2602:fb89:1::1"
-      ];
-    };
-  }
-  {
     hostname = "primary";
     system = "x86_64-linux";
     disko = true;
