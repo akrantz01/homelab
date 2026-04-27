@@ -82,7 +82,6 @@ in (makeSystems [
     hostname = "forge";
     system = "x86_64-linux";
     disko = true;
-    firstBoot = true;
     networking = {
       interface = "ens3";
       dhcp = "ipv4";
