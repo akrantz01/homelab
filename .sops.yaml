@@ -4,6 +4,7 @@ keys:
   - &github arn:aws:kms:ca-central-1:416515258441:alias/sops
   - &primary age1tsd79y9nt2z376sjavjvdg92ayk7u9x2ywh4vzm5g6tadgmwzcmqy6n6s8
   - &idp age14j2l4aay0pn9rdajja4fv3kr0qt58vfk5nvn2jafgpxs826p3yqs3dpek5
+  - &forge age10cx6mte5x3np0v8lspatuhfqau8wgpeua532y9zgxy9n4yzpxd7sk2l766
 
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|yml|env)$
@@ -34,3 +35,4 @@ creation_rules:
     key_groups:
       - age:
           - *personal
+          - *forge
