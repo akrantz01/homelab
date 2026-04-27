@@ -78,4 +78,16 @@ in (makeSystems [
       routes = ["2607:5300:205:200::1"];
     };
   }
+  {
+    hostname = "forge";
+    system = "x86_64-linux";
+    disko = true;
+    networking = {
+      interface = "ens3";
+      dhcp = "ipv4";
+
+      addresses = ["2607:5300:205:200::dfc/128"];
+      routes = ["2607:5300:205:200::1"];
+    };
+  }
 ])

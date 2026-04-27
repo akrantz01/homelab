@@ -29,3 +29,8 @@ creation_rules:
       - age:
           - *personal
           - *idp
+
+  - path_regex: secrets/nix/forge/[^/]+\.(yaml|yml|env)$
+    key_groups:
+      - age:
+          - *personal
