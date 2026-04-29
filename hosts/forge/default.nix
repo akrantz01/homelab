@@ -1,4 +1,4 @@
-{
+{pkgs-stable, ...}: {
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -8,6 +8,20 @@
 
   components = {
     continuousDeployment.enable = true;
+
+    reverseProxy.enable = true;
+    database = {
+      enable = true;
+      package = pkgs-stable.postgresql_18;
+      backups = {
+        enable = true;
+        endpoint = "s3.us-east-005.backblazeb2.com";
+        bucket = "krantz-cloud-backups";
+        region = "us-east-005";
+        accessKey = "backblaze/backups/id";
+        secretKey = "backblaze/backups/key";
+      };
+    };
   };
 
   # This value determines the NixOS release from which the default
