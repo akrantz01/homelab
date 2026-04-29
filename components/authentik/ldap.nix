@@ -2,7 +2,7 @@
   config,
   extra,
   lib,
-  pkgs-unstable,
+  pkgs-authentik,
   ...
 }: let
   cfg = config.components.authentik;
@@ -50,7 +50,7 @@ in {
         User = "authentik-ldap";
         Group = "authentik-ldap";
 
-        ExecStart = "${pkgs-unstable.authentik-outposts.ldap}/bin/ldap";
+        ExecStart = "${pkgs-authentik.authentik-outposts.ldap}/bin/ldap";
 
         Restart = "on-failure";
         RestartSec = 5;

@@ -5,6 +5,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # TODO: remove once staging is merged into master and nixpkgs-unstable is updated
+    nixpkgs-authentik.url = "github:akrantz01/nixpkgs/cryptography-update";
+
     disko = {
       url = "github:nix-community/disko/v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
