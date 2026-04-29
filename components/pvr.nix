@@ -61,7 +61,7 @@ in {
 
     services.jellyseerr = {
       enable = true;
-      package = pkgs-unstable.jellyseerr;
+      package = pkgs-unstable.seerr;
       openFirewall = false;
       configDir = "/var/lib/jellyseerr/config";
     };
