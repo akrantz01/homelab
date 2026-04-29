@@ -26,6 +26,12 @@
     git = {
       enable = true;
       domain = "krantz.codes";
+
+      mailer = {
+        enable = true;
+        protocol = "smtp+starttls";
+        from.name = "Git Forge";
+      };
     };
   };
 
