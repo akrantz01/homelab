@@ -6,7 +6,7 @@ const relativeRequire = (pkg) => (path) => require(resolve(pkg, path));
 const n8n = relativeRequire("N8N_LIB_PATH");
 const { AuthService } = n8n("auth/auth.service");
 const { OIDC_NONCE_COOKIE_NAME, OIDC_STATE_COOKIE_NAME } = n8n("constants");
-const { OidcService } = n8n("sso.ee/oidc/oidc.service.ee");
+const { OidcService } = n8n("modules/sso-oidc/oidc.service.ee");
 const { UrlService } = n8n("services/url.service");
 
 const { LicenseState } = require("@n8n/backend-common");

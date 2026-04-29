@@ -124,7 +124,6 @@ in {
 
         # TODO: evaluate using external runners
         # https://docs.n8n.io/hosting/configuration/environment-variables/task-runners/
-        N8N_RUNNERS_ENABLED = "true";
         N8N_RUNNERS_MODE = "internal";
 
         N8N_BLOCK_ENV_ACCESS_IN_NODE = "true";
