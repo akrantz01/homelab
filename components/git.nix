@@ -56,8 +56,8 @@ in {
         };
 
         service = {
-          ENABLE_INTERNAL_SIGNIN = true;
-          DISABLE_REGISTRATION = false;
+          ENABLE_INTERNAL_SIGNIN = false;
+          DISABLE_REGISTRATION = true;
 
           ENABLE_BASIC_AUTHENTICATION = false;
         };
