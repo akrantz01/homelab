@@ -32,6 +32,7 @@
         protocol = "smtp+starttls";
         from.name = "Git Forge";
       };
+      captcha.type = "cfturnstile";
     };
   };
 

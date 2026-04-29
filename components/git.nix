@@ -43,6 +43,17 @@ in {
         };
       };
     };
+
+    captcha = {
+      type = lib.mkOption {
+        type = with lib.types; nullOr (enum ["recaptcha" "hcaptcha" "mcaptcha" "cfturnstile"]);
+        default = null;
+        description = "The captcha implementation to use";
+      };
+
+      sitekey = extra.mkSecretOption "captcha implementation site key" "git/captcha/sitekey";
+      secret = extra.mkSecretOption "captcha implementation secret key" "git/captcha/secret";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -93,6 +104,9 @@ in {
           DISABLE_REGISTRATION = true;
 
           ENABLE_BASIC_AUTHENTICATION = false;
+
+          ENABLE_CAPTCHA = cfg.captcha.type != null;
+          CAPTCHA_TYPE = lib.mkIf (cfg.captcha.type != null) cfg.captcha.type;
         };
       };
 
@@ -105,6 +119,16 @@ in {
           USER = ref cfg.mailer.username;
           PASSWD = ref cfg.mailer.password;
         };
+
+        service = lib.mkIf (cfg.captcha.type != null) (let
+          key =
+            if cfg.captcha.type == "cfturnstile"
+            then "CF_TURNSTILE"
+            else lib.strings.toUpper cfg.captcha.type;
+        in {
+          "${key}_SITEKEY" = ref cfg.captcha.sitekey;
+          "${key}_SECRET" = ref cfg.captcha.secret;
+        });
       };
     };
 
@@ -140,6 +164,10 @@ in {
           "git/smtp/port" = instance cfg.mailer.port;
           "git/smtp/username" = instance cfg.mailer.username;
           "git/smtp/password" = instance cfg.mailer.password;
+        })
+        (lib.optionalAttrs (cfg.captcha.type != null) {
+          "git/captcha/sitekey" = instance cfg.captcha.sitekey;
+          "git/captcha/secret" = instance cfg.captcha.secret;
         })
       ];
   };
