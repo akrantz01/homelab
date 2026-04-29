@@ -22,6 +22,11 @@
         secretKey = "backblaze/backups/key";
       };
     };
+
+    git = {
+      enable = true;
+      domain = "krantz.codes";
+    };
   };
 
   # This value determines the NixOS release from which the default

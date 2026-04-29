@@ -8,6 +8,7 @@
     ./continuous-deployment.nix
     ./database.nix
     ./karakeep.nix
+    ./git.nix
     ./mealie
     ./meilisearch.nix
     ./miniflux.nix
