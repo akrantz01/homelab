@@ -88,6 +88,9 @@ in {
           DEFAULT_MERGE_STYLE = "rebase";
           DEFAULT_UPDATE_STYLE = "rebase";
         };
+        "repository.signing" = {
+          DEFAULT_TRUST_MODEL = "committer";
+        };
 
         mailer = lib.mkIf cfg.mailer.enable {
           ENABLED = true;
