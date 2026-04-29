@@ -40,9 +40,9 @@ in {
         session.COOKIE_SECURE = true;
 
         repository = {
-          DEFAULT_REPO_UNITS = lib.concatStringSep "," ["repo.code" "repo.issues" "repo.pulls" "repo.actions"];
-          DEFAULT_FORK_REPO_UNITS = lib.concatStringSep "," ["repo.code" "repo.issues"];
-          DEFAULT_MIRROR_REPO_UNITS = lib.concatStringSep "," ["repo.code" "repo.issues"];
+          DEFAULT_REPO_UNITS = lib.concatStringsSep "," ["repo.code" "repo.issues" "repo.pulls" "repo.actions"];
+          DEFAULT_FORK_REPO_UNITS = lib.concatStringsSep "," ["repo.code" "repo.issues"];
+          DEFAULT_MIRROR_REPO_UNITS = lib.concatStringsSep "," ["repo.code" "repo.issues"];
 
           DEFAULT_BRANCH = "main";
         };
