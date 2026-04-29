@@ -31,6 +31,8 @@ in {
       database.createLocally = true;
     };
 
+    systemd.services.atuin.serviceConfig.ExecStart = lib.mkForce "${lib.getExe' config.services.atuin.package "atuin-server"} start";
+
     components.reverseProxy.hosts.${cfg.domain}.locations."/".proxyTo = let
       atuin = config.services.atuin;
       host = atuin.host;
