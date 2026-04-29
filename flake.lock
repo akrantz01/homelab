@@ -187,22 +187,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-authentik": {
-      "locked": {
-        "lastModified": 1771166884,
-        "narHash": "sha256-Ci5FyOXLyYhMzeROLCUSXhEOeVpTIzJw/m/KoW/rl60=",
-        "owner": "B4dM4n",
-        "repo": "nixpkgs",
-        "rev": "b053f0477aef699e31e3dc5bc12ef04c5f9c5c2c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "B4dM4n",
-        "ref": "authentik-update",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1769461804,
@@ -224,7 +208,6 @@
         "disko": "disko",
         "nixos-anywhere": "nixos-anywhere",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-authentik": "nixpkgs-authentik",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",
         "tailfed": "tailfed"

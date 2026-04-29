@@ -2,7 +2,7 @@
   config,
   extra,
   lib,
-  pkgs-authentik,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.authentik;
@@ -50,7 +50,7 @@ in {
         User = "authentik-proxy";
         Group = "authentik-proxy";
 
-        ExecStart = "${pkgs-authentik.authentik-outposts.proxy}/bin/proxy";
+        ExecStart = "${pkgs-unstable.authentik-outposts.proxy}/bin/proxy";
 
         Restart = "on-failure";
         RestartSec = 5;

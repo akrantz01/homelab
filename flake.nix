@@ -5,10 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # TODO: remove once PR merged and nixos-unstable updated
-    # https://github.com/NixOS/nixpkgs/pull/490694
-    nixpkgs-authentik.url = "github:B4dM4n/nixpkgs/authentik-update";
-
     disko = {
       url = "github:nix-community/disko/v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

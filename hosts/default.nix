@@ -2,7 +2,6 @@ inputs @ {
   self,
   nixpkgs,
   nixpkgs-unstable,
-  nixpkgs-authentik,
   disko,
   sops-nix,
   tailfed,
@@ -24,7 +23,6 @@ inputs @ {
         };
         pkgs-stable = import nixpkgs options;
         pkgs-unstable = import nixpkgs-unstable options;
-        pkgs-authentik = import nixpkgs-authentik options;
       in {
         name = host.hostname;
         value = lib.nixosSystem {
@@ -40,7 +38,7 @@ inputs @ {
               "${self}/components"
               "${self}/secrets"
               {
-                _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable pkgs-authentik self settings;};
+                _module.args = {inherit extra inputs host lib pkgs-stable pkgs-unstable self settings;};
               }
             ]
             ++ lib.lists.optional usesDisko disko.nixosModules.disko;

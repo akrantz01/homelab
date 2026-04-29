@@ -2,14 +2,14 @@
   config,
   extra,
   lib,
-  pkgs-authentik,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.components.authentik;
 
   database = "authentik";
 
-  pkg = pkgs-authentik.authentik;
+  pkg = pkgs-unstable.authentik;
 
   commonEnvironment = lib.attrsets.mergeAttrsList [
     {
