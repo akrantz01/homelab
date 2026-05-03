@@ -6,8 +6,7 @@
   firstBoot = host.firstBoot or false;
 in {
   services.openssh = {
-    enable = true;
-    openFirewall = firstBoot;
+    enable = firstBoot;
 
     settings = {
       PermitRootLogin = lib.mkForce "no";
