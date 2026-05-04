@@ -160,7 +160,8 @@ in {
       mode = "0555";
       source = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
         ${lib.getExe package} \
-            --config=/var/lib/forgejo/custom/conf/app.ini \
+            --config=${config.services.forgejo.stateDir}/custom/conf/app.ini \
+            --work-path=${config.services.forgejo.stateDir} \
             keys \
             --expected=git \
             --username=%u \
