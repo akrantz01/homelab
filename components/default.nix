@@ -15,6 +15,7 @@
     ./pvr.nix
     ./reverse-proxy.nix
     ./streaming.nix
+    ./tangled.nix
     ./torrent
     ./vaultwarden.nix
     ./vpn.nix
