@@ -8,6 +8,8 @@
     # TODO: remove once staging is merged into master and nixpkgs-unstable is updated
     nixpkgs-authentik.url = "github:akrantz01/nixpkgs/cryptography-update";
 
+    flake-compat.url = "github:edolstra/flake-compat";
+
     disko = {
       url = "github:nix-community/disko/v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -23,6 +25,20 @@
     tailfed = {
       url = "github:akrantz01/tailfed/v1.2.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    tangled = {
+      url = "git+https://tangled.org/tangled.org/core";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.flake-compat.follows = "flake-compat";
+      # Disable useless monorepo inputs
+      inputs.actor-typeahead-src.follows = "";
+      inputs.fenix.follows = "";
+      inputs.htmx-src.follows = "";
+      inputs.htmx-ws-src.follows = "";
+      inputs.ibm-plex-mono-src.follows = "";
+      inputs.inter-fonts-src.follows = "";
+      inputs.lucide-src.follows = "";
+      inputs.mermaid-src.follows = "";
     };
   };
 

@@ -6,6 +6,7 @@ inputs @ {
   disko,
   sops-nix,
   tailfed,
+  tangled,
   ...
 }: let
   inherit (nixpkgs) lib;
@@ -34,6 +35,7 @@ inputs @ {
             [
               sops-nix.nixosModules.sops
               tailfed.nixosModules.${system}.tailfed
+              tangled.nixosModules.knot
 
               "${self}/hosts/${host.hostname}"
               "${self}/common"
