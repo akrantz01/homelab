@@ -26,6 +26,7 @@
     git = {
       enable = true;
       domain = "krantz.codes";
+      gitDomain = "git.krantz.codes";
 
       mailer = {
         enable = true;
