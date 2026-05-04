@@ -9,7 +9,7 @@
   cfg = config.components.git;
 
   package = pkgs-unstable.forgejo;
-  user = config.services.forgejo.settings.server.SSH_USER;
+  user = config.services.forgejo.user;
 in {
   options.components.git = {
     enable = lib.mkEnableOption "Enable the Git forge component";
@@ -85,7 +85,7 @@ in {
           ROOT_URL = "https://${cfg.domain}";
 
           SSH_DOMAIN = cfg.gitDomain;
-          SSH_USER = "git";
+          SSH_USER = user;
           SSH_CREATE_AUTHORIZED_KEYS_FILE = false;
         };
 
@@ -149,13 +149,6 @@ in {
       };
     };
 
-    users.users.${user} = {
-      isSystemUser = true;
-      useDefaultShell = true;
-      group = user;
-    };
-    users.groups.${user} = {};
-
     environment.etc."ssh/forgejo_authorized_keys" = {
       mode = "0555";
       source = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
@@ -172,10 +165,14 @@ in {
 
     services.openssh = {
       enable = lib.mkForce true;
+      settings = {
+        AllowUsers = [user];
+        AllowGroups = [user];
+      };
       extraConfig = lib.mkBefore ''
         Match User ${user}
           AuthorizedKeysCommand /etc/ssh/forgejo_authorized_keys %u %t %k
-          AuthorizedKeysCommandUser ${config.services.forgejo.user}
+          AuthorizedKeysCommandUser ${user}
       '';
     };
 
