@@ -2,6 +2,7 @@
   config,
   extra,
   lib,
+  pkgs-stable,
   pkgs-unstable,
   ...
 }: let
@@ -15,6 +16,12 @@ in {
       type = lib.types.str;
       example = "git.example.com";
       description = "The domain to use for the Forgejo instance";
+    };
+
+    gitDomain = lib.mkOption {
+      type = lib.types.str;
+      default = cfg.domain;
+      description = "The domain to use for accessing the instance via SSH";
     };
 
     mailer = {
@@ -73,6 +80,10 @@ in {
           PROTOCOL = "http+unix";
           DOMAIN = cfg.domain;
           ROOT_URL = "https://${cfg.domain}";
+
+          SSH_DOMAIN = cfg.gitDomain;
+          SSH_USER = "git";
+          SSH_CREATE_AUTHORIZED_KEYS_FILE = false;
         };
 
         session.COOKIE_SECURE = true;
@@ -133,6 +144,26 @@ in {
           "${key}_SECRET" = ref cfg.captcha.secret;
         });
       };
+    };
+
+    services.openssh = let
+      forgejo = lib.getExe pkgs-unstable.forgejo;
+      authorizedKeys = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
+        ${forgejo} \
+            --config=/var/lib/forgejo/custom/conf/app.ini \
+            keys \
+            --expected=git \
+            --username=%u \
+            --type=%t \
+            --content=%k
+      '';
+    in {
+      enable = lib.mkForce true;
+      extraConfig = lib.mkBefore ''
+        Match User ${config.services.forgejo.settings.server.SSH_USER}
+          AuthorizedKeysCommand ${authorizedKeys}
+          AuthorizedKeysCommandUser ${config.services.forgejo.user}
+      '';
     };
 
     components.reverseProxy = {
