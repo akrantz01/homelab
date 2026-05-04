@@ -164,9 +164,9 @@ in {
             --work-path=${config.services.forgejo.stateDir} \
             keys \
             --expected=git \
-            --username=$1 \
-            --type=$2 \
-            --content=$3
+            --username="$1" \
+            --type="$2" \
+            --content="$3"
       '';
     };
 
