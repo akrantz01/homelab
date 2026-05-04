@@ -1,4 +1,5 @@
 {
+  config,
   host,
   lib,
   ...
@@ -17,4 +18,6 @@ in {
       X11Forwarding = false;
     };
   };
+
+  services.fail2ban.enable = config.services.openssh.enable;
 }
