@@ -7,6 +7,8 @@
   ...
 }: let
   cfg = config.components.git;
+
+  user = config.services.forgejo.settings.server.SSH_USER;
 in {
   options.components.git = {
     enable = lib.mkEnableOption "Enable the Git forge component";
@@ -146,6 +148,13 @@ in {
       };
     };
 
+    users.users.${user} = {
+      isSystemUser = true;
+      useDefaultShell = true;
+      group = user;
+    };
+    users.groups.${user} = {};
+
     services.openssh = let
       forgejo = lib.getExe pkgs-unstable.forgejo;
       authorizedKeys = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
@@ -160,7 +169,7 @@ in {
     in {
       enable = lib.mkForce true;
       extraConfig = lib.mkBefore ''
-        Match User ${config.services.forgejo.settings.server.SSH_USER}
+        Match User ${user}
           AuthorizedKeysCommand ${authorizedKeys}
           AuthorizedKeysCommandUser ${config.services.forgejo.user}
       '';
