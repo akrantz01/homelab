@@ -164,9 +164,9 @@ in {
             --work-path=${config.services.forgejo.stateDir} \
             keys \
             --expected=git \
-            --username=%u \
-            --type=%t \
-            --content=%k
+            --username=$1 \
+            --type=$2 \
+            --content=$3
       '';
     };
 
@@ -174,7 +174,7 @@ in {
       enable = lib.mkForce true;
       extraConfig = lib.mkBefore ''
         Match User ${user}
-          AuthorizedKeysCommand /etc/ssh/forgejo_authorized_keys
+          AuthorizedKeysCommand /etc/ssh/forgejo_authorized_keys %u %t %k
           AuthorizedKeysCommandUser ${config.services.forgejo.user}
       '';
     };
