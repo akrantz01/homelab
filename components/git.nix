@@ -8,6 +8,7 @@
 }: let
   cfg = config.components.git;
 
+  package = pkgs-unstable.forgejo;
   user = config.services.forgejo.settings.server.SSH_USER;
 in {
   options.components.git = {
@@ -68,7 +69,7 @@ in {
   config = lib.mkIf cfg.enable {
     services.forgejo = {
       enable = true;
-      package = pkgs-unstable.forgejo;
+      inherit package;
 
       database = {
         type = "postgres";
@@ -155,10 +156,10 @@ in {
     };
     users.groups.${user} = {};
 
-    services.openssh = let
-      forgejo = lib.getExe pkgs-unstable.forgejo;
-      authorizedKeys = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
-        ${forgejo} \
+    environment.etc."ssh/forgejo_authorized_keys" = {
+      mode = "0555";
+      source = pkgs-stable.writeShellScript "authorized-keys-wrapper" ''
+        ${lib.getExe package} \
             --config=/var/lib/forgejo/custom/conf/app.ini \
             keys \
             --expected=git \
@@ -166,11 +167,13 @@ in {
             --type=%t \
             --content=%k
       '';
-    in {
+    };
+
+    services.openssh = {
       enable = lib.mkForce true;
       extraConfig = lib.mkBefore ''
         Match User ${user}
-          AuthorizedKeysCommand ${authorizedKeys}
+          AuthorizedKeysCommand /etc/ssh/forgejo_authorized_keys
           AuthorizedKeysCommandUser ${config.services.forgejo.user}
       '';
     };
