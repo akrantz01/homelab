@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "homelab_trust_policy" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:aud"
-      values   = ["sts.amazonaws.com"]
+      values   = ["sts.amazonaws.comm"]
     }
 
     condition {

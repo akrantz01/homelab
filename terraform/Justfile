@@ -4,7 +4,7 @@ list:
 
 # Initialize project dependencies
 init:
-  terragrunt run-all init
+  terragrunt run --all init
   tflint --init
 
 # Reformat all files
@@ -26,7 +26,7 @@ lint:
 
 # Ensure the project is valid
 validate:
-  terragrunt run-all validate
+  terragrunt run --all validate
 
 # Open a console
 console:
@@ -38,11 +38,12 @@ new-application name:
 
 # Plan the changes
 plan:
-  terragrunt plan
+  mkdir -p plans
+  terragrunt run --all plan
 
 # Apply the changes
 apply:
-  terragrunt apply
+  terragrunt run --all apply
 
 # Checks to run in CI
 ci: check-format lint validate
