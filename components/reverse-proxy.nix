@@ -3,7 +3,7 @@
   extra,
   lib,
   pkgs-stable,
-  pkgs-unstable,
+  pkgs-nginx,
   settings,
   ...
 }: let
@@ -182,8 +182,9 @@ in {
       enable = true;
       enableReload = true;
 
-      package = pkgs-unstable.nginxMainline;
-      additionalModules = with pkgs-unstable.nginxModules; [moreheaders];
+      package = pkgs-nginx.nginxMainline;
+      # mkForce so the stable nixpkgs brotli module (added by recommendedBrotliSettings) isn't mixed in
+      additionalModules = lib.mkForce (with pkgs-nginx.nginxModules; [moreheaders brotli]);
 
       inherit (cfg) defaultListenAddresses;
 

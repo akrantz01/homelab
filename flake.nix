@@ -8,6 +8,8 @@
     # TODO: remove once staging is merged into master and nixpkgs-unstable is updated
     nixpkgs-authentik.url = "github:akrantz01/nixpkgs/cryptography-update";
 
+    nixpkgs-nginx.url = "github:akrantz01/nixpkgs/0bb8272318b4ca41bf0edc6224df3e3e3046b70d";
+
     flake-compat.url = "github:edolstra/flake-compat";
 
     disko = {
