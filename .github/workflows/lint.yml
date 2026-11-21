@@ -40,6 +40,9 @@ jobs:
           aws-region: ca-central-1
 
       - run: just terraform/ init ci
+        env:
+          # Avoids rate limiting for ruleset downloads
+          GITHUB_TOKEN: ${{ github.token }}
 
   yaml:
     name: YAML
