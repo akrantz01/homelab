@@ -36,7 +36,7 @@ jobs:
 
       - uses: taiki-e/install-action@just
       - uses: terraform-linters/setup-tflint@v6
-      - uses: opentofu/setup-opentofu@v1
+      - uses: opentofu/setup-opentofu@v2
         with:
           tofu_version: ${{ env.OPENTOFU_VERSION }}
           tofu_wrapper: false
