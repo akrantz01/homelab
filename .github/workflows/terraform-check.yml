@@ -1,11 +1,16 @@
 ---
-"on": push
+name: Terraform Check
 
-name: Deploy
+# TODO: add `pull_request` once role trust policy is updated
+"on":
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
 
 concurrency:
-  group: terraform-deploy
-  cancel-in-progress: false
+  group: terraform-check-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
@@ -14,18 +19,45 @@ env:
   TERRAGRUNT_VERSION: v1.0.2
   TG_NON_INTERACTIVE: "true"
 
+permissions:
+  contents: read
+  id-token: write
+
 defaults:
   run:
     working-directory: terraform
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: taiki-e/install-action@just
+      - uses: terraform-linters/setup-tflint@v4
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+          tofu_wrapper: false
+      - uses: ./.github/actions/install-terragrunt
+        with:
+          version: ${{ env.TERRAGRUNT_VERSION }}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
+          aws-region: ca-central-1
+
+      - run: just init ci
+        env:
+          # Avoids rate limiting for ruleset downloads
+          GITHUB_TOKEN: ${{ github.token }}
+
   plan:
     name: Plan
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-    if: github.ref != 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -43,29 +75,4 @@ jobs:
           role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
           aws-region: ca-central-1
 
-      - run: terragrunt run --all -- plan
-
-  apply:
-    name: Apply
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: opentofu/setup-opentofu@v1
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION }}
-          tofu_wrapper: false
-      - uses: ./.github/actions/install-terragrunt
-        with:
-          version: ${{ env.TERRAGRUNT_VERSION }}
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
-          aws-region: ca-central-1
-
-      - run: terragrunt run --all -- apply
+      - run: terragrunt run --all -- plan -lock=false
