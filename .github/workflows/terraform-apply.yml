@@ -1,0 +1,50 @@
+---
+name: Terraform Apply
+
+"on":
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+env:
+  # renovate: datasource=github-releases packageName=opentofu/opentofu
+  OPENTOFU_VERSION: 1.11.6
+  # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
+  TERRAGRUNT_VERSION: v1.0.2
+  TG_NON_INTERACTIVE: "true"
+
+permissions:
+  contents: read
+  id-token: write
+
+defaults:
+  run:
+    working-directory: terraform
+
+jobs:
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+    # TODO: `environment: production` once the role trust policy is updated
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+          tofu_wrapper: false
+      - uses: ./.github/actions/install-terragrunt
+        with:
+          version: ${{ env.TERRAGRUNT_VERSION }}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
+          aws-region: ca-central-1
+
+      - run: terragrunt run --all -- apply

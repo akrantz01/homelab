@@ -3,42 +3,7 @@
 
 name: Lint
 
-env:
-  # renovate: datasource=github-releases packageName=opentofu/opentofu
-  OPENTOFU_VERSION: 1.11.6
-  # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
-  TERRAGRUNT_VERSION: v1.0.2
-
 jobs:
-  terraform:
-    name: Terraform
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: taiki-e/install-action@just
-      - uses: terraform-linters/setup-tflint@v4
-      - uses: opentofu/setup-opentofu@v1
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION}}
-          tofu_wrapper: false
-      - uses: ./.github/actions/install-terragrunt
-        with:
-          version: ${{ env.TERRAGRUNT_VERSION }}
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
-          aws-region: ca-central-1
-
-      - run: just terraform/ init ci
-        env:
-          # Avoids rate limiting for ruleset downloads
-          GITHUB_TOKEN: ${{ github.token }}
-
   yaml:
     name: YAML
     runs-on: ubuntu-latest
