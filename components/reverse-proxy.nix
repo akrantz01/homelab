@@ -183,8 +183,11 @@ in {
       enableReload = true;
 
       package = pkgs-nginx.nginxMainline;
-      # mkForce so the stable nixpkgs brotli module (added by recommendedBrotliSettings) isn't mixed in
+      # additionalModules and prependConfig are likely temporary while a custom nginx is being used
       additionalModules = lib.mkForce (with pkgs-nginx.nginxModules; [moreheaders brotli]);
+      prependConfig = ''
+        include ${config.services.nginx.package}/etc/nginx/dynamic-modules.conf;
+      '';
 
       inherit (cfg) defaultListenAddresses;
 
