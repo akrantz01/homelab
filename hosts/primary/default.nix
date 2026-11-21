@@ -35,10 +35,6 @@
         secretKey = "backblaze/backups/key";
       };
     };
-    aws = {
-      enable = true;
-      url = "https://tailfed.krantz.cloud";
-    };
     backblaze = {
       enable = true;
       credentials.watch = {
