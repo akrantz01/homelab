@@ -1,0 +1,29 @@
+---
+name: Install Terragrunt
+description: Download a Terragrunt release binary, verify its checksum, and add it to the PATH
+
+inputs:
+  version:
+    description: The Terragrunt release tag to install (e.g. v1.0.2)
+    required: true
+  token:
+    description: GitHub token used to download the release assets
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install Terragrunt
+      shell: bash
+      working-directory: ${{ runner.temp }}
+      run: |
+        gh release download "$VERSION" --repo gruntwork-io/terragrunt \
+          --pattern terragrunt_linux_amd64 --pattern SHA256SUMS --clobber
+        # Anchor the filename: releases also ship .tar.gz/.zip assets with the same prefix
+        grep -E ' terragrunt_linux_amd64$' SHA256SUMS | sha256sum --check --strict -
+        sudo install -m 0755 terragrunt_linux_amd64 /usr/local/bin/terragrunt
+        terragrunt --version
+      env:
+        VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.token }}

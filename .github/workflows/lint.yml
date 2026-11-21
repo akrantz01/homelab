@@ -24,14 +24,9 @@ jobs:
         with:
           tofu_version: ${{ env.OPENTOFU_VERSION}}
           tofu_wrapper: false
-      - name: Install Terragrunt
-        run: |
-          url=$(gh release view ${{ env.TERRAGRUNT_VERSION }} --repo gruntwork-io/terragrunt --json assets --jq '.assets[] | select(.name | endswith("linux_amd64")) | .url')
-          wget -qO terragrunt $url
-          chmod +x terragrunt
-          sudo mv terragrunt /usr/local/bin/
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - uses: ./.github/actions/install-terragrunt
+        with:
+          version: ${{ env.TERRAGRUNT_VERSION }}
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:

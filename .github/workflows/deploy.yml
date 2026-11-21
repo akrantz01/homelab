@@ -11,8 +11,12 @@ env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
   OPENTOFU_VERSION: 1.11.6
   # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
-  TERRAGRUNT_VERSION: 1.0.2
-  WORKING_DIRECTORY: terraform
+  TERRAGRUNT_VERSION: v1.0.2
+  TG_NON_INTERACTIVE: "true"
+
+defaults:
+  run:
+    working-directory: terraform
 
 jobs:
   plan:
@@ -25,20 +29,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+          tofu_wrapper: false
+      - uses: ./.github/actions/install-terragrunt
+        with:
+          version: ${{ env.TERRAGRUNT_VERSION }}
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
           role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
           aws-region: ca-central-1
 
-      - uses: gruntwork-io/terragrunt-action@v2
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION }}
-          tg_version: ${{ env.TERRAGRUNT_VERSION }}
-          tg_dir: ${{ env.WORKING_DIRECTORY }}
-          tg_command: run-all plan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: terragrunt run --all -- plan
 
   apply:
     name: Apply
@@ -49,15 +54,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.OPENTOFU_VERSION }}
+          tofu_wrapper: false
+      - uses: ./.github/actions/install-terragrunt
+        with:
+          version: ${{ env.TERRAGRUNT_VERSION }}
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
           role-session-name: ${{ github.event_name }}-${{ github.run_id }}-${{ github.job }}
           aws-region: ca-central-1
 
-      - uses: gruntwork-io/terragrunt-action@v2
-        with:
-          tofu_version: ${{ env.OPENTOFU_VERSION }}
-          tg_version: ${{ env.TERRAGRUNT_VERSION }}
-          tg_dir: ${{ env.WORKING_DIRECTORY }}
-          tg_command: run-all apply
+      - run: terragrunt run --all -- apply
