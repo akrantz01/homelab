@@ -6,10 +6,3 @@ terraform {
     }
   }
 }
-
-module "user" {
-  source = "../../modules/user"
-
-  name = "outline"
-  path = "/services/"
-}
