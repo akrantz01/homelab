@@ -1,48 +1,44 @@
 # Show all the tasks
 list:
-  @just --list --unsorted
+    @just --list --unsorted
 
 # Initialize project dependencies
 init:
-  terragrunt run --all init
-  tflint --init
+    terragrunt run --all init
+    tflint --init
 
 # Reformat all files
 format:
-  tofu fmt --recursive
-  terragrunt hcl fmt
+    tofu fmt --recursive
+    terragrunt hcl fmt
 
 # Check the format of all files
 check-format:
-  tofu fmt --recursive --check
-  terragrunt hcl fmt --check
+    tofu fmt --recursive --check
+    terragrunt hcl fmt --check
 
 # Run linters
 lint:
-  find . -mindepth 2 -type f -name "*.tf" ! -path "*.terraform*" ! -path "*.terragrunt-cache*" -exec dirname {} \; | \
-    sort -u | \
-    grep -vE "(providers|applications/template)" | \
-    xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
+    find . -mindepth 2 -type f -name "*.tf" ! -path "*.terraform*" ! -path "*.terragrunt-cache*" -exec dirname {} \; | \
+      sort -u | \
+      grep -vE "(providers|applications/template)" | \
+      xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
 # Ensure the project is valid
 validate:
-  terragrunt run --all validate
+    terragrunt run --all validate
 
 # Open a console
 console:
-  terragrunt console
-
-# Create a new application
-new-application name:
-  copier copy --trust applications/template applications/{{name}}
+    terragrunt console
 
 # Plan the changes
 plan:
-  terragrunt plan
+    terragrunt plan
 
 # Apply the changes
 apply:
-  terragrunt apply
+    terragrunt apply
 
 # Checks to run in CI
 ci: check-format lint validate
