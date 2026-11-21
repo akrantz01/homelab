@@ -4,29 +4,29 @@ list:
 
 # Initialize project dependencies
 init:
-  terragrunt run-all init
+  terragrunt run --all init
   tflint --init
 
 # Reformat all files
 format:
   tofu fmt --recursive
-  terragrunt hclfmt
+  terragrunt hcl fmt
 
 # Check the format of all files
 check-format:
   tofu fmt --recursive --check
-  terragrunt hclfmt --terragrunt-check
+  terragrunt hcl fmt --check
 
 # Run linters
 lint:
-  find . -mindepth 2 -type f -name "*.tf" ! -path "*.terraform*" -exec dirname {} \; | \
-    uniq | \
+  find . -mindepth 2 -type f -name "*.tf" ! -path "*.terraform*" ! -path "*.terragrunt-cache*" -exec dirname {} \; | \
+    sort -u | \
     grep -vE "(providers|applications/template)" | \
     xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
 # Ensure the project is valid
 validate:
-  terragrunt run-all validate
+  terragrunt run --all validate
 
 # Open a console
 console:

@@ -21,6 +21,8 @@ remote_state {
 }
 
 terraform {
+  source = "${get_repo_root()}/terraform//${path_relative_to_include()}"
+
   extra_arguments "disable_input" {
     commands  = get_terraform_commands_that_need_input()
     arguments = ["-input=false"]
