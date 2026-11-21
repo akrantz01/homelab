@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - uses: taiki-e/install-action@just
-      - uses: terraform-linters/setup-tflint@v4
+      - uses: terraform-linters/setup-tflint@v6
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: ${{ env.OPENTOFU_VERSION }}
