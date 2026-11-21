@@ -24,6 +24,35 @@ lint:
       grep -vE "(providers|applications/template)" | \
       xargs -I path tflint -c $(pwd)/.tflint.hcl --chdir path
 
+# Ensure each provider uses the same version constraint everywhere
+check-versions:
+    #!/usr/bin/env python3
+    import collections, pathlib, re, sys
+
+    found = collections.defaultdict(lambda: collections.defaultdict(list))
+    for path in sorted(pathlib.Path(".").rglob("*.tf")):
+        if {".terraform", ".terragrunt-cache"} & set(path.parts):
+            continue
+        text = path.read_text()
+        for block in re.finditer(r"required_providers\s*\{", text):
+            depth, end = 1, block.end()
+            while depth:
+                depth += {"{": 1, "}": -1}.get(text[end], 0)
+                end += 1
+            for name, body in re.findall(r"([\w-]+)\s*=\s*\{(.*?)\}", text[block.end() : end - 1], re.S):
+                attrs = dict(re.findall(r'(\w+)\s*=\s*"([^"]*)"', body))
+                source = attrs.get("source", f"hashicorp/{name}").lower()
+                found[source][attrs.get("version", "<no constraint>")].append(str(path))
+
+    mismatched = {source: versions for source, versions in found.items() if len(versions) > 1}
+    for source, versions in sorted(mismatched.items()):
+        print(f"{source} has {len(versions)} different version constraints:")
+        for version, paths in sorted(versions.items()):
+            print(f"  {version}: {', '.join(paths)}")
+    if mismatched:
+        sys.exit(1)
+    print(f"All {len(found)} providers use consistent version constraints")
+
 # Ensure the project is valid
 validate:
     terragrunt run --all validate
@@ -41,7 +70,7 @@ apply:
     terragrunt apply
 
 # Checks to run in CI
-ci: check-format lint validate
+ci: check-versions check-format lint validate
 
 alias c := console
 alias f := format
