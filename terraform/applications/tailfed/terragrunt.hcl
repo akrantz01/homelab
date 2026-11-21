@@ -7,7 +7,3 @@ dependency "github-actions" {
 
   skip_outputs = true
 }
-
-inputs = {
-  tailscale_oauth_scopes = ["auth_keys"]
-}

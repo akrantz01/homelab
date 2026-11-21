@@ -3,9 +3,9 @@ include "root" {
 }
 
 include "aws" {
-  path = find_in_parent_folders("aws.hcl")
+  path = find_in_parent_folders("providers/aws.hcl")
 }
 
 include "github" {
-  path = find_in_parent_folders("github.hcl")
+  path = find_in_parent_folders("providers/github.hcl")
 }

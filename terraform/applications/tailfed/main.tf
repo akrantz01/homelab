@@ -1,8 +1,3 @@
-terraform {
-  required_providers {
-  }
-}
-
 # TODO: re-enable with tailfed v2 on GCP
 # module "tailfed" {
 #   # tflint-ignore: terraform_module_pinned_source

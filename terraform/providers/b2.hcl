@@ -1,12 +1,11 @@
 locals {
-  secrets_path = "${get_repo_root()}/secrets/github/terraform.yaml"
-  secrets      = yamldecode(sops_decrypt_file(local.secrets_path))
+  secrets = yamldecode(sops_decrypt_file("${get_repo_root()}/secrets/github/terraform.yaml"))
 }
 
-generate "b2" {
+generate "provider_b2" {
   path      = "provider_b2.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = file("providers/b2.tf")
+  contents  = file("${get_repo_root()}/terraform/providers/b2.tf")
 }
 
 inputs = {

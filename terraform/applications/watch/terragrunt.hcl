@@ -3,7 +3,7 @@ include "root" {
 }
 
 include "b2" {
-  path = find_in_parent_folders("b2.hcl")
+  path = find_in_parent_folders("providers/b2.hcl")
 }
 
 dependency "github-actions" {
@@ -11,5 +11,3 @@ dependency "github-actions" {
 
   skip_outputs = true
 }
-
-inputs = {}
