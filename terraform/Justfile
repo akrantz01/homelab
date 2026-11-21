@@ -57,22 +57,32 @@ check-versions:
 validate:
     terragrunt run --all validate
 
-# Open a console
-console:
-    terragrunt console
+# Create a plan
+plan unit="": (_run unit "plan")
 
-# Plan the changes
-plan:
-    terragrunt plan
+# Apply the configuration
+apply unit="": (_run unit "apply")
 
-# Apply the changes
-apply:
-    terragrunt apply
+[private]
+_run unit command:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ -z "{{ unit }}" ]]; then
+        flags=()
+        [[ "{{ command }}" == apply ]] && flags=(--no-auto-approve --parallelism 1)
+        exec terragrunt run --all "${flags[@]}" -- "{{ command }}"
+    fi
+    if [[ ! -f "{{ unit }}/terragrunt.hcl" ]]; then
+        echo "error: '{{ unit }}' is not a unit" >&2
+        echo "expected one of:" >&2
+        terragrunt find >&2
+        exit 1
+    fi
+    exec terragrunt run --working-dir "{{ unit }}" -- "{{ command }}"
 
 # Checks to run in CI
 ci: check-versions check-format lint validate
 
-alias c := console
 alias f := format
 alias fmt := format
 alias l := lint
