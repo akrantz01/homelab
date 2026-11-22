@@ -11,6 +11,12 @@ resource "aws_iam_role" "plan" {
   assume_role_policy = data.aws_iam_policy_document.plan_trust_policy.json
 }
 
+resource "aws_iam_role_policy_attachments_exclusive" "plan" {
+  role_name = aws_iam_role.plan.name
+
+  policy_arns = [data.aws_iam_policy.read_only.arn]
+}
+
 data "aws_iam_policy_document" "plan_trust_policy" {
   statement {
     effect = "Allow"
@@ -36,11 +42,37 @@ data "aws_iam_policy_document" "plan_trust_policy" {
   }
 }
 
+data "aws_iam_policy" "read_only" {
+  name = "ReadOnlyAccess"
+}
+
 resource "aws_iam_role" "apply" {
   name        = "HomelabTerraformApply"
   description = "The role assumed by the Terraform Apply job in the akrantz01/homelab repository on GitHub"
 
   assume_role_policy = data.aws_iam_policy_document.apply_trust_policy.json
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "apply" {
+  role_name = aws_iam_role.apply.name
+
+  policy_arns = [
+    data.aws_iam_policy.dynamodb_full_access.arn,
+    data.aws_iam_policy.iam_full_access.arn,
+    data.aws_iam_policy.s3_full_access.arn,
+  ]
+}
+
+data "aws_iam_policy" "dynamodb_full_access" {
+  name = "AmazonDynamoDBFullAccess"
+}
+
+data "aws_iam_policy" "iam_full_access" {
+  name = "IAMFullAccess"
+}
+
+data "aws_iam_policy" "s3_full_access" {
+  name = "AmazonS3FullAccess"
 }
 
 data "aws_iam_policy_document" "apply_trust_policy" {
