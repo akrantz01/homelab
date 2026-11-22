@@ -1,7 +1,6 @@
 ---
 name: Terraform Check
 
-# TODO: add `pull_request` once role trust policy is updated
 "on":
   push:
     branches-ignore:
@@ -76,3 +75,6 @@ jobs:
           aws-region: ca-central-1
 
       - run: terragrunt run --all -- plan -lock=false
+        env:
+          TAILSCALE_AUDIENCE: ${{ vars.TAILSCALE_AUDIENCE }}
+          TAILSCALE_OAUTH_CLIENT_ID: ${{ vars.TAILSCALE_OAUTH_CLIENT_ID }}

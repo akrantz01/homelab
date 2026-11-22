@@ -29,7 +29,7 @@ jobs:
   apply:
     name: Apply
     runs-on: ubuntu-latest
-    # TODO: `environment: production` once the role trust policy is updated
+    environment: production
     steps:
       - uses: actions/checkout@v7
 
@@ -48,3 +48,6 @@ jobs:
           aws-region: ca-central-1
 
       - run: terragrunt run --all -- apply
+        env:
+          TAILSCALE_AUDIENCE: ${{ vars.TAILSCALE_AUDIENCE }}
+          TAILSCALE_OAUTH_CLIENT_ID: ${{ vars.TAILSCALE_OAUTH_CLIENT_ID }}
