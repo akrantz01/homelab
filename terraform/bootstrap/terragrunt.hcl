@@ -1,5 +1,6 @@
 include "root" {
-  path = find_in_parent_folders("root.hcl")
+  path   = find_in_parent_folders("root.hcl")
+  expose = true
 }
 
 include "provider_aws" {
@@ -13,4 +14,9 @@ include "provider_tailscale" {
 exclude {
   if      = true
   actions = ["all_except_output"]
+}
+
+inputs = {
+  state_bucket     = include.root.locals.secrets.state.bucket
+  state_lock_table = include.root.locals.secrets.state.lock_table
 }
