@@ -40,8 +40,6 @@ data "aws_iam_policy_document" "sops_key_policy" {
       identifiers = [
         aws_iam_role.plan.arn,
         aws_iam_role.apply.arn,
-        # TODO: remove once management github-actions is cleaned up
-        "arn:aws:iam::416515258441:role/GitHubActionsHomelab",
       ]
     }
 
