@@ -2,6 +2,10 @@ include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
+include "provider_aws" {
+  path = find_in_parent_folders("providers/aws.hcl")
+}
+
 include "provider_tailscale" {
   path = find_in_parent_folders("providers/tailscale.hcl")
 }

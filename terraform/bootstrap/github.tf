@@ -1,3 +1,8 @@
+locals {
+  terraform_apply_subject = "repo:${data.github_repository.source.full_name}:environment:${github_repository_environment.production.environment}"
+  terraform_plan_subject  = "repo:${data.github_repository.source.full_name}:ref:refs/heads/*"
+}
+
 data "github_repository" "source" {
   name = "homelab"
 }

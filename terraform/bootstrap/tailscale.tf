@@ -8,7 +8,7 @@ resource "tailscale_federated_identity" "plan" {
   scopes      = local.tailscale_read_only_scopes
 
   issuer  = "https://token.actions.githubusercontent.com"
-  subject = "repo:${data.github_repository.source.full_name}:ref:refs/heads/*"
+  subject = local.terraform_plan_subject
 }
 
 resource "tailscale_federated_identity" "apply" {
@@ -16,5 +16,5 @@ resource "tailscale_federated_identity" "apply" {
   scopes      = local.tailscale_scopes
 
   issuer  = "https://token.actions.githubusercontent.com"
-  subject = "repo:${data.github_repository.source.full_name}:environment:${github_repository_environment.production.environment}"
+  subject = local.terraform_apply_subject
 }
