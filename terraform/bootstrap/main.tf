@@ -12,5 +12,3 @@ terraform {
 }
 
 provider "github" {}
-
-provider "tailscale" {}
