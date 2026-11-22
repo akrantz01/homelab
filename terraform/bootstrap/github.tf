@@ -33,6 +33,13 @@ resource "github_actions_variable" "tailscale_audience" {
   value         = tailscale_federated_identity.plan.audience
 }
 
+resource "github_actions_variable" "aws_role" {
+  repository = data.github_repository.source.name
+
+  variable_name = "AWS_ROLE_ARN"
+  value         = aws_iam_role.plan.arn
+}
+
 resource "github_actions_environment_variable" "tailscale_client_id" {
   repository = data.github_repository.source.name
 
@@ -47,4 +54,12 @@ resource "github_actions_environment_variable" "tailscale_audience" {
   environment   = github_repository_environment.production.environment
   variable_name = "TAILSCALE_AUDIENCE"
   value         = tailscale_federated_identity.apply.audience
+}
+
+resource "github_actions_environment_variable" "aws_role" {
+  repository = data.github_repository.source.name
+
+  environment   = github_repository_environment.production.environment
+  variable_name = "AWS_ROLE_ARN"
+  value         = aws_iam_role.apply.arn
 }
