@@ -18,6 +18,23 @@ resource "aws_s3_bucket_versioning" "state" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
+
+  rule {
+    id     = "expire-old-versions"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 90
+    }
+
+    expiration {
+      expired_object_delete_marker = true
+    }
+  }
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
   bucket = aws_s3_bucket.state.id
 
@@ -44,7 +61,7 @@ resource "aws_s3_bucket_ownership_controls" "state" {
   bucket = aws_s3_bucket.state.id
 
   rule {
-    object_ownership = "ObjectWriter"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
