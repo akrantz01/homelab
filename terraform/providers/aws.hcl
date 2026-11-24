@@ -10,4 +10,9 @@ generate "provider_aws" {
 
 inputs = {
   aws_region = local.secrets.regions.aws
+  aws_default_tags = {
+    ManagedBy  = "Terraform"
+    Repository = "alex/homelab"
+    Unit       = trimprefix(get_terragrunt_dir(), "${get_repo_root()}/terraform/")
+  }
 }
