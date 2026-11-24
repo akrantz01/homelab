@@ -17,6 +17,5 @@ exclude {
 }
 
 inputs = {
-  state_bucket     = include.root.locals.secrets.state.bucket
-  state_lock_table = include.root.locals.secrets.state.lock_table
+  state_bucket = include.root.locals.secrets.state.bucket
 }

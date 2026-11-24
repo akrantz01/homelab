@@ -10,13 +10,12 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    region  = local.secrets.regions.aws
-    encrypt = true
-
+    region = local.secrets.regions.aws
     bucket = local.secrets.state.bucket
     key    = "${path_relative_to_include()}/terraform.tfstate"
 
-    dynamodb_table = local.secrets.state.lock_table
+    encrypt      = true
+    use_lockfile = true
   }
 }
 

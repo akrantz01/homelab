@@ -109,22 +109,3 @@ data "aws_iam_policy_document" "state" {
     ]
   }
 }
-
-resource "aws_dynamodb_table" "lock" {
-  name         = var.state_lock_table
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  server_side_encryption {
-    enabled = true
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
