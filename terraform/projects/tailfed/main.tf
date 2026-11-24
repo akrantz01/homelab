@@ -34,9 +34,12 @@ module "project" {
 
 data "aws_iam_policy_document" "project_artifacts" {
   statement {
-    sid       = "ManageArtifactBuckets"
-    effect    = "Allow"
-    actions   = ["s3:*"]
-    resources = ["arn:aws:s3:::tailfed-artifacts"]
+    sid     = "ManageArtifactBuckets"
+    effect  = "Allow"
+    actions = ["s3:*"]
+    resources = [
+      "arn:aws:s3:::tailfed-artifacts",
+      "arn:aws:s3:::tailfed-artifacts/*"
+    ]
   }
 }
