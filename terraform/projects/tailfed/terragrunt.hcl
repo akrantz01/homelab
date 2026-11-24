@@ -10,12 +10,6 @@ include "github" {
   path = find_in_parent_folders("providers/github.hcl")
 }
 
-dependency "github-actions" {
-  config_path = "../../github-actions"
-
-  skip_outputs = true
-}
-
 dependency "bootstrap" {
   config_path = "../../bootstrap"
 
