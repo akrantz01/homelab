@@ -15,7 +15,7 @@ env:
   # renovate: datasource=github-releases packageName=opentofu/opentofu
   OPENTOFU_VERSION: 1.11.6
   # renovate: datasource=github-releases packageName=gruntwork-io/terragrunt
-  TERRAGRUNT_VERSION: v1.0.2
+  TERRAGRUNT_VERSION: v1.2.3
   TG_NON_INTERACTIVE: "true"
 
 permissions:
